@@ -46,7 +46,7 @@ async fn main() {
             "/api",
             Router::new()
                 .route("/badge/:domain", get(badge_show))
-                .route("/badge_reverse/:domain", get(badge_reverse_show)),
+                .route("/favicon/:domain", get(badge_reverse_show)),
         )
         .layer(AddExtensionLayer::new(context));
 

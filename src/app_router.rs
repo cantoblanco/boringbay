@@ -1,27 +1,46 @@
 use axum::{
     extract::{Extension, Path},
-    Json,
+    response::{Headers, IntoResponse},
 };
 
-use crate::{
-    app_error::AppError,
-    app_model::{CreateUser, DynUserRepo, User},
-};
+use crate::app_model::DynContext;
 
-pub async fn users_show(
-    Path(user_id): Path<String>,
-    Extension(user_repo): Extension<DynUserRepo>,
-) -> Result<Json<User>, AppError> {
-    let user = user_repo.find(user_id).await?;
-
-    Ok(user.into())
+pub async fn badge_show(
+    Path(domain): Path<String>,
+    Extension(ctx): Extension<DynContext>,
+) -> impl IntoResponse {
+    let headers = Headers([("content-type", "image/svg+xml")]);
+    let len: usize = 10;
+    let read = ctx.render_cache.read().await;
+    let cache = read.get(&len);
+    let content = if let Some(v) = cache {
+        v.clone()
+    } else {
+        drop(read);
+        let v = ctx.badge.render_svg(10);
+        let mut write = ctx.render_cache.write().await;
+        write.insert(len, v.clone());
+        v
+    };
+    (headers, content)
 }
 
-pub async fn users_create(
-    Json(params): Json<CreateUser>,
-    Extension(user_repo): Extension<DynUserRepo>,
-) -> Result<Json<User>, AppError> {
-    let user = user_repo.create(params).await?;
-
-    Ok(user.into())
+pub async fn badge_reverse_show(
+    Path(domain): Path<String>,
+    Extension(ctx): Extension<DynContext>,
+) -> impl IntoResponse {
+    let headers = Headers([("content-type", "image/svg+xml")]);
+    let len: usize = 10;
+    let read = ctx.render_cache.read().await;
+    let cache = read.get(&len);
+    let content = if let Some(v) = cache {
+        v.clone()
+    } else {
+        drop(read);
+        let v = ctx.badge_reverse.render_svg(10);
+        let mut write = ctx.render_cache.write().await;
+        write.insert(len, v.clone());
+        v
+    };
+    (headers, content)
 }

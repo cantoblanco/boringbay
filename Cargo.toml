@@ -10,6 +10,7 @@ anyhow = "1.0.44"
 axum = "0.3.3"
 diesel = {version = "1.4.8", features = ["sqlite", "chrono", "r2d2"]}
 diesel_migrations = "1.4.0"
+dotenv = "0.15.0"
 serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0"
 tokio = {version = "1.0", features = ["full"]}

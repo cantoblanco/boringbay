@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 static SVG_HEADER: &str = r###"<svg width="98" height="97" xmlns="http://www.w3.org/2000/svg">
     <g transform="translate(.38)" fill="none" fill-rule="evenodd">
         <circle class="fill-black" cx="48.5" cy="48.5" r="48.5" />
@@ -28,10 +26,9 @@ static SVG_FOOTER: &str = r###"</g>
     </style>
 </svg>"###;
 
-struct BoringFace {
+pub struct BoringFace {
     fill_white: String,
     fill_black: String,
-    render_cache: HashMap<usize, String>,
 }
 
 impl BoringFace {
@@ -39,15 +36,11 @@ impl BoringFace {
         Self {
             fill_white,
             fill_black,
-            render_cache: HashMap::new(),
         }
     }
 
-    fn render_svg(&mut self, length: usize) -> String {
+    pub fn render_svg(&self, length: usize) -> String {
         assert!(length >= 1 && length <= 10);
-        if let Some(cache) = self.render_cache.get(&length) {
-            return cache.to_string();
-        }
         let mut content = SVG_HEADER.to_string();
 
         for i in 0..10 {
@@ -61,9 +54,11 @@ impl BoringFace {
             ));
         }
 
-        content.push_str(SVG_FOOTER);
-
-        self.render_cache.insert(length, content.clone());
+        content.push_str(
+            &SVG_FOOTER
+                .replace("#fill_white#", &self.fill_white)
+                .replace("#fill_black#", &self.fill_black),
+        );
 
         content
     }

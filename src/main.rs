@@ -1,26 +1,27 @@
 mod app_error;
-mod boring_face;
 mod app_model;
 mod app_router;
+mod boring_face;
 
-use axum::{
-    routing::{get, post},
-    AddExtensionLayer, Router,
-};
+use app_model::DbPool;
+use axum::{routing::get, AddExtensionLayer, Router};
 use diesel::{
     r2d2::{ConnectionManager, Pool},
     SqliteConnection,
 };
-use app_model::DbPool;
-use std::{env, net::SocketAddr, sync::Arc};
+use dotenv::dotenv;
+use std::{collections::HashMap, env, net::SocketAddr, sync::Arc};
+use tokio::sync::RwLock;
 
 use crate::{
-    app_model::{DynUserRepo, ExampleUserRepo},
-    app_router::{users_create, users_show},
+    app_model::{Context, DynContext},
+    app_router::{badge_reverse_show, badge_show},
+    boring_face::BoringFace,
 };
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
     tracing_subscriber::fmt::init();
 
     let db_pool: DbPool = establish_connection(&env::var("DATABASE_URL").unwrap());
@@ -34,18 +35,20 @@ async fn main() {
         return;
     }
 
-    let user_repo = Arc::new(ExampleUserRepo) as DynUserRepo;
+    let context = Arc::new(Context {
+        badge: BoringFace::new("#03081A".to_string(), "white".to_string()),
+        badge_reverse: BoringFace::new("white".to_string(), "#03081A".to_string()),
+        render_cache: RwLock::new(HashMap::new()),
+    }) as DynContext;
 
     let app = Router::new()
         .nest(
             "/api",
             Router::new()
-                .route("/users/:id", get(users_show))
-                .route("/users", post(users_create)),
+                .route("/badge/:domain", get(badge_show))
+                .route("/badge_reverse/:domain", get(badge_reverse_show)),
         )
-        // Add our `user_repo` to all request's extensions so handlers can access
-        // it.
-        .layer(AddExtensionLayer::new(user_repo));
+        .layer(AddExtensionLayer::new(context));
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     tracing::debug!("listening on {}", addr);

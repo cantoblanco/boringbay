@@ -36,9 +36,10 @@ async fn main() {
     }
 
     let context = Arc::new(Context {
-        badge: BoringFace::new("#03081A".to_string(), "white".to_string()),
-        badge_reverse: BoringFace::new("white".to_string(), "#03081A".to_string()),
+        badge: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), true),
+        badge_reverse: BoringFace::new("#f5acb9".to_string(), "#d0273e".to_string(), false),
         render_cache: RwLock::new(HashMap::new()),
+        render_reverse_cache: RwLock::new(HashMap::new()),
     }) as DynContext;
 
     let app = Router::new()

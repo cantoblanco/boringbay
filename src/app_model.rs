@@ -16,4 +16,5 @@ pub struct Context {
     pub badge: BoringFace,
     pub badge_reverse: BoringFace,
     pub render_cache: RwLock<HashMap<usize, String>>,
+    pub render_reverse_cache: RwLock<HashMap<usize, String>>,
 }

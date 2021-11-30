@@ -1,4 +1,5 @@
 [package]
+build = "src/build.rs"
 edition = "2021"
 name = "naive"
 version = "0.1.0"
@@ -8,6 +9,7 @@ version = "0.1.0"
 [dependencies]
 anyhow = "1.0.44"
 axum = "0.3.3"
+chrono = "0.4"
 diesel = {version = "1.4.8", features = ["sqlite", "chrono", "r2d2"]}
 diesel_migrations = "1.4.0"
 dotenv = "0.15.0"

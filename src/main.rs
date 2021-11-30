@@ -1,23 +1,13 @@
-mod app_error;
-mod app_model;
-mod app_router;
-mod boring_face;
-
-use app_model::DbPool;
 use axum::{routing::get, AddExtensionLayer, Router};
-use diesel::{
-    r2d2::{ConnectionManager, Pool},
-    SqliteConnection,
-};
 use dotenv::dotenv;
-use std::{collections::HashMap, env, net::SocketAddr, sync::Arc};
-use tokio::sync::RwLock;
-
-use crate::{
+use naive::{
     app_model::{Context, DynContext},
     app_router::{badge_reverse_show, badge_show},
     boring_face::BoringFace,
+    establish_connection, DbPool,
 };
+use std::{collections::HashMap, env, net::SocketAddr, sync::Arc, time};
+use tokio::sync::RwLock;
 
 #[tokio::main]
 async fn main() {
@@ -35,11 +25,19 @@ async fn main() {
         return;
     }
 
+    // let all_users = crate::schema::users.all(&db_pool.get().unwrap());
+
     let context = Arc::new(Context {
         badge: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), true),
         badge_reverse: BoringFace::new("#f5acb9".to_string(), "#d0273e".to_string(), false),
         render_cache: RwLock::new(HashMap::new()),
         render_reverse_cache: RwLock::new(HashMap::new()),
+        db_pool,
+        members: RwLock::new(Vec::new()),
+        page_view: RwLock::new(HashMap::new()),
+        referrer: RwLock::new(HashMap::new()),
+        domain2id: RwLock::new(HashMap::new()),
+        last_sorted_at: RwLock::new(time::SystemTime::now()),
     }) as DynContext;
 
     let app = Router::new()
@@ -57,12 +55,4 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap();
-}
-
-pub fn establish_connection(database_url: &str) -> DbPool {
-    let manager = ConnectionManager::<SqliteConnection>::new(database_url);
-    Pool::builder()
-        .max_size(5)
-        .build(manager)
-        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }

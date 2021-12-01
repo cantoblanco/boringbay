@@ -272,6 +272,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ipdb"
+version = "0.1.4"
+source = "git+https://github.com/luyikk/ipdb.git#87e7e5d795fd62180fd1b164f5eb31ff43957980"
+dependencies = [
+ "anyhow",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "itoa"
 version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -403,6 +413,7 @@ dependencies = [
  "diesel",
  "diesel_migrations",
  "dotenv",
+ "ipdb",
  "serde",
  "serde_json",
  "tokio",

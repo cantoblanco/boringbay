@@ -1,24 +1,24 @@
 table! {
     membership (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         created_at -> Timestamp,
         updated_at -> Timestamp,
         homepage -> Text,
         domain -> Text,
         contact -> Text,
-        total_referrer -> Nullable<Integer>,
+        total_referrer -> BigInt,
         description -> Text,
     }
 }
 
 table! {
     trending (id) {
-        id -> Nullable<Integer>,
+        id -> Integer,
         created_at -> Timestamp,
         updated_at -> Timestamp,
-        membership_id -> Nullable<Integer>,
-        page_view -> Nullable<Integer>,
-        referrer -> Nullable<Integer>,
+        membership_id -> BigInt,
+        page_view -> BigInt,
+        referrer -> BigInt,
     }
 }
 

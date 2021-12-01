@@ -4,10 +4,13 @@ use naive::{
     app_model::{Context, DynContext},
     app_router::{badge_reverse_show, badge_show},
     boring_face::BoringFace,
-    establish_connection, DbPool,
+    establish_connection,
+    membership_model::all_memberships,
+    DbPool,
 };
 use std::{collections::HashMap, env, net::SocketAddr, sync::Arc, time};
 use tokio::sync::RwLock;
+use tracing::log::info;
 
 #[tokio::main]
 async fn main() {
@@ -25,7 +28,10 @@ async fn main() {
         return;
     }
 
-    // let all_users = crate::schema::users.all(&db_pool.get().unwrap());
+    let all_members = all_memberships(&db_pool.get().unwrap()).unwrap();
+    let geoip_db = ipdb::Reader::open_file("data/ipipfree.ipdb").unwrap();
+
+    info!("{:?}", geoip_db.find("6.6.6.6", "CN"));
 
     let context = Arc::new(Context {
         badge: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), true),
@@ -33,11 +39,14 @@ async fn main() {
         render_cache: RwLock::new(HashMap::new()),
         render_reverse_cache: RwLock::new(HashMap::new()),
         db_pool,
-        members: RwLock::new(Vec::new()),
+        members: RwLock::new(all_members),
         page_view: RwLock::new(HashMap::new()),
         referrer: RwLock::new(HashMap::new()),
-        domain2id: RwLock::new(HashMap::new()),
+        geoip_db,
         last_sorted_at: RwLock::new(time::SystemTime::now()),
+
+        domain2id: RwLock::new(HashMap::new()),
+        id2index: RwLock::new(HashMap::new()),
     }) as DynContext;
 
     let app = Router::new()

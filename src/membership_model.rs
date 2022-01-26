@@ -1,25 +1,10 @@
-use crate::schema::membership::dsl::*;
-use anyhow::anyhow;
-use chrono::NaiveDateTime;
-use diesel::prelude::*;
-use diesel::{Queryable, SqliteConnection};
+use serde::Deserialize;
 
-#[derive(Queryable, Debug, Clone)]
+#[derive(Deserialize)]
 pub struct Membership {
-    pub id: i32,
-    pub created_at: NaiveDateTime,
-    pub updated_at: NaiveDateTime,
-    pub homepage: String,
     pub domain: String,
-    pub contact: String,
-    pub total_referrer: i64,
+    pub name: String,
+    pub icon: String,
     pub description: String,
-}
-
-pub fn all_memberships(conn: &SqliteConnection) -> Result<Vec<Membership>, anyhow::Error> {
-    let res = membership.load::<Membership>(conn);
-    match res {
-        Ok(all) => Ok(all),
-        Err(e) => Err(anyhow!("{:?}", e)),
-    }
+    pub github_username: String,
 }

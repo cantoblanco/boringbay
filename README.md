@@ -1,14 +1,14 @@
-# NAiVe
+# 无聊湾
 
-无聊湾友导航
+NAiVe · 湾友导航
+
+## 加入我们
+
+提交 PR 将你的网站添加进 `resources/membership.json`
 
 ## TODO
 
-- [ ] 记录 pv、referrer
+- [x] 记录 pv、referrer
 - [ ] 站点排名
-- [ ] 离线 IP 库
+- [x] 离线 IP 库 (利用 Cloudflare 的地理位置 header)
 - [ ] websocket 实时访客
-
-## Join us
-
-提交 PR 将你的网站添加进 `resource/membership.json`

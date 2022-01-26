@@ -1,4 +1,4 @@
-CREATE TABLE trending (
+CREATE TABLE `statistics` (
   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -6,4 +6,4 @@ CREATE TABLE trending (
   page_view UNSIGNED BIGINT DEFAULT 0 NOT NULL,
   referrer UNSIGNED BIGINT DEFAULT 0 NOT NULL
 );
-CREATE INDEX idx_trending_membership_id ON trending (membership_id);
+CREATE INDEX idx_statistics_membership_id ON `statistics` (membership_id, created_at);

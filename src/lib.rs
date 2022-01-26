@@ -3,12 +3,12 @@ use diesel::{
     SqliteConnection,
 };
 
-pub mod app_error;
 pub mod app_model;
 pub mod app_router;
 pub mod boring_face;
 pub mod membership_model;
 pub mod schema;
+pub mod statistics_model;
 
 #[macro_use]
 extern crate diesel;

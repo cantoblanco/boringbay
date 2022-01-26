@@ -8,7 +8,10 @@ RUN export DEBIAN_FRONTEND="noninteractive" && apt update && apt install -y ca-c
     dpkg-reconfigure tzdata
 
 WORKDIR /webapp
-COPY ./target/release/naive ./migrations ./resources ./templates ./
+COPY ./target/release/naive ./naive
+COPY ./migrations ./migrations
+COPY ./resources ./resources
+COPY ./templates ./templates
 
 VOLUME ["/webapp/data"]
 CMD ["/webapp/naive"]

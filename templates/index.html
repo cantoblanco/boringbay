@@ -36,7 +36,7 @@
     <div class="page-wrapper with-navbar">
         <nav class="navbar">
             <div class="container">
-                <a href="#" class="navbar-brand">
+                <a href="https://boringbay.com" class="navbar-brand">
                     <img src="/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
                 </a>
                 <div class="navbar-content ml-auto">
@@ -69,7 +69,7 @@
         }
 
         (function () {
-            if ((halfmoon.getPreferredMode() == 'dark-mode') != (halfmoon.darkModeOn)) {
+            if (((halfmoon.getPreferredMode() == 'dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches) != halfmoon.darkModeOn) {
                 toggleDarkMode()
             } else {
                 updateDayNightIcon()

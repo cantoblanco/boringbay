@@ -5,5 +5,12 @@
             "name": "终身学习",
             "description": "奶爸的博客",
             "github_username": "naiba"
+        },
+        "2": {
+            "domain": "boringbay.com",
+            "icon": "/api/icon/boringbay.com",
+            "name": "无聊湾",
+            "description": "The Boring Bay",
+            "github_username": "naiba"
         }
     }

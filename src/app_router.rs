@@ -1,6 +1,7 @@
 use askama::Template;
 use axum::{
     extract::{Extension, Path},
+    http::StatusCode,
     response::{Headers, Html, IntoResponse},
 };
 use headers::HeaderMap;
@@ -15,6 +16,13 @@ pub async fn show_badge(
     let tend = ctx
         .boring_vistor(crate::app_model::VistorType::Badge, &domain, &headers)
         .await;
+    if tend.is_err() {
+        return (
+            StatusCode::NOT_FOUND,
+            Headers([("content-type", "text/plain")]),
+            tend.err().unwrap().to_string(),
+        );
+    }
     let headers = Headers([("content-type", "image/svg+xml")]);
     let len: usize = 10;
     let read = ctx.badge_render_cache.read().await;
@@ -28,7 +36,7 @@ pub async fn show_badge(
         write.insert(len, v.clone());
         v
     };
-    (headers, content)
+    (StatusCode::OK, headers, content)
 }
 
 pub async fn show_favicon(
@@ -39,6 +47,13 @@ pub async fn show_favicon(
     let tend = ctx
         .boring_vistor(crate::app_model::VistorType::Badge, &domain, &headers)
         .await;
+    if tend.is_err() {
+        return (
+            StatusCode::NOT_FOUND,
+            Headers([("content-type", "text/plain")]),
+            tend.err().unwrap().to_string(),
+        );
+    }
     let headers = Headers([("content-type", "image/svg+xml")]);
     let len: usize = 10;
     let read = ctx.favicon_render_cache.read().await;
@@ -52,7 +67,7 @@ pub async fn show_favicon(
         write.insert(len, v.clone());
         v
     };
-    (headers, content)
+    (StatusCode::OK, headers, content)
 }
 
 pub async fn show_icon(
@@ -63,6 +78,13 @@ pub async fn show_icon(
     let tend = ctx
         .boring_vistor(crate::app_model::VistorType::Badge, &domain, &headers)
         .await;
+    if tend.is_err() {
+        return (
+            StatusCode::NOT_FOUND,
+            Headers([("content-type", "text/plain")]),
+            tend.err().unwrap().to_string(),
+        );
+    }
     let headers = Headers([("content-type", "image/svg+xml")]);
     let len: usize = 10;
     let read = ctx.icon_render_cache.read().await;
@@ -76,7 +98,7 @@ pub async fn show_icon(
         write.insert(len, v.clone());
         v
     };
-    (headers, content)
+    (StatusCode::OK, headers, content)
 }
 
 pub async fn home_page(Extension(ctx): Extension<DynContext>) -> Result<Html<String>, String> {

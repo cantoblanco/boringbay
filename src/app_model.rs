@@ -110,8 +110,8 @@ impl Context {
                         created_at: _today,
                         updated_at: NaiveDateTime::from_timestamp(Utc::now().timestamp(), 0),
                         membership_id: id.clone(),
-                        page_view: page_view_cache.get(id).unwrap().clone(),
-                        referrer: referrer_cache.get(id).unwrap().clone(),
+                        page_view: page_view_cache.get(id).unwrap_or(&0).clone(),
+                        referrer: referrer_cache.get(id).unwrap_or(&0).clone(),
                         id: 0,
                     },
                 )

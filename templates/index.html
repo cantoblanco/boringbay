@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>无聊湾 🥱 The Boring Bay</title>
-    <link rel="shortcut icon" href="/api/favicon/boringbay.com" type="image/x-icon">
+    <link rel="shortcut icon" href="https://boringbay.com/api/favicon/boringbay.com" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
         integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -29,6 +29,14 @@
             color: #d0273e;
             font-weight: 900;
         }
+
+        .member-list>div {
+            line-height: 1.8rem;
+        }
+
+        .member-list>div a {
+            color: unset;
+        }
     </style>
 </head>
 
@@ -37,7 +45,7 @@
         <nav class="navbar">
             <div class="container">
                 <a href="https://boringbay.com" class="navbar-brand">
-                    <img src="/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
+                    <img src="https://boringbay.com/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
                 </a>
                 <div class="navbar-content ml-auto">
                     <button class="btn btn-action mr-5" onclick="toggleDarkMode()">
@@ -49,8 +57,36 @@
         </nav>
 
         <div class="content-wrapper">
-            ...
+            <div class="container">
+                <div class="content">
+                    <h2 class="font-size-18 text-center">会员列表</h2>
+                    <div class="d-flex flex-wrap member-list">
+
+                        {% for m in membership %}
+                        <div class="w-md-quarter p-5">
+                            <div class="d-flex p-5 border rounded shadow">
+                                <img class="d-block w-50 h-50 rounded" src="{{ m.icon }}">
+                                <div class="flex-grow-1 pl-10">
+                                    <a class="text-reset font-weight-bolder" href="https://{{ m.domain }}">
+                                        {{ m.name|e }}
+                                    </a><br>
+                                    <small>{{ m.description|e }}</small><br>
+                                    <a href="https://github.com/{{ m.github_username }}"><small><i class="fab fa-github"></i>
+                                            {{ m.github_username }}</small></a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+
+            <footer class="font-size-12 text-center">
+                &copy; <a class="text-reset" href="https://boringbay.com">无聊湾 boringbay.com</a>
+            </footer>
         </div>
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Halfmoon/1.1.1/js/halfmoon.min.js"

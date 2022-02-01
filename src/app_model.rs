@@ -6,12 +6,18 @@ use crate::statistics_model::Statistics;
 use crate::{boring_face::BoringFace, DbPool};
 
 use crate::membership_model::Membership;
+use anyhow::anyhow;
 use chrono::{NaiveDateTime, NaiveTime, Utc};
 use headers::HeaderMap;
 use tokio::sync::RwLock;
 use tracing::info;
 
 pub type DynContext = Arc<Context>;
+
+pub enum VistorType {
+    Referrer,
+    Badge,
+}
 
 pub struct Context {
     pub badge: BoringFace,
@@ -125,21 +131,26 @@ impl Context {
         }
     }
 
-    pub async fn boring_vistor(&self, domain: &str, headers: &HeaderMap) -> i64 {
+    pub async fn boring_vistor(
+        &self,
+        v_type: VistorType,
+        domain: &str,
+        headers: &HeaderMap,
+    ) -> Result<i64, anyhow::Error> {
         if let Some(id) = self.domain2id.get(domain) {
             let mut referrer = self.referrer.write().await;
-            let dist_r = match referrer.get(id) {
-                Some(r) => r + 1,
-                None => 1,
-            };
-            referrer.insert(id.clone(), dist_r);
+            let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
+            if matches!(v_type, VistorType::Referrer) {
+                dist_r = dist_r + 1;
+                referrer.insert(id.clone(), dist_r);
+            }
             drop(referrer);
             let mut pv = self.page_view.write().await;
-            let dist_pv = match pv.get(id) {
-                Some(r) => r + 1,
-                None => 1,
-            };
-            pv.insert(id.clone(), dist_pv);
+            let mut dist_pv = pv.get(id).or(Some(&0)).unwrap().clone();
+            if matches!(v_type, VistorType::Badge) {
+                dist_pv = dist_pv + 1;
+                pv.insert(id.clone(), dist_pv);
+            }
             drop(pv);
             let mut tend = (dist_r * 5 + dist_pv) / 20;
             if tend > 10 {
@@ -159,8 +170,8 @@ impl Context {
                     .unwrap();
             info!("country {}", country);
 
-            return tend;
+            return Ok(tend);
         }
-        1
+        return Err(anyhow!("not a member"));
     }
 }

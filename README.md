@@ -1,6 +1,6 @@
 # 无聊湾
 
-NAiVe · 无聊人的中继站
+NAiVe · 无聊人的中继站。图标修改自熊大的 the.boring.studio
 
 ## 加入我们
 

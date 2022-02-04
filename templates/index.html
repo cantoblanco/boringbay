@@ -41,6 +41,7 @@
 </head>
 
 <body>
+    <div class="sticky-alerts"></div>
     <div class="page-wrapper with-navbar">
         <nav class="navbar">
             <div class="container">
@@ -61,7 +62,6 @@
                 <div class="content">
                     <h2 class="font-size-18 text-center">会员列表</h2>
                     <div class="d-flex flex-wrap member-list">
-
                         {% for m in membership %}
                         <div class="w-md-quarter p-5">
                             <div class="d-flex p-5 border rounded shadow">
@@ -78,7 +78,9 @@
                             </div>
                         </div>
                         {% endfor %}
-
+                    </div>
+                    <div class="text-center font-size-14">
+                        （排名按照今日站点流量由高至低）
                     </div>
                 </div>
 
@@ -117,12 +119,46 @@
             updateDayNightIcon()
         }
 
+        const styles = ['', "alert-success", "alert-primary", "alert-secondary", "alert-danger"]
+        let styleIndex = 0
+
+        function connect() {
+            const protocol = 'https:' == document.location.protocol ? 'wss' : 'ws'
+            var ws = new WebSocket(protocol + '://' + document.location.host + '/api/ws');
+            ws.onmessage = function (e) {
+                if (e.data) {
+                    const data = JSON.parse(e.data)
+                    const styleIndexInner = styleIndex++
+                    if (styleIndex >= styles.length) {
+                        styleIndex = styles.length - 1
+                    }
+                    halfmoon.initStickyAlert({
+                        content: "来自「" + data.country + "」的无聊的网友访问了 <a href=\"https://" + data.member.domain + "\"><b>" + data.member.name + "</b></a>。",
+                        title: "像我这样无聊的人",
+                        alertType: styleIndexInner,
+                        fillType: "filled-lm"
+                    });
+                }
+            };
+            ws.onclose = function (e) {
+                console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+                setTimeout(function () {
+                    connect()
+                }, 3000);
+            };
+            ws.onerror = function (err) {
+                console.error('Socket encountered error: ', err.message, 'Closing socket');
+                ws.close()
+            };
+        }
+
         (function () {
             if (((halfmoon.getPreferredMode() == 'dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches) != halfmoon.darkModeOn) {
                 toggleDarkMode()
             } else {
                 updateDayNightIcon()
             }
+            connect()
         })();
     </script>
 </body>

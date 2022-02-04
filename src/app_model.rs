@@ -9,10 +9,26 @@ use crate::membership_model::Membership;
 use anyhow::anyhow;
 use chrono::{NaiveDateTime, NaiveTime, Utc};
 use headers::HeaderMap;
+use lazy_static::lazy_static;
+use regex::Regex;
+use serde::Serialize;
+use tokio::sync::watch::{self, Receiver, Sender};
 use tokio::sync::RwLock;
 use tracing::info;
 
 pub type DynContext = Arc<Context>;
+
+lazy_static! {
+    static ref IPV4_MASK: Regex = Regex::new("(\\d*\\.).*(\\.\\d*)").unwrap();
+    static ref IPV6_MASK: Regex = Regex::new("(\\w*:\\w*:).*(:\\w*:\\w*)").unwrap();
+}
+
+#[derive(Serialize)]
+struct VistEvent {
+    ip: String,
+    country: String,
+    member: Membership,
+}
 
 pub enum VistorType {
     Referrer,
@@ -34,6 +50,9 @@ pub struct Context {
 
     pub domain2id: HashMap<String, i64>,
     pub id2member: HashMap<i64, Membership>,
+
+    pub vistor_tx: Sender<String>,
+    pub vistor_rx: Receiver<String>,
 }
 
 impl Context {
@@ -56,6 +75,8 @@ impl Context {
             domain2id.insert(v.domain.clone(), k.clone());
         });
 
+        let (vistor_tx, vistor_rx) = watch::channel::<String>("".to_string());
+
         Context {
             badge: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), true),
             favicon: BoringFace::new("#f5acb9".to_string(), "#d0273e".to_string(), false),
@@ -70,6 +91,9 @@ impl Context {
 
             domain2id: domain2id,
             id2member: membership,
+
+            vistor_rx,
+            vistor_tx,
         }
     }
 
@@ -141,18 +165,24 @@ impl Context {
         if let Some(id) = self.domain2id.get(domain) {
             let mut referrer = self.referrer.write().await;
             let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
+            let mut notification = false;
+
             if matches!(v_type, VistorType::Referrer) {
                 dist_r = dist_r + 1;
                 referrer.insert(id.clone(), dist_r);
+                notification = true;
             }
             drop(referrer);
+
             let mut pv = self.page_view.write().await;
             let mut dist_pv = pv.get(id).or(Some(&0)).unwrap().clone();
             if matches!(v_type, VistorType::Badge) {
                 dist_pv = dist_pv + 1;
                 pv.insert(id.clone(), dist_pv);
+                notification = true;
             }
             drop(pv);
+
             let mut tend = dist_r * 5 + dist_pv;
             if tend > 10 {
                 tend = 10;
@@ -160,16 +190,37 @@ impl Context {
                 tend = 1
             }
 
-            // TODO 广播访客信息
-            let ip =
-                String::from_utf8(headers.get("CF-Connecting-IP").unwrap().as_bytes().to_vec())
-                    .unwrap();
-            info!("ip {}", ip);
+            if notification {
+                // 广播访客信息
+                let ip =
+                    String::from_utf8(headers.get("CF-Connecting-IP").unwrap().as_bytes().to_vec())
+                        .unwrap();
+                info!("ip {}", ip);
 
-            let country =
-                String::from_utf8(headers.get("CF-IPCountry").unwrap().as_bytes().to_vec())
-                    .unwrap();
-            info!("country {}", country);
+                let country =
+                    String::from_utf8(headers.get("CF-IPCountry").unwrap().as_bytes().to_vec())
+                        .unwrap();
+                info!("country {}", country);
+
+                let mut member = self.id2member.get(id).unwrap().to_owned();
+                member.description = "".to_string();
+                member.icon = "".to_string();
+                member.github_username = "".to_string();
+
+                let _ = self.vistor_tx.send(
+                    serde_json::json!(VistEvent {
+                        ip: IPV6_MASK
+                            .replace_all(
+                                &IPV4_MASK.replace_all(&ip, "$1****$2").to_string(),
+                                "$1****$2"
+                            )
+                            .to_string(),
+                        country,
+                        member,
+                    })
+                    .to_string(),
+                );
+            }
 
             return Ok(tend);
         }

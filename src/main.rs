@@ -3,7 +3,7 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use naive::{
     app_model::{Context, DynContext},
-    app_router::{home_page, show_badge, show_favicon, show_icon},
+    app_router::{home_page, show_badge, show_favicon, show_icon, ws_upgrade},
     establish_connection, DbPool,
 };
 use std::{env, net::SocketAddr, sync::Arc};
@@ -40,7 +40,8 @@ async fn main() {
             Router::new()
                 .route("/badge/:domain", get(show_badge))
                 .route("/favicon/:domain", get(show_favicon))
-                .route("/icon/:domain", get(show_icon)),
+                .route("/icon/:domain", get(show_icon))
+                .route("/ws", get(ws_upgrade)),
         )
         .route("/", get(home_page))
         .layer(AddExtensionLayer::new(context));

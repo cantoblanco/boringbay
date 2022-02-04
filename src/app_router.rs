@@ -1,22 +1,75 @@
+use std::{
+    sync::Arc,
+    time::{Duration, SystemTime},
+};
+
 use anyhow::anyhow;
 use askama::Template;
 use axum::{
-    extract::{Extension, Path},
+    extract::{
+        ws::{Message, WebSocket},
+        Extension, Path, WebSocketUpgrade,
+    },
     http::StatusCode,
     response::{Headers, Html, IntoResponse},
 };
 use headers::HeaderMap;
+use tokio::select;
 
-use crate::{app_model::DynContext, membership_model::Membership};
+use crate::{
+    app_model::{Context, DynContext},
+    membership_model::Membership,
+};
+
+pub async fn ws_upgrade(
+    Extension(ctx): Extension<DynContext>,
+    ws: WebSocketUpgrade,
+) -> impl IntoResponse {
+    ws.on_upgrade(|socket| handle_socket(ctx, socket))
+}
+
+pub fn get_unix_timestamp() -> u64 {
+    SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+}
+
+async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
+    let mut rx = ctx.vistor_rx.clone();
+    let mut interval = tokio::time::interval(Duration::from_secs(60 * 5));
+    loop {
+        select! {
+            Ok(()) = rx.changed() => {
+                let msg = rx.borrow().to_string();
+                let res = socket.send(Message::Text(msg.clone())).await;
+                if res.is_err() {
+                    break;
+                }
+            }
+            _ = interval.tick() => {
+                let res = socket.send(Message::Ping(vec![6, 6, 6])).await;
+                if res.is_err() {
+                    break;
+                }
+            }
+        }
+    }
+}
 
 pub async fn show_badge(
     Path(domain): Path<String>,
     headers: HeaderMap,
     Extension(ctx): Extension<DynContext>,
 ) -> impl IntoResponse {
-    let tend = ctx
-        .boring_vistor(crate::app_model::VistorType::Badge, &domain, &headers)
-        .await;
+    let mut v_type = crate::app_model::VistorType::Badge;
+
+    let domain_referrer = get_domain_from_headers(&headers);
+    if domain_referrer.is_err() || domain_referrer.unwrap().ne(&domain) {
+        v_type = crate::app_model::VistorType::ICON;
+    }
+
+    let tend = ctx.boring_vistor(v_type, &domain, &headers).await;
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
@@ -24,6 +77,7 @@ pub async fn show_badge(
             tend.err().unwrap().to_string(),
         );
     }
+
     let headers = Headers([("content-type", "image/svg+xml")]);
     let len: usize = 10;
     let read = ctx.badge_render_cache.read().await;

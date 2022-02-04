@@ -98,6 +98,8 @@
             </div>
 
             <footer class="font-size-12 text-center">
+                build · <a class="text-reset" target="_blank"
+                    href="https://github.com/boringbay/naive/commit/{{version}}">{{version}}</a>
                 &copy; <a class="text-reset" href="https://boringbay.com">无聊湾 boringbay.com</a>
             </footer>
         </div>
@@ -120,7 +122,7 @@
         }
 
         const styles = ['', "alert-success", "alert-primary", "alert-secondary", "alert-danger"]
-        let styleIndex = 0
+        var styleIndex = 0
 
         function connect() {
             const protocol = 'https:' == document.location.protocol ? 'wss' : 'ws'
@@ -133,10 +135,11 @@
                         styleIndex = styles.length - 1
                     }
                     halfmoon.initStickyAlert({
-                        content: "来自「" + data.country + "」的无聊的网友访问了 <a href=\"https://" + data.member.domain + "\"><b>" + data.member.name + "</b></a>。",
-                        title: "像我这样无聊的人",
-                        alertType: styleIndexInner,
-                        fillType: "filled-lm"
+                        content: "来自「" + data.country + "」的「" + data.ip + "」访问了 <a href=\"https://" + data.member.domain + "\"><b>" + data.member.name + "</b></a>。",
+                        title: "无聊的沙雕 +1",
+                        alertType: styles[styleIndexInner],
+                        fillType: "filled-lm",
+                        timeShown: 10000
                     });
                 }
             };

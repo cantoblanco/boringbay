@@ -19,6 +19,7 @@ use tokio::select;
 use crate::{
     app_model::{Context, DynContext},
     membership_model::Membership,
+    GIT_HASH,
 };
 
 pub async fn ws_upgrade(
@@ -190,7 +191,10 @@ pub async fn home_page(
         membership.push(ctx.id2member.get(&v.0).unwrap().to_owned());
     }
 
-    let tpl = HomeTemplate { membership };
+    let tpl = HomeTemplate {
+        membership,
+        version: GIT_HASH[0..8].to_string(),
+    };
     let html = tpl.render().map_err(|err| err.to_string())?;
     Ok(Html(html))
 }
@@ -222,5 +226,6 @@ fn get_domain_from_headers(headers: &HeaderMap) -> Result<String, anyhow::Error>
 #[derive(Template)]
 #[template(path = "index.html")]
 struct HomeTemplate {
+    version: String,
     membership: Vec<Membership>,
 }

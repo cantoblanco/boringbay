@@ -71,13 +71,26 @@
                                         {{ m.name|e }}
                                     </a><br>
                                     <small>{{ m.description|e }}</small><br>
-                                    <a href="https://github.com/{{ m.github_username }}"><small><i class="fab fa-github"></i>
+                                    <a href="https://github.com/{{ m.github_username }}"><small><i
+                                                class="fab fa-github"></i>
                                             {{ m.github_username }}</small></a>
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
 
+                    </div>
+                </div>
+
+                <div class="content">
+                    <h2 class="font-size-18 text-center">入会说明</h2>
+                    <div class="text-center">
+                        点击导航栏最右的按钮，修改 <code>resources/membership.json</code>，将你的站点添加进去，然后可以通过
+                        <br>
+                        <b><code>&lt;a href="https://boringbay.com"&gt;&lt;img src="https://boringbay.com/api/badge/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
+                        <br>
+                        来展示你的会员资格
+                        badge，具体效果可以进入会员站点查看。
                     </div>
                 </div>
             </div>

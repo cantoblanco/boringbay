@@ -9,6 +9,6 @@ NAiVe · 无聊人的中继站
 ## TODO
 
 - [x] 记录 pv、referrer
-- [ ] 站点排名
+- [x] 站点排名
 - [x] 离线 IP 库 (利用 Cloudflare 的地理位置 header)
 - [ ] websocket 实时访客

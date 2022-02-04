@@ -6,4 +6,4 @@ CREATE TABLE `statistics` (
   page_view UNSIGNED BIGINT DEFAULT 0 NOT NULL,
   referrer UNSIGNED BIGINT DEFAULT 0 NOT NULL
 );
-CREATE INDEX idx_statistics_membership_id ON `statistics` (membership_id, created_at);
+CREATE UNIQUE INDEX idx_statistics_membership_id ON `statistics` (membership_id, created_at);

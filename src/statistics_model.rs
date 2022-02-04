@@ -1,8 +1,9 @@
 use crate::schema::statistics::{self, dsl::*};
 use anyhow::anyhow;
 use chrono::{NaiveDateTime, NaiveTime, Utc};
-use diesel::prelude::*;
 use diesel::r2d2::{ConnectionManager, PooledConnection};
+use diesel::sqlite::Sqlite;
+use diesel::{debug_query, prelude::*};
 use diesel::{Queryable, SqliteConnection};
 
 #[derive(Queryable, Debug, Clone, Insertable)]
@@ -21,16 +22,23 @@ impl Statistics {
         mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
         stat: &Statistics,
     ) -> Result<usize, diesel::result::Error> {
-        diesel::insert_into(statistics)
-            .values(stat)
+        let statement = diesel::insert_into(statistics)
+            .values((
+                created_at.eq(stat.created_at),
+                updated_at.eq(stat.updated_at),
+                membership_id.eq(stat.membership_id),
+                page_view.eq(stat.page_view),
+                referrer.eq(stat.referrer),
+            ))
             .on_conflict((membership_id, created_at))
             .do_update()
             .set((
                 page_view.eq(stat.page_view),
                 referrer.eq(stat.referrer),
                 updated_at.eq(stat.updated_at),
-            ))
-            .execute(&mut conn)
+            ));
+        println!("sql: {}", debug_query::<Sqlite, _>(&statement).to_string());
+        statement.execute(&mut conn)
     }
 
     pub fn today(

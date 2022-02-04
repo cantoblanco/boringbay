@@ -17,6 +17,7 @@ pub type DynContext = Arc<Context>;
 pub enum VistorType {
     Referrer,
     Badge,
+    ICON,
 }
 
 pub struct Context {
@@ -152,7 +153,7 @@ impl Context {
                 pv.insert(id.clone(), dist_pv);
             }
             drop(pv);
-            let mut tend = (dist_r * 5 + dist_pv) / 20;
+            let mut tend = dist_r * 5 + dist_pv;
             if tend > 10 {
                 tend = 10;
             } else if tend < 1 {

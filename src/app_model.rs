@@ -170,7 +170,6 @@ impl Context {
             if matches!(v_type, VistorType::Referrer) {
                 dist_r = dist_r + 1;
                 referrer.insert(id.clone(), dist_r);
-                notification = true;
             }
             drop(referrer);
 

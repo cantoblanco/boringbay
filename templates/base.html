@@ -102,7 +102,6 @@
             const protocol = 'https:' == document.location.protocol ? 'wss' : 'ws'
             var ws = new WebSocket(protocol + '://' + document.location.host + '/api/ws');
             ws.onmessage = function (e) {
-                console.log(e);
                 if (e.data) {
                     const data = JSON.parse(e.data)
                     const styleIndexInner = styleIndex++

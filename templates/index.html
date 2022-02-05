@@ -1,190 +1,29 @@
-<!DOCTYPE html>
-<html lang="zh">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>无聊湾 🥱 The Boring Bay</title>
-    <link rel="shortcut icon" href="https://boringbay.com/api/favicon/boringbay.com" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Halfmoon/1.1.1/css/halfmoon.min.css"
-        integrity="sha512-Kaju/JzlErKhC47smofkXAdSkvILovmvh2nnok6rgN79oB3Co/T7Pm7Ns8dcpNEN3VTVZDw2ilrUDByzInEabg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        .container {
-            max-width: 888px;
-        }
+{% block title %}首页{% endblock %}
 
-        .btn {
-            background-color: #d0273e !important;
-            border-color: #f5acb9 !important;
-            color: white;
-            font-weight: 900;
-        }
-
-        .navbar-brand {
-            color: #d0273e;
-            font-weight: 900;
-        }
-
-        .member-list>div {
-            line-height: 1.8rem;
-        }
-
-        .member-list>div a {
-            color: unset;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="sticky-alerts"></div>
-    <div class="page-wrapper with-navbar">
-        <nav class="navbar">
-            <div class="container">
-                <a href="https://boringbay.com" class="navbar-brand">
-                    <img src="https://boringbay.com/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
-                </a>
-                <div class="navbar-content ml-auto">
-                    <button class="btn btn-action mr-5" onclick="toggleDarkMode()">
-                        <i id="dayNightIcon" class="fa fa-moon"></i>
-                    </button>
-                    <a class="btn btn-primary btn-block" href="https://github.com/boringbay/naive">一起无聊？</a>
+{% block content %}
+<div class="content">
+    <h2 class="font-size-18 text-center">会员列表</h2>
+    <div class="d-flex flex-wrap member-list">
+        {% for m in membership %}
+        <div class="w-md-quarter p-5">
+            <div class="d-flex p-5 border rounded shadow">
+                <img class="d-block w-50 h-50 rounded" src="{{ m.icon }}">
+                <div class="flex-grow-1 pl-10">
+                    <a class="text-reset font-weight-bolder" href="https://{{ m.domain }}">
+                        {{ m.name|e }}
+                    </a><br>
+                    <small>{{ m.description|e }}</small><br>
+                    <a href="https://github.com/{{ m.github_username }}"><small><i class="fab fa-github"></i>
+                            {{ m.github_username }}</small></a>
                 </div>
             </div>
-        </nav>
-
-        <div class="content-wrapper">
-            <div class="container">
-                <div class="content">
-                    <h2 class="font-size-18 text-center">会员列表</h2>
-                    <div class="d-flex flex-wrap member-list">
-                        {% for m in membership %}
-                        <div class="w-md-quarter p-5">
-                            <div class="d-flex p-5 border rounded shadow">
-                                <img class="d-block w-50 h-50 rounded" src="{{ m.icon }}">
-                                <div class="flex-grow-1 pl-10">
-                                    <a class="text-reset font-weight-bolder" href="https://{{ m.domain }}">
-                                        {{ m.name|e }}
-                                    </a><br>
-                                    <small>{{ m.description|e }}</small><br>
-                                    <a href="https://github.com/{{ m.github_username }}"><small><i
-                                                class="fab fa-github"></i>
-                                            {{ m.github_username }}</small></a>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <div class="text-center font-size-14">
-                        （排名按照今日站点流量由高至低）
-                    </div>
-                </div>
-
-                <div class="content">
-                    <h2 class="font-size-18 text-center">入会说明</h2>
-                    <div class="text-center">
-                        点击导航栏最右的按钮，修改 <code>resources/membership.json</code>，将你的站点添加进去，然后可以将 Badge
-                        添加至您站点的底部。牙齿颜色的进度代表当日访问量的多少。
-                        <br>
-                        <p>
-                            <b>
-                                Badge:
-                                <br>
-                                <code>&lt;a href="https://boringbay.com"&gt;&lt;img src="https://boringbay.com/api/badge/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
-                            <br>
-                            <img height="30rem" src="https://boringbay.com/api/badge/boringbay.com">
-                        </p>
-                        <p>
-                            <b>
-                                Icon:
-                                <br>
-                                <code>&lt;a href="https://boringbay.com"&gt;&lt;img src="https://boringbay.com/api/icon/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
-                            <br>
-                            <img height="30rem" src="https://boringbay.com/api/icon/boringbay.com">
-                        </p>
-                        <p>
-                            <b>
-                                Favicon:（可用做站点 favicon，适配了日间/夜间主题，颜色是inverse的）
-                                <br>
-                                <code>&lt;a href="https://boringbay.com"&gt;&lt;img src="https://boringbay.com/api/favicon/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
-                            <br>
-                            <img height="30rem" src="https://boringbay.com/api/favicon/boringbay.com">
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <footer class="font-size-12 text-center">
-                build · <a class="text-reset" target="_blank"
-                    href="https://github.com/boringbay/naive/commit/{{version}}">{{version}}</a>
-                &copy; <a class="text-reset" href="https://boringbay.com">无聊湾 boringbay.com</a>
-            </footer>
         </div>
-
+        {% endfor %}
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Halfmoon/1.1.1/js/halfmoon.min.js"
-        integrity="sha512-8fN/MQrHBCMmkx2t4QwGODGHwQf8VxCeNwNkJz0gjt5JrlUfJ5zNlMr9lrzhnl7DSN+5E16YmMHnfomnQmvSoA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script>
-        function updateDayNightIcon() {
-            const el = document.getElementById('dayNightIcon')
-            el.classList = halfmoon.darkModeOn ? 'fa fa-sun' : 'fa fa-moon'
-        }
-
-        function toggleDarkMode() {
-            halfmoon.toggleDarkMode()
-            updateDayNightIcon()
-        }
-
-        const styles = ['', "alert-success", "alert-primary", "alert-secondary", "alert-danger"]
-        var styleIndex = 0
-
-        function connect() {
-            const protocol = 'https:' == document.location.protocol ? 'wss' : 'ws'
-            var ws = new WebSocket(protocol + '://' + document.location.host + '/api/ws');
-            ws.onmessage = function (e) {
-                if (e.data) {
-                    const data = JSON.parse(e.data)
-                    const styleIndexInner = styleIndex++
-                    if (styleIndex >= styles.length) {
-                        styleIndex = 0
-                    }
-                    halfmoon.initStickyAlert({
-                        content: "来自「" + data.country + "」的「" + data.ip + "」访问了 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"><b>" + data.member.name + "</b></a>。",
-                        title: "无聊的沙雕 +1",
-                        alertType: styles[styleIndexInner],
-                        fillType: "filled-lm",
-                        timeShown: 10000
-                    });
-                }
-            };
-            ws.onclose = function (e) {
-                console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-                setTimeout(function () {
-                    connect()
-                }, 3000);
-            };
-            ws.onerror = function (err) {
-                console.error('Socket encountered error: ', err.message, 'Closing socket');
-                ws.close()
-            };
-        }
-
-        (function () {
-            if (((halfmoon.getPreferredMode() == 'dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches) != halfmoon.darkModeOn) {
-                toggleDarkMode()
-            } else {
-                updateDayNightIcon()
-            }
-            connect()
-        })();
-    </script>
-</body>
-
-</html>
+    <div class="text-center font-size-14 mt-10">
+        （排名按照今日站点流量由高至低）
+    </div>
+</div>
+{% endblock %}

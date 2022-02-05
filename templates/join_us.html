@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}一起无聊{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2 class="font-size-18 text-center">入会说明</h2>
+    <div class="text-center">
+        在 <a href="https://github.com/boringbay/naive/blob/main/resources/membership.json"><b>这里</b></a> 修改
+        <code>resources/membership.json</code>，将你的站点添加进去，然后可以将 Badge
+        添加至您站点的底部。牙齿颜色的进度代表当日访问量的多少，图标及站点配色采用了人民币配色。
+        <br>
+        <p>
+            <b>
+                Badge:
+                <br>
+                <code>&lt;a href="https://boringbay.com"&gt;&lt;img src="https://boringbay.com/api/badge/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
+            <br>
+            <img height="30rem" src="/api/badge/boringbay.com">
+        </p>
+        <p>
+            <b>
+                Icon:
+                <br>
+                <code>&lt;a href="https://boringbay.com"&gt;&lt;img src="https://boringbay.com/api/icon/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
+            <br>
+            <img height="30rem" src="/api/icon/boringbay.com">
+        </p>
+        <p>
+            <b>
+                Favicon:（可用做站点 favicon，适配了日间/夜间主题，颜色是inverse的）
+                <br>
+                <code>&lt;a href="https://boringbay.com"&gt;&lt;img src="https://boringbay.com/api/favicon/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
+            <br>
+            <img height="30rem" src="/api/favicon/boringbay.com">
+        </p>
+    </div>
+</div>
+{% endblock %}

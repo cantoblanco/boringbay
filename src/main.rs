@@ -3,7 +3,7 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use naive::{
     app_model::{Context, DynContext},
-    app_router::{home_page, show_badge, show_favicon, show_icon, ws_upgrade},
+    app_router::{home_page, join_us_page, show_badge, show_favicon, show_icon, ws_upgrade},
     establish_connection, DbPool,
 };
 use std::{env, net::SocketAddr, sync::Arc};
@@ -44,6 +44,7 @@ async fn main() {
                 .route("/ws", get(ws_upgrade)),
         )
         .route("/", get(home_page))
+        .route("/join-us", get(join_us_page))
         .layer(AddExtensionLayer::new(context));
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));

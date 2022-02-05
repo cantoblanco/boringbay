@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} | 无聊湾 🥱 The Boring Bay</title>
+    <link rel="shortcut icon" href="https://boringbay.com/api/favicon/boringbay.com" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity=" sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Halfmoon/1.1.1/css/halfmoon.min.css"
+        integrity="sha512-Kaju/JzlErKhC47smofkXAdSkvILovmvh2nnok6rgN79oB3Co/T7Pm7Ns8dcpNEN3VTVZDw2ilrUDByzInEabg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .container {
+            max-width: 888px;
+        }
+
+        .btn {
+            background-color: #d0273e !important;
+            border-color: #f5acb9 !important;
+            color: white;
+            font-weight: 900;
+        }
+
+        .navbar-brand {
+            color: #d0273e;
+            font-weight: 900;
+        }
+
+        .member-list>div {
+            line-height: 1.8rem;
+        }
+
+        .member-list>div>div:hover {
+            border-color: #d0273e !important;
+            border-width: .25rem !important;
+        }
+
+        .member-list>div a {
+            color: unset;
+        }
+
+        footer {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sticky-alerts"></div>
+    <div class="page-wrapper with-navbar">
+        <nav class="navbar">
+            <div class="container">
+                <a href="/" class="navbar-brand">
+                    <img src="https://boringbay.com/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
+                </a>
+                <div class="navbar-content ml-auto">
+                    <button class="btn btn-action mr-5" onclick="toggleDarkMode()">
+                        <i id="dayNightIcon" class="fa fa-moon"></i>
+                    </button>
+                    <a class="btn btn-primary btn-block" href="/join-us">一起无聊？</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="container">
+                {% block content %}{% endblock %}
+            </div>
+
+            <footer class="font-size-12 text-center">
+                build · <a class="text-reset" target="_blank"
+                    href="https://github.com/boringbay/naive/commit/{{version}}">{{version}}</a>
+                &copy; <a class="text-reset" href="https://boringbay.com">无聊湾 boringbay.com</a>
+            </footer>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Halfmoon/1.1.1/js/halfmoon.min.js"
+        integrity="sha512-8fN/MQrHBCMmkx2t4QwGODGHwQf8VxCeNwNkJz0gjt5JrlUfJ5zNlMr9lrzhnl7DSN+5E16YmMHnfomnQmvSoA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        function updateDayNightIcon() {
+            const el = document.getElementById('dayNightIcon')
+            el.classList = halfmoon.darkModeOn ? 'fa fa-sun' : 'fa fa-moon'
+        }
+
+        function toggleDarkMode() {
+            halfmoon.toggleDarkMode()
+            updateDayNightIcon()
+        }
+
+        const styles = ['', "alert-success", "alert-primary", "alert-secondary", "alert-danger"]
+        var styleIndex = 0
+
+        function connect() {
+            const protocol = 'https:' == document.location.protocol ? 'wss' : 'ws'
+            var ws = new WebSocket(protocol + '://' + document.location.host + '/api/ws');
+            ws.onmessage = function (e) {
+                console.log(e);
+                if (e.data) {
+                    const data = JSON.parse(e.data)
+                    const styleIndexInner = styleIndex++
+                    if (styleIndex >= styles.length) {
+                        styleIndex = 0
+                    }
+                    halfmoon.initStickyAlert({
+                        content: "来自「" + data.country + "」的「" + data.ip + "」访问了 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"><b>" + data.member.name + "</b></a>。",
+                        title: "无聊的沙雕 +1",
+                        alertType: styles[styleIndexInner],
+                        fillType: "filled-lm",
+                        timeShown: 10000
+                    });
+                }
+            };
+            ws.onclose = function (e) {
+                console.log('Socket is closed. Reconnect will be attempted in 3 second.', e);
+                setTimeout(function () {
+                    connect()
+                }, 3000);
+            };
+            ws.onerror = function (err) {
+                console.error('Socket encountered error: ', err, 'Closing socket');
+                ws.close()
+            };
+        }
+
+        (function () {
+            if (((halfmoon.getPreferredMode() == 'dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches) != halfmoon.darkModeOn) {
+                toggleDarkMode()
+            } else {
+                updateDayNightIcon()
+            }
+            connect()
+        })();
+    </script>
+</body>
+
+</html>

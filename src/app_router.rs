@@ -1,7 +1,4 @@
-use std::{
-    sync::Arc,
-    time::{Duration, SystemTime},
-};
+use std::{sync::Arc, time::Duration};
 
 use anyhow::anyhow;
 use askama::Template;
@@ -29,16 +26,10 @@ pub async fn ws_upgrade(
     ws.on_upgrade(|socket| handle_socket(ctx, socket))
 }
 
-pub fn get_unix_timestamp() -> u64 {
-    SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
-}
-
 async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
     let mut rx = ctx.vistor_rx.clone();
-    let mut interval = tokio::time::interval(Duration::from_secs(60 * 5));
+    let mut interval = tokio::time::interval(Duration::from_secs(8));
+
     loop {
         select! {
             Ok(()) = rx.changed() => {
@@ -49,7 +40,7 @@ async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
                 }
             }
             _ = interval.tick() => {
-                let res = socket.send(Message::Ping(vec![6, 6, 6])).await;
+                let res = socket.send(Message::Ping(vec![])).await;
                 if res.is_err() {
                     break;
                 }
@@ -157,6 +148,13 @@ pub async fn show_icon(
     (StatusCode::OK, headers, content)
 }
 
+#[derive(Template)]
+#[template(path = "index.html")]
+struct HomeTemplate {
+    version: String,
+    membership: Vec<Membership>,
+}
+
 pub async fn home_page(
     Extension(ctx): Extension<DynContext>,
     headers: HeaderMap,
@@ -199,6 +197,20 @@ pub async fn home_page(
     Ok(Html(html))
 }
 
+#[derive(Template)]
+#[template(path = "join_us.html")]
+struct JoinUsTemplate {
+    version: String,
+}
+
+pub async fn join_us_page() -> Result<Html<String>, String> {
+    let tpl = JoinUsTemplate {
+        version: GIT_HASH[0..8].to_string(),
+    };
+    let html = tpl.render().map_err(|err| err.to_string())?;
+    Ok(Html(html))
+}
+
 fn get_domain_from_headers(headers: &HeaderMap) -> Result<String, anyhow::Error> {
     let referrer_header = headers.get("Referer");
     if referrer_header.is_none() {
@@ -221,11 +233,4 @@ fn get_domain_from_headers(headers: &HeaderMap) -> Result<String, anyhow::Error>
     }
 
     return Ok(referrer_url.domain().unwrap().to_string());
-}
-
-#[derive(Template)]
-#[template(path = "index.html")]
-struct HomeTemplate {
-    version: String,
-    membership: Vec<Membership>,
 }

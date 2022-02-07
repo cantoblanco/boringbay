@@ -182,7 +182,7 @@ impl Context {
             }
             drop(pv);
 
-            let mut tend = dist_r * 5 + dist_pv;
+            let mut tend = dist_r + dist_pv / 5;
             if tend > 10 {
                 tend = 10;
             } else if tend < 1 {

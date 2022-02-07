@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 
 use anyhow::anyhow;
 use askama::Template;
@@ -8,13 +8,14 @@ use axum::{
         Extension, Path, WebSocketUpgrade,
     },
     http::StatusCode,
-    response::{Headers, Html, IntoResponse},
+    response::{Headers, Html, IntoResponse, Response},
 };
 use headers::HeaderMap;
-use tokio::select;
+use tokio::{select, sync::RwLock};
 
 use crate::{
     app_model::{Context, DynContext},
+    boring_face::BoringFace,
     membership_model::Membership,
     GIT_HASH,
 };
@@ -53,7 +54,7 @@ pub async fn show_badge(
     Path(domain): Path<String>,
     headers: HeaderMap,
     Extension(ctx): Extension<DynContext>,
-) -> impl IntoResponse {
+) -> Response {
     let mut v_type = crate::app_model::VistorType::Badge;
 
     let domain_referrer = get_domain_from_headers(&headers);
@@ -67,30 +68,18 @@ pub async fn show_badge(
             StatusCode::NOT_FOUND,
             Headers([("content-type", "text/plain")]),
             tend.err().unwrap().to_string(),
-        );
+        )
+            .into_response();
     }
 
-    let headers = Headers([("content-type", "image/svg+xml")]);
-    let len: usize = 10;
-    let read = ctx.badge_render_cache.read().await;
-    let cache = read.get(&len);
-    let content = if let Some(v) = cache {
-        v.clone()
-    } else {
-        drop(read);
-        let v = ctx.badge.render_svg(tend.unwrap() as usize);
-        let mut write = ctx.badge_render_cache.write().await;
-        write.insert(len, v.clone());
-        v
-    };
-    (StatusCode::OK, headers, content)
+    render_svg(tend.unwrap() as usize, &ctx.badge_render_cache, &ctx.badge).await
 }
 
 pub async fn show_favicon(
     Path(domain): Path<String>,
     headers: HeaderMap,
     Extension(ctx): Extension<DynContext>,
-) -> impl IntoResponse {
+) -> Response {
     let tend = ctx
         .boring_vistor(crate::app_model::VistorType::ICON, &domain, &headers)
         .await;
@@ -99,29 +88,22 @@ pub async fn show_favicon(
             StatusCode::NOT_FOUND,
             Headers([("content-type", "text/plain")]),
             tend.err().unwrap().to_string(),
-        );
+        )
+            .into_response();
     }
-    let headers = Headers([("content-type", "image/svg+xml")]);
-    let len: usize = 10;
-    let read = ctx.favicon_render_cache.read().await;
-    let cache = read.get(&len);
-    let content = if let Some(v) = cache {
-        v.clone()
-    } else {
-        drop(read);
-        let v = ctx.favicon.render_svg(tend.unwrap() as usize);
-        let mut write = ctx.favicon_render_cache.write().await;
-        write.insert(len, v.clone());
-        v
-    };
-    (StatusCode::OK, headers, content)
+    render_svg(
+        tend.unwrap() as usize,
+        &ctx.favicon_render_cache,
+        &ctx.favicon,
+    )
+    .await
 }
 
 pub async fn show_icon(
     Path(domain): Path<String>,
     headers: HeaderMap,
     Extension(ctx): Extension<DynContext>,
-) -> impl IntoResponse {
+) -> Response {
     let tend = ctx
         .boring_vistor(crate::app_model::VistorType::ICON, &domain, &headers)
         .await;
@@ -130,22 +112,11 @@ pub async fn show_icon(
             StatusCode::NOT_FOUND,
             Headers([("content-type", "text/plain")]),
             tend.err().unwrap().to_string(),
-        );
+        )
+            .into_response();
     }
-    let headers = Headers([("content-type", "image/svg+xml")]);
-    let len: usize = 10;
-    let read = ctx.icon_render_cache.read().await;
-    let cache = read.get(&len);
-    let content = if let Some(v) = cache {
-        v.clone()
-    } else {
-        drop(read);
-        let v = ctx.icon.render_svg(tend.unwrap() as usize);
-        let mut write = ctx.icon_render_cache.write().await;
-        write.insert(len, v.clone());
-        v
-    };
-    (StatusCode::OK, headers, content)
+
+    render_svg(tend.unwrap() as usize, &ctx.icon_render_cache, &ctx.icon).await
 }
 
 #[derive(Template)]
@@ -233,4 +204,24 @@ fn get_domain_from_headers(headers: &HeaderMap) -> Result<String, anyhow::Error>
     }
 
     return Ok(referrer_url.domain().unwrap().to_string());
+}
+
+async fn render_svg(
+    tend: usize,
+    cache: &RwLock<HashMap<usize, String>>,
+    render: &BoringFace,
+) -> Response {
+    let headers = Headers([("content-type", "image/svg+xml")]);
+    let read = cache.read().await;
+    let content_cache = read.get(&tend);
+    let content = if let Some(v) = content_cache {
+        v.clone()
+    } else {
+        drop(read);
+        let v = render.render_svg(tend);
+        let mut write = cache.write().await;
+        write.insert(tend, v.clone());
+        v
+    };
+    (StatusCode::OK, headers, content).into_response()
 }

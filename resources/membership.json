@@ -34,4 +34,11 @@
             "description": "道辰的博客",
             "github_username": "DaoChen6"
         }
+        "10": {
+            "domain": "www.gitmba.com",
+            "icon": "https://www.gitmba.com/wp-content/uploads/2022/01/宝藏屋-06.png",
+            "name": "Gitmba宝藏屋",
+            "description": "探索新知识的宝藏小站",
+            "github_username": "qmxs1204"
+        }
     }

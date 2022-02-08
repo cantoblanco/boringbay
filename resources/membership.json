@@ -19,5 +19,12 @@
             "name": "二叉树的博客",
             "description": "二叉树上的我",
             "github_username": "spiritlhl"
+        },
+        "6": {
+            "domain": "www.ifking.cn",
+            "icon": "https://www.ifking.cn/favicon.png",
+            "name": "我若为王",
+            "description": "Just do it!",
+            "github_username": "ilay1678"
         }
     }

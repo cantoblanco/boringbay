@@ -62,9 +62,9 @@ impl Statistics {
             if !res.is_empty() {
                 let mut sum = 0;
                 res.iter().for_each(|s| {
-                    sum += s.referrer * s.page_view / 5;
+                    sum += s.referrer + (s.page_view / 5);
                 });
-                let rank_svg = sum / res.len() as i64;
+                let rank_svg = sum / res.len() as i64 / 10;
                 if rank_svg > 0 {
                     return rank_svg;
                 }

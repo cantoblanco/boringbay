@@ -26,5 +26,12 @@
             "name": "我若为王",
             "description": "Just do it!",
             "github_username": "ilay1678"
+        },
+        "9": {
+            "domain": "www.ifts.ml",
+            "icon": "https://cdn.jsdelivr.net/gh/DaoChen6/img@main/logo1.png",
+            "name": "辰漉博客",
+            "description": "道辰的博客",
+            "github_username": "DaoChen6"
         }
     }

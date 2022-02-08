@@ -22,7 +22,7 @@
         },
         "6": {
             "domain": "www.ifking.cn",
-            "icon": "https://www.ifking.cn/favicon.png",
+            "icon": "https://cdn.jsdelivr.net/gh/ilay1678/cdn@master/favicon.png",
             "name": "我若为王",
             "description": "Just do it!",
             "github_username": "ilay1678"

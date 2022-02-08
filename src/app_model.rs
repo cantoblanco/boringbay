@@ -47,6 +47,7 @@ pub struct Context {
     pub db_pool: DbPool,
     pub page_view: RwLock<HashMap<i64, i64>>,
     pub referrer: RwLock<HashMap<i64, i64>>,
+    pub rank_svg: i64,
 
     pub domain2id: HashMap<String, i64>,
     pub id2member: HashMap<i64, Membership>,
@@ -77,6 +78,8 @@ impl Context {
 
         let (vistor_tx, vistor_rx) = watch::channel::<String>("".to_string());
 
+        let rank_svg = Statistics::prev_day_rank_avg(db_pool.get().unwrap());
+
         Context {
             badge: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), true),
             favicon: BoringFace::new("#f5acb9".to_string(), "#d0273e".to_string(), false),
@@ -88,6 +91,7 @@ impl Context {
 
             page_view: RwLock::new(page_view),
             referrer: RwLock::new(referrer),
+            rank_svg,
 
             domain2id: domain2id,
             id2member: membership,
@@ -182,7 +186,7 @@ impl Context {
             }
             drop(pv);
 
-            let mut tend = dist_r + dist_pv / 5;
+            let mut tend = (dist_r + (dist_pv / 5)) / self.rank_svg;
             if tend > 10 {
                 tend = 10;
             } else if tend < 1 {

@@ -1,12 +1,16 @@
 use axum::{routing::get, AddExtensionLayer, Router};
+use chrono::{NaiveDateTime, NaiveTime, Utc};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use naive::{
     app_model::{Context, DynContext},
     app_router::{home_page, join_us_page, show_badge, show_favicon, show_icon, ws_upgrade},
-    establish_connection, DbPool,
+    establish_connection,
+    statistics_model::Statistics,
+    DbPool,
 };
 use std::{env, net::SocketAddr, sync::Arc};
+use tokio::signal;
 
 pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations/");
 
@@ -34,6 +38,8 @@ async fn main() {
         ctx_clone.save_per_5_minutes().await;
     });
 
+    let ctx_clone_for_shutdown = context.clone();
+
     let app = Router::new()
         .nest(
             "/api",
@@ -51,6 +57,51 @@ async fn main() {
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
+        .with_graceful_shutdown(shutdown_signal(ctx_clone_for_shutdown))
         .await
         .unwrap();
+}
+
+async fn shutdown_signal(ctx: Arc<Context>) {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
+
+    println!("signal received, running cleanup tasks..");
+
+    let _today = NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0));
+    let page_view_read = ctx.page_view.read().await;
+    let referrer_read = ctx.referrer.read().await;
+    ctx.id2member.keys().for_each(|id| {
+        Statistics::insert_or_update(
+            ctx.db_pool.get().unwrap(),
+            &Statistics {
+                created_at: _today,
+                updated_at: NaiveDateTime::from_timestamp(Utc::now().timestamp(), 0),
+                membership_id: id.clone(),
+                page_view: page_view_read.get(id).unwrap_or(&0).clone(),
+                referrer: referrer_read.get(id).unwrap_or(&0).clone(),
+                id: 0,
+            },
+        )
+        .unwrap();
+    })
 }

@@ -1,6 +1,8 @@
+use std::ops::Sub;
+
 use crate::schema::statistics::{self, dsl::*};
 use anyhow::anyhow;
-use chrono::{NaiveDateTime, NaiveTime, Utc};
+use chrono::{Duration, NaiveDateTime, NaiveTime, Utc};
 use diesel::r2d2::{ConnectionManager, PooledConnection};
 use diesel::sqlite::Sqlite;
 use diesel::{debug_query, prelude::*};
@@ -42,18 +44,33 @@ impl Statistics {
     }
 
     pub fn today(
-        mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
+        conn: PooledConnection<ConnectionManager<SqliteConnection>>,
     ) -> Result<Vec<Statistics>, anyhow::Error> {
-        let res = statistics
-            .filter(created_at.eq(NaiveDateTime::new(
-                Utc::now().date().naive_utc(),
-                NaiveTime::from_hms(0, 0, 0),
-            )))
-            .load::<Statistics>(&mut conn);
-        match res {
-            Ok(all) => Ok(all),
-            Err(e) => Err(anyhow!("{:?}", e)),
+        load_statistics_by_created_at(
+            conn,
+            NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0)),
+        )
+    }
+
+    pub fn prev_day_rank_avg(conn: PooledConnection<ConnectionManager<SqliteConnection>>) -> i64 {
+        let res = load_statistics_by_created_at(
+            conn,
+            NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0))
+                .sub(Duration::hours(24)),
+        );
+        if let Ok(res) = res {
+            if !res.is_empty() {
+                let mut sum = 0;
+                res.iter().for_each(|s| {
+                    sum += s.referrer * s.page_view / 5;
+                });
+                let rank_svg = sum / res.len() as i64;
+                if rank_svg > 0 {
+                    return rank_svg;
+                }
+            }
         }
+        1
     }
 
     pub fn all(
@@ -64,5 +81,22 @@ impl Statistics {
             Ok(all) => Ok(all),
             Err(e) => Err(anyhow!("{:?}", e)),
         }
+    }
+}
+
+fn load_statistics_by_created_at(
+    mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
+    _created_at: NaiveDateTime,
+) -> Result<Vec<Statistics>, anyhow::Error> {
+    println!(
+        "sql: {}",
+        debug_query::<Sqlite, _>(&statistics.filter(created_at.eq(_created_at))).to_string()
+    );
+    let res = statistics
+        .filter(created_at.eq(_created_at))
+        .load::<Statistics>(&mut conn);
+    match res {
+        Ok(all) => Ok(all),
+        Err(e) => Err(anyhow!("{:?}", e)),
     }
 }

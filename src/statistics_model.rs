@@ -59,12 +59,17 @@ impl Statistics {
                 .sub(Duration::hours(24)),
         );
         if let Ok(res) = res {
-            if !res.is_empty() {
-                let mut sum = 0;
-                res.iter().for_each(|s| {
-                    sum += s.referrer + (s.page_view / 5);
-                });
-                let rank_svg = sum / res.len() as i64 / 10;
+            let mut sum = 0;
+            let mut count = 0;
+            res.iter().for_each(|s| {
+                let view = s.referrer + (s.page_view / 5);
+                sum += view;
+                if view > 0 {
+                    count = count + 1;
+                }
+            });
+            if count > 0 {
+                let rank_svg = sum / count / 10;
                 if rank_svg > 0 {
                     return rank_svg;
                 }

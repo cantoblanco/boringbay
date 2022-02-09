@@ -11,13 +11,14 @@
             <div class="d-flex p-5 border rounded shadow">
                 <img class="d-block w-50 h-50 rounded" src="{{ m.icon }}">
                 <div class="flex-grow-1 pl-10">
-                    <a target="_blank" class="text-reset font-weight-bolder" href="https://{{ m.domain }}">
+                    <a target="_blank" class="text-reset font-weight-bolder" href="https://{{ m.domain }}"
+                        title="{{ m.name|e }}">
                         {{ m.name|e }}
                     </a><br>
-                    <small>{{ m.description|e }}</small><br>
-                    <a target="_blank" href="https://github.com/{{ m.github_username }}"><small><i
-                                class="fab fa-github"></i>
-                            {{ m.github_username }}</small></a>
+                    <small title="{{ m.description|e }}">{{ m.description|e }}</small><br>
+                    <a target="_blank" href="https://github.com/{{ m.github_username }}"
+                        title="{{ m.github_username|e }}"><small><i class="fab fa-github"></i>
+                            {{ m.github_username|e }}</small></a>
                 </div>
             </div>
         </div>

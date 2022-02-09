@@ -73,7 +73,7 @@ impl Context {
                     .unwrap();
             info!("country {}", country);
 
-            let vistor_key = format!("{}_{}", ip, &domain);
+            let vistor_key = format!("{}_{}", ip, id);
             let vistor_cache = self.cache.get(&vistor_key).await;
             self.cache
                 .set(vistor_key, (), Some(Duration::from_secs(60 * 60 * 4)))

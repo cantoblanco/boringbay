@@ -20,6 +20,13 @@
             "description": "二叉树上的我",
             "github_username": "spiritlhl"
         },
+        "5": {
+            "domain": "ops.naibahq.com",
+            "icon": "https://ops.naibahq.com/static/logo.svg",
+            "name": "哪吒监控",
+            "description": "没有比这个更好玩的了",
+            "github_username": "naiba/nezha"
+        },
         "6": {
             "domain": "www.ifking.cn",
             "icon": "https://cdn.jsdelivr.net/gh/ilay1678/cdn@master/favicon.png",

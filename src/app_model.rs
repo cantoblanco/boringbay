@@ -79,10 +79,10 @@ impl Context {
                 .set(vistor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
                 .await;
 
-            let mut referrer = self.referrer.write().await;
-            let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
             let mut notification = false;
 
+            let mut referrer = self.referrer.write().await;
+            let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
             if matches!(v_type, VistorType::Referrer) && vistor_cache.is_none() {
                 dist_r = dist_r + 1;
                 referrer.insert(id.clone(), dist_r);

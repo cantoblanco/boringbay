@@ -57,7 +57,7 @@ pub async fn show_badge(
 ) -> Response {
     let mut v_type = crate::app_model::VistorType::Badge;
 
-    let domain_referrer = get_domain_from_headers(&headers);
+    let domain_referrer = get_domain_from_referrer(&headers);
     if domain_referrer.is_err() || domain_referrer.unwrap().ne(&domain) {
         v_type = crate::app_model::VistorType::ICON;
     }
@@ -125,12 +125,20 @@ pub async fn home_page(
     Extension(ctx): Extension<DynContext>,
     headers: HeaderMap,
 ) -> Result<Html<String>, String> {
-    let domain = get_domain_from_headers(&headers);
+    let domain = get_domain_from_referrer(&headers);
     if domain.is_ok() {
         let _ = ctx
             .boring_vistor(
                 crate::app_model::VistorType::Referrer,
                 &domain.unwrap(),
+                &headers,
+            )
+            .await;
+    } else {
+        let _ = ctx
+            .boring_vistor(
+                crate::app_model::VistorType::Badge,
+                "boringbay.com",
                 &headers,
             )
             .await;
@@ -178,7 +186,7 @@ pub async fn join_us_page() -> Result<Html<String>, String> {
     Ok(Html(html))
 }
 
-fn get_domain_from_headers(headers: &HeaderMap) -> Result<String, anyhow::Error> {
+fn get_domain_from_referrer(headers: &HeaderMap) -> Result<String, anyhow::Error> {
     let referrer_header = headers.get("Referer");
     if referrer_header.is_none() {
         return Err(anyhow!("no referrer header"));

@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration};
 
 use anyhow::anyhow;
 use askama::Template;
@@ -11,7 +11,7 @@ use axum::{
     response::{Headers, Html, IntoResponse, Response},
 };
 use headers::HeaderMap;
-use tokio::{select, sync::RwLock};
+use tokio::select;
 
 use crate::{
     app_model::{Context, DynContext},
@@ -72,7 +72,7 @@ pub async fn show_badge(
             .into_response();
     }
 
-    render_svg(tend.unwrap() as usize, &ctx.badge_render_cache, &ctx.badge).await
+    render_svg(tend.unwrap(), &ctx.badge).await
 }
 
 pub async fn show_favicon(
@@ -91,12 +91,7 @@ pub async fn show_favicon(
         )
             .into_response();
     }
-    render_svg(
-        tend.unwrap() as usize,
-        &ctx.favicon_render_cache,
-        &ctx.favicon,
-    )
-    .await
+    render_svg(tend.unwrap(), &ctx.favicon).await
 }
 
 pub async fn show_icon(
@@ -116,7 +111,7 @@ pub async fn show_icon(
             .into_response();
     }
 
-    render_svg(tend.unwrap() as usize, &ctx.icon_render_cache, &ctx.icon).await
+    render_svg(tend.unwrap(), &ctx.icon).await
 }
 
 #[derive(Template)]
@@ -148,8 +143,8 @@ pub async fn home_page(
     for k in ctx.id2member.keys() {
         rank_vec.push((
             k.to_owned(),
-            referrer_read.get(k).unwrap_or(&0).to_owned() * 5
-                + pv_read.get(k).unwrap_or(&0).to_owned(),
+            referrer_read.get(k).unwrap_or(&0).to_owned()
+                + (pv_read.get(k).unwrap_or(&0).to_owned() / 5) / ctx.rank_svg,
         ));
     }
 
@@ -206,22 +201,12 @@ fn get_domain_from_headers(headers: &HeaderMap) -> Result<String, anyhow::Error>
     return Ok(referrer_url.domain().unwrap().to_string());
 }
 
-async fn render_svg(
-    tend: usize,
-    cache: &RwLock<HashMap<usize, String>>,
-    render: &BoringFace,
-) -> Response {
+async fn render_svg(tend: (&str, i64, i64, i64), render: &BoringFace) -> Response {
     let headers = Headers([("content-type", "image/svg+xml")]);
-    let read = cache.read().await;
-    let content_cache = read.get(&tend);
-    let content = if let Some(v) = content_cache {
-        v.clone()
-    } else {
-        drop(read);
-        let v = render.render_svg(tend);
-        let mut write = cache.write().await;
-        write.insert(tend, v.clone());
-        v
-    };
-    (StatusCode::OK, headers, content).into_response()
+    (
+        StatusCode::OK,
+        headers,
+        render.render_svg(tend.0, tend.1, tend.2, tend.3),
+    )
+        .into_response()
 }

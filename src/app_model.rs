@@ -40,9 +40,6 @@ pub struct Context {
     pub badge: BoringFace,
     pub favicon: BoringFace,
     pub icon: BoringFace,
-    pub badge_render_cache: RwLock<HashMap<usize, String>>,
-    pub favicon_render_cache: RwLock<HashMap<usize, String>>,
-    pub icon_render_cache: RwLock<HashMap<usize, String>>,
 
     pub db_pool: DbPool,
     pub page_view: RwLock<HashMap<i64, i64>>,
@@ -84,9 +81,6 @@ impl Context {
             badge: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), true),
             favicon: BoringFace::new("#f5acb9".to_string(), "#d0273e".to_string(), false),
             icon: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), false),
-            badge_render_cache: RwLock::new(HashMap::new()),
-            favicon_render_cache: RwLock::new(HashMap::new()),
-            icon_render_cache: RwLock::new(HashMap::new()),
             db_pool,
 
             page_view: RwLock::new(page_view),
@@ -165,7 +159,7 @@ impl Context {
         v_type: VistorType,
         domain: &str,
         headers: &HeaderMap,
-    ) -> Result<i64, anyhow::Error> {
+    ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
         if let Some(id) = self.domain2id.get(domain) {
             let mut referrer = self.referrer.write().await;
             let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
@@ -225,7 +219,7 @@ impl Context {
                 );
             }
 
-            return Ok(tend);
+            return Ok((&self.id2member.get(id).unwrap().name, dist_pv, dist_r, tend));
         }
         return Err(anyhow!("not a member"));
     }

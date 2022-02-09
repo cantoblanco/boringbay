@@ -134,14 +134,6 @@ pub async fn home_page(
                 &headers,
             )
             .await;
-    } else {
-        let _ = ctx
-            .boring_vistor(
-                crate::app_model::VistorType::Badge,
-                "boringbay.com",
-                &headers,
-            )
-            .await;
     }
     let referrer_read = ctx.referrer.read().await;
     let pv_read = ctx.page_view.read().await;

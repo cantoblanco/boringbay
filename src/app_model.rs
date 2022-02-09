@@ -44,16 +44,96 @@ pub struct Context {
     pub db_pool: DbPool,
     pub page_view: RwLock<HashMap<i64, i64>>,
     pub referrer: RwLock<HashMap<i64, i64>>,
-    pub rank_svg: i64,
+    pub rank_svg: RwLock<i64>,
 
     pub domain2id: HashMap<String, i64>,
     pub id2member: HashMap<i64, Membership>,
 
     pub vistor_tx: Sender<String>,
     pub vistor_rx: Receiver<String>,
+
+    pub cache: r_cache::cache::Cache<String, ()>,
 }
 
 impl Context {
+    pub async fn boring_vistor(
+        &self,
+        v_type: VistorType,
+        domain: &str,
+        headers: &HeaderMap,
+    ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
+        if let Some(id) = self.domain2id.get(domain) {
+            let ip =
+                String::from_utf8(headers.get("CF-Connecting-IP").unwrap().as_bytes().to_vec())
+                    .unwrap();
+            info!("ip {}", ip);
+
+            let country =
+                String::from_utf8(headers.get("CF-IPCountry").unwrap().as_bytes().to_vec())
+                    .unwrap();
+            info!("country {}", country);
+
+            let vistor_key = format!("{}_{}", ip, &domain);
+            let vistor_cache = self.cache.get(&vistor_key).await;
+            self.cache
+                .set(vistor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
+                .await;
+
+            let mut referrer = self.referrer.write().await;
+            let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
+            let mut notification = false;
+
+            if matches!(v_type, VistorType::Referrer) && vistor_cache.is_none() {
+                dist_r = dist_r + 1;
+                referrer.insert(id.clone(), dist_r);
+            }
+            drop(referrer);
+
+            let mut pv = self.page_view.write().await;
+            let mut dist_pv = pv.get(id).or(Some(&0)).unwrap().clone();
+            if matches!(v_type, VistorType::Badge) {
+                if vistor_cache.is_none() {
+                    dist_pv = dist_pv + 1;
+                    pv.insert(id.clone(), dist_pv);
+                }
+                notification = true;
+            }
+            drop(pv);
+
+            let mut tend = (dist_r + (dist_pv / 5)) / self.rank_svg.read().await.to_owned();
+            if tend > 10 {
+                tend = 10;
+            } else if tend < 1 {
+                tend = 1
+            }
+
+            if notification {
+                // 广播访客信息
+                let mut member = self.id2member.get(id).unwrap().to_owned();
+                member.description = "".to_string();
+                member.icon = "".to_string();
+                member.github_username = "".to_string();
+
+                let _ = self.vistor_tx.send(
+                    serde_json::json!(VistEvent {
+                        ip: IPV6_MASK
+                            .replace_all(
+                                &IPV4_MASK.replace_all(&ip, "$1****$2").to_string(),
+                                "$1****$2"
+                            )
+                            .to_string(),
+                        country,
+                        member,
+                    })
+                    .to_string(),
+                );
+            }
+
+            return Ok((&self.id2member.get(id).unwrap().name, dist_pv, dist_r, tend));
+        }
+        return Err(anyhow!("not a member"));
+    }
+
     pub async fn default(db_pool: DbPool) -> Context {
         let statistics = Statistics::today(db_pool.get().unwrap()).unwrap_or_default();
 
@@ -85,13 +165,15 @@ impl Context {
 
             page_view: RwLock::new(page_view),
             referrer: RwLock::new(referrer),
-            rank_svg,
+            rank_svg: RwLock::new(rank_svg),
 
             domain2id: domain2id,
             id2member: membership,
 
             vistor_rx,
             vistor_tx,
+
+            cache: r_cache::cache::Cache::new(Some(Duration::from_secs(60 * 10))),
         }
     }
 
@@ -140,87 +222,20 @@ impl Context {
                 )
                 .unwrap();
             });
-            // 如果是跨天重置数据
             let new_day =
                 NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0));
             if new_day.ne(&_today) {
+                // 如果是跨天重置数据
                 page_view_write.clear();
                 referrer_write.clear();
                 page_view_cache.clear();
                 referrer_cache.clear();
+                // 更新上日访问量均值
+                let mut rank_svg = self.rank_svg.write().await;
+                *rank_svg = Statistics::prev_day_rank_avg(self.db_pool.get().unwrap());
             }
             drop(page_view_write);
             drop(referrer_write);
         }
-    }
-
-    pub async fn boring_vistor(
-        &self,
-        v_type: VistorType,
-        domain: &str,
-        headers: &HeaderMap,
-    ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
-        if let Some(id) = self.domain2id.get(domain) {
-            let mut referrer = self.referrer.write().await;
-            let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
-            let mut notification = false;
-
-            if matches!(v_type, VistorType::Referrer) {
-                dist_r = dist_r + 1;
-                referrer.insert(id.clone(), dist_r);
-            }
-            drop(referrer);
-
-            let mut pv = self.page_view.write().await;
-            let mut dist_pv = pv.get(id).or(Some(&0)).unwrap().clone();
-            if matches!(v_type, VistorType::Badge) {
-                dist_pv = dist_pv + 1;
-                pv.insert(id.clone(), dist_pv);
-                notification = true;
-            }
-            drop(pv);
-
-            let mut tend = (dist_r + (dist_pv / 5)) / self.rank_svg;
-            if tend > 10 {
-                tend = 10;
-            } else if tend < 1 {
-                tend = 1
-            }
-
-            if notification {
-                // 广播访客信息
-                let ip =
-                    String::from_utf8(headers.get("CF-Connecting-IP").unwrap().as_bytes().to_vec())
-                        .unwrap();
-                info!("ip {}", ip);
-
-                let country =
-                    String::from_utf8(headers.get("CF-IPCountry").unwrap().as_bytes().to_vec())
-                        .unwrap();
-                info!("country {}", country);
-
-                let mut member = self.id2member.get(id).unwrap().to_owned();
-                member.description = "".to_string();
-                member.icon = "".to_string();
-                member.github_username = "".to_string();
-
-                let _ = self.vistor_tx.send(
-                    serde_json::json!(VistEvent {
-                        ip: IPV6_MASK
-                            .replace_all(
-                                &IPV4_MASK.replace_all(&ip, "$1****$2").to_string(),
-                                "$1****$2"
-                            )
-                            .to_string(),
-                        country,
-                        member,
-                    })
-                    .to_string(),
-                );
-            }
-
-            return Ok((&self.id2member.get(id).unwrap().name, dist_pv, dist_r, tend));
-        }
-        return Err(anyhow!("not a member"));
     }
 }

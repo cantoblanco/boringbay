@@ -76,9 +76,12 @@ impl Context {
 
             let visitor_key = format!("{}_{}_{:?}", ip, id, v_type);
             let visitor_cache = self.cache.get(&visitor_key).await;
-            self.cache
-                .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
-                .await;
+
+            if visitor_cache.is_none() {
+                self.cache
+                    .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
+                    .await;
+            }
 
             let mut notification = false;
 

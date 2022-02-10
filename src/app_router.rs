@@ -142,10 +142,10 @@ pub async fn home_page(
 
     for k in ctx.id2member.keys() {
         let rank_svg = ctx.rank_svg.read().await.to_owned();
-        let rank = referrer_read.get(k).unwrap_or(&0).to_owned()
-            + (pv_read.get(k).unwrap_or(&0).to_owned() / 5);
-        if rank > 0 {
-            rank_vec.push((k.to_owned(), rank / rank_svg));
+        let pv = pv_read.get(k).unwrap_or(&0).to_owned();
+        let rv = referrer_read.get(k).unwrap_or(&0).to_owned();
+        if pv > 0 || rv > 0 {
+            rank_vec.push((k.to_owned(), (rv + (pv / 5)) / rank_svg));
         }
     }
 

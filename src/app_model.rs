@@ -42,7 +42,7 @@ pub struct Context {
     pub icon: BoringFace,
 
     pub db_pool: DbPool,
-    pub page_view: RwLock<HashMap<i64, i64>>,
+    pub unique_visitor: RwLock<HashMap<i64, i64>>,
     pub referrer: RwLock<HashMap<i64, i64>>,
     pub rank_svg: RwLock<i64>,
 
@@ -89,18 +89,18 @@ impl Context {
             }
             drop(referrer);
 
-            let mut pv = self.page_view.write().await;
-            let mut dist_pv = pv.get(id).or(Some(&0)).unwrap().clone();
+            let mut uv = self.unique_visitor.write().await;
+            let mut dist_uv = uv.get(id).or(Some(&0)).unwrap().clone();
             if matches!(v_type, VistorType::Badge) {
                 if vistor_cache.is_none() {
-                    dist_pv = dist_pv + 1;
-                    pv.insert(id.clone(), dist_pv);
+                    dist_uv = dist_uv + 1;
+                    uv.insert(id.clone(), dist_uv);
                 }
                 notification = true;
             }
-            drop(pv);
+            drop(uv);
 
-            let mut tend = (dist_r + (dist_pv / 5)) / self.rank_svg.read().await.to_owned();
+            let mut tend = (dist_r + dist_uv) / self.rank_svg.read().await.to_owned();
             if tend > 10 {
                 tend = 10;
             } else if tend < 1 {
@@ -129,7 +129,7 @@ impl Context {
                 );
             }
 
-            return Ok((&self.id2member.get(id).unwrap().name, dist_pv, dist_r, tend));
+            return Ok((&self.id2member.get(id).unwrap().name, dist_uv, dist_r, tend));
         }
         return Err(anyhow!("not a member"));
     }
@@ -163,7 +163,7 @@ impl Context {
             icon: BoringFace::new("#d0273e".to_string(), "#f5acb9".to_string(), false),
             db_pool,
 
-            page_view: RwLock::new(page_view),
+            unique_visitor: RwLock::new(page_view),
             referrer: RwLock::new(referrer),
             rank_svg: RwLock::new(rank_svg),
 
@@ -179,7 +179,7 @@ impl Context {
 
     // 每五分钟存一次，发现隔天刷新
     pub async fn save_per_5_minutes(&self) {
-        let mut page_view_cache: HashMap<i64, i64> = HashMap::new();
+        let mut uv_cache: HashMap<i64, i64> = HashMap::new();
         let mut referrer_cache: HashMap<i64, i64> = HashMap::new();
         let mut changed_list: Vec<i64> = Vec::new();
         let _today =
@@ -189,13 +189,13 @@ impl Context {
             tokio::time::sleep(Duration::from_secs(60 * 5)).await;
             changed_list.clear();
             // 对比是否有数据更新
-            let mut page_view_write = self.page_view.write().await;
+            let mut uv_write = self.unique_visitor.write().await;
             let mut referrer_write = self.referrer.write().await;
             id_list.iter().for_each(|id| {
-                let pv = page_view_cache.get(id).unwrap_or(&0).clone();
-                let new_pv = page_view_write.get(id).unwrap_or(&0).clone();
-                if pv.ne(&new_pv) {
-                    page_view_cache.insert(id.clone().clone(), new_pv);
+                let uv = uv_cache.get(id).unwrap_or(&0).clone();
+                let new_uv = uv_write.get(id).unwrap_or(&0).clone();
+                if uv.ne(&new_uv) {
+                    uv_cache.insert(id.clone().clone(), new_uv);
                     changed_list.push(id.clone().clone());
                 }
                 let referrer = referrer_cache.get(id).unwrap_or(&0).clone();
@@ -215,7 +215,7 @@ impl Context {
                         created_at: _today,
                         updated_at: NaiveDateTime::from_timestamp(Utc::now().timestamp(), 0),
                         membership_id: id.clone(),
-                        page_view: page_view_cache.get(id).unwrap_or(&0).clone(),
+                        page_view: uv_cache.get(id).unwrap_or(&0).clone(),
                         referrer: referrer_cache.get(id).unwrap_or(&0).clone(),
                         id: 0,
                     },
@@ -226,15 +226,15 @@ impl Context {
                 NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0));
             if new_day.ne(&_today) {
                 // 如果是跨天重置数据
-                page_view_write.clear();
+                uv_write.clear();
                 referrer_write.clear();
-                page_view_cache.clear();
+                uv_cache.clear();
                 referrer_cache.clear();
                 // 更新上日访问量均值
                 let mut rank_svg = self.rank_svg.write().await;
                 *rank_svg = Statistics::prev_day_rank_avg(self.db_pool.get().unwrap());
             }
-            drop(page_view_write);
+            drop(uv_write);
             drop(referrer_write);
         }
     }

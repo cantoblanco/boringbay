@@ -88,7 +88,7 @@ async fn shutdown_signal(ctx: Arc<Context>) {
     println!("signal received, running cleanup tasks..");
 
     let _today = NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0));
-    let page_view_read = ctx.page_view.read().await;
+    let page_view_read = ctx.unique_visitor.read().await;
     let referrer_read = ctx.referrer.read().await;
     ctx.id2member.keys().for_each(|id| {
         Statistics::insert_or_update(

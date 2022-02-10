@@ -136,16 +136,16 @@ pub async fn home_page(
             .await;
     }
     let referrer_read = ctx.referrer.read().await;
-    let pv_read = ctx.page_view.read().await;
+    let uv_read = ctx.unique_visitor.read().await;
 
     let mut rank_vec: Vec<(i64, i64)> = Vec::new();
 
     for k in ctx.id2member.keys() {
         let rank_svg = ctx.rank_svg.read().await.to_owned();
-        let pv = pv_read.get(k).unwrap_or(&0).to_owned();
+        let uv = uv_read.get(k).unwrap_or(&0).to_owned();
         let rv = referrer_read.get(k).unwrap_or(&0).to_owned();
-        if pv > 0 || rv > 0 {
-            rank_vec.push((k.to_owned(), (rv + (pv / 5)) / rank_svg));
+        if uv > 0 || rv > 0 {
+            rank_vec.push((k.to_owned(), (rv + uv) / rank_svg));
         }
     }
 

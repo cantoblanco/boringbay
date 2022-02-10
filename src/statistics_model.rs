@@ -15,7 +15,7 @@ pub struct Statistics {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub membership_id: i64,
-    pub page_view: i64,
+    pub unique_visitor: i64,
     pub referrer: i64,
 }
 
@@ -29,13 +29,13 @@ impl Statistics {
                 created_at.eq(stat.created_at),
                 updated_at.eq(stat.updated_at),
                 membership_id.eq(stat.membership_id),
-                page_view.eq(stat.page_view),
+                unique_visitor.eq(stat.unique_visitor),
                 referrer.eq(stat.referrer),
             ))
             .on_conflict((membership_id, created_at))
             .do_update()
             .set((
-                page_view.eq(stat.page_view),
+                unique_visitor.eq(stat.unique_visitor),
                 referrer.eq(stat.referrer),
                 updated_at.eq(stat.updated_at),
             ));
@@ -62,7 +62,7 @@ impl Statistics {
             let mut sum = 0;
             let mut count = 0;
             res.iter().for_each(|s| {
-                let view = s.referrer + (s.page_view / 5);
+                let view = s.referrer + (s.unique_visitor / 5);
                 sum += view;
                 if view > 0 {
                     count = count + 1;

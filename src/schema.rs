@@ -4,7 +4,7 @@ table! {
         created_at -> Timestamp,
         updated_at -> Timestamp,
         membership_id -> BigInt,
-        page_view -> BigInt,
+        unique_visitor -> BigInt,
         referrer -> BigInt,
     }
 }

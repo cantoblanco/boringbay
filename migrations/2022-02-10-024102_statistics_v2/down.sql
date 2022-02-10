@@ -1,0 +1,1 @@
+ALTER TABLE `statistics` RENAME COLUMN unique_visitor TO page_view;

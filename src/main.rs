@@ -97,7 +97,7 @@ async fn shutdown_signal(ctx: Arc<Context>) {
                 created_at: _today,
                 updated_at: NaiveDateTime::from_timestamp(Utc::now().timestamp(), 0),
                 membership_id: id.clone(),
-                page_view: page_view_read.get(id).unwrap_or(&0).clone(),
+                unique_visitor: page_view_read.get(id).unwrap_or(&0).clone(),
                 referrer: referrer_read.get(id).unwrap_or(&0).clone(),
                 id: 0,
             },

@@ -28,7 +28,7 @@ pub async fn ws_upgrade(
 }
 
 async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
-    let mut rx = ctx.vistor_rx.clone();
+    let mut rx = ctx.visitor_rx.clone();
     let mut interval = tokio::time::interval(Duration::from_secs(8));
 
     loop {
@@ -55,14 +55,14 @@ pub async fn show_badge(
     headers: HeaderMap,
     Extension(ctx): Extension<DynContext>,
 ) -> Response {
-    let mut v_type = crate::app_model::VistorType::Badge;
+    let mut v_type = crate::app_model::VisitorType::Badge;
 
     let domain_referrer = get_domain_from_referrer(&headers);
     if domain_referrer.is_err() || domain_referrer.unwrap().ne(&domain) {
-        v_type = crate::app_model::VistorType::ICON;
+        v_type = crate::app_model::VisitorType::ICON;
     }
 
-    let tend = ctx.boring_vistor(v_type, &domain, &headers).await;
+    let tend = ctx.boring_visitor(v_type, &domain, &headers).await;
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
@@ -81,7 +81,7 @@ pub async fn show_favicon(
     Extension(ctx): Extension<DynContext>,
 ) -> Response {
     let tend = ctx
-        .boring_vistor(crate::app_model::VistorType::ICON, &domain, &headers)
+        .boring_visitor(crate::app_model::VisitorType::ICON, &domain, &headers)
         .await;
     if tend.is_err() {
         return (
@@ -100,7 +100,7 @@ pub async fn show_icon(
     Extension(ctx): Extension<DynContext>,
 ) -> Response {
     let tend = ctx
-        .boring_vistor(crate::app_model::VistorType::ICON, &domain, &headers)
+        .boring_visitor(crate::app_model::VisitorType::ICON, &domain, &headers)
         .await;
     if tend.is_err() {
         return (
@@ -128,8 +128,8 @@ pub async fn home_page(
     let domain = get_domain_from_referrer(&headers);
     if domain.is_ok() {
         let _ = ctx
-            .boring_vistor(
-                crate::app_model::VistorType::Referrer,
+            .boring_visitor(
+                crate::app_model::VisitorType::Referrer,
                 &domain.unwrap(),
                 &headers,
             )

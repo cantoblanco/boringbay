@@ -30,7 +30,8 @@ struct VistEvent {
     member: Membership,
 }
 
-pub enum VistorType {
+#[derive(Debug)]
+pub enum VisitorType {
     Referrer,
     Badge,
     ICON,
@@ -49,16 +50,16 @@ pub struct Context {
     pub domain2id: HashMap<String, i64>,
     pub id2member: HashMap<i64, Membership>,
 
-    pub vistor_tx: Sender<String>,
-    pub vistor_rx: Receiver<String>,
+    pub visitor_tx: Sender<String>,
+    pub visitor_rx: Receiver<String>,
 
     pub cache: r_cache::cache::Cache<String, ()>,
 }
 
 impl Context {
-    pub async fn boring_vistor(
+    pub async fn boring_visitor(
         &self,
-        v_type: VistorType,
+        v_type: VisitorType,
         domain: &str,
         headers: &HeaderMap,
     ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
@@ -73,17 +74,17 @@ impl Context {
                     .unwrap();
             info!("country {}", country);
 
-            let vistor_key = format!("{}_{}", ip, id);
-            let vistor_cache = self.cache.get(&vistor_key).await;
+            let visitor_key = format!("{}_{}_{:?}", ip, id, v_type);
+            let visitor_cache = self.cache.get(&visitor_key).await;
             self.cache
-                .set(vistor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
+                .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
                 .await;
 
             let mut notification = false;
 
             let mut referrer = self.referrer.write().await;
             let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
-            if matches!(v_type, VistorType::Referrer) && vistor_cache.is_none() {
+            if matches!(v_type, VisitorType::Referrer) && visitor_cache.is_none() {
                 dist_r = dist_r + 1;
                 referrer.insert(id.clone(), dist_r);
             }
@@ -91,8 +92,8 @@ impl Context {
 
             let mut uv = self.unique_visitor.write().await;
             let mut dist_uv = uv.get(id).or(Some(&0)).unwrap().clone();
-            if matches!(v_type, VistorType::Badge) {
-                if vistor_cache.is_none() {
+            if matches!(v_type, VisitorType::Badge) {
+                if visitor_cache.is_none() {
                     dist_uv = dist_uv + 1;
                     uv.insert(id.clone(), dist_uv);
                 }
@@ -114,7 +115,7 @@ impl Context {
                 member.icon = "".to_string();
                 member.github_username = "".to_string();
 
-                let _ = self.vistor_tx.send(
+                let _ = self.visitor_tx.send(
                     serde_json::json!(VistEvent {
                         ip: IPV6_MASK
                             .replace_all(
@@ -141,7 +142,7 @@ impl Context {
         let mut referrer: HashMap<i64, i64> = HashMap::new();
 
         statistics.iter().for_each(|s| {
-            page_view.insert(s.membership_id, s.page_view);
+            page_view.insert(s.membership_id, s.unique_visitor);
             referrer.insert(s.membership_id, s.referrer);
         });
 
@@ -153,7 +154,7 @@ impl Context {
             domain2id.insert(v.domain.clone(), k.clone());
         });
 
-        let (vistor_tx, vistor_rx) = watch::channel::<String>("".to_string());
+        let (visitor_tx, visitor_rx) = watch::channel::<String>("".to_string());
 
         let rank_svg = Statistics::prev_day_rank_avg(db_pool.get().unwrap());
 
@@ -170,8 +171,8 @@ impl Context {
             domain2id: domain2id,
             id2member: membership,
 
-            vistor_rx,
-            vistor_tx,
+            visitor_rx,
+            visitor_tx,
 
             cache: r_cache::cache::Cache::new(Some(Duration::from_secs(60 * 10))),
         }
@@ -215,7 +216,7 @@ impl Context {
                         created_at: _today,
                         updated_at: NaiveDateTime::from_timestamp(Utc::now().timestamp(), 0),
                         membership_id: id.clone(),
-                        page_view: uv_cache.get(id).unwrap_or(&0).clone(),
+                        unique_visitor: uv_cache.get(id).unwrap_or(&0).clone(),
                         referrer: referrer_cache.get(id).unwrap_or(&0).clone(),
                         id: 0,
                     },

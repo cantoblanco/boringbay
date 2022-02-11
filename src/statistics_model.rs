@@ -1,8 +1,9 @@
 use std::ops::Sub;
 
+use crate::now_shanghai;
 use crate::schema::statistics::{self, dsl::*};
 use anyhow::anyhow;
-use chrono::{Duration, NaiveDateTime, NaiveTime, Utc};
+use chrono::{Duration, NaiveDateTime, NaiveTime};
 use diesel::r2d2::{ConnectionManager, PooledConnection};
 use diesel::sqlite::Sqlite;
 use diesel::{debug_query, prelude::*};
@@ -48,14 +49,14 @@ impl Statistics {
     ) -> Result<Vec<Statistics>, anyhow::Error> {
         load_statistics_by_created_at(
             conn,
-            NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0)),
+            NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0)),
         )
     }
 
     pub fn prev_day_rank_avg(conn: PooledConnection<ConnectionManager<SqliteConnection>>) -> i64 {
         let res = load_statistics_by_created_at(
             conn,
-            NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0))
+            NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0))
                 .sub(Duration::hours(24)),
         );
         if let Ok(res) = res {

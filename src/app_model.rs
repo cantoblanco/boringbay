@@ -2,12 +2,13 @@ use std::fs;
 use std::time::Duration;
 use std::{collections::HashMap, sync::Arc};
 
+use crate::now_shanghai;
 use crate::statistics_model::Statistics;
 use crate::{boring_face::BoringFace, DbPool};
 
 use crate::membership_model::Membership;
 use anyhow::anyhow;
-use chrono::{NaiveDateTime, NaiveTime, Utc};
+use chrono::{NaiveDateTime, NaiveTime};
 use headers::HeaderMap;
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -186,8 +187,7 @@ impl Context {
         let mut uv_cache: HashMap<i64, i64> = HashMap::new();
         let mut referrer_cache: HashMap<i64, i64> = HashMap::new();
         let mut changed_list: Vec<i64> = Vec::new();
-        let _today =
-            NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0));
+        let _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
         let id_list = Vec::from_iter(self.id2member.keys());
         loop {
             tokio::time::sleep(Duration::from_secs(60 * 5)).await;
@@ -217,7 +217,7 @@ impl Context {
                     self.db_pool.get().unwrap(),
                     &Statistics {
                         created_at: _today,
-                        updated_at: NaiveDateTime::from_timestamp(Utc::now().timestamp(), 0),
+                        updated_at: now_shanghai(),
                         membership_id: id.clone(),
                         unique_visitor: uv_cache.get(id).unwrap_or(&0).clone(),
                         referrer: referrer_cache.get(id).unwrap_or(&0).clone(),
@@ -226,8 +226,7 @@ impl Context {
                 )
                 .unwrap();
             });
-            let new_day =
-                NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0));
+            let new_day = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
             if new_day.ne(&_today) {
                 // 如果是跨天重置数据
                 uv_write.clear();

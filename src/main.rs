@@ -1,11 +1,11 @@
 use axum::{routing::get, AddExtensionLayer, Router};
-use chrono::{NaiveDateTime, NaiveTime, Utc};
+use chrono::{NaiveDateTime, NaiveTime};
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use naive::{
     app_model::{Context, DynContext},
     app_router::{home_page, join_us_page, show_badge, show_favicon, show_icon, ws_upgrade},
-    establish_connection,
+    establish_connection, now_shanghai,
     statistics_model::Statistics,
     DbPool,
 };
@@ -87,7 +87,7 @@ async fn shutdown_signal(ctx: Arc<Context>) {
 
     println!("signal received, running cleanup tasks..");
 
-    let _today = NaiveDateTime::new(Utc::now().date().naive_utc(), NaiveTime::from_hms(0, 0, 0));
+    let _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
     let page_view_read = ctx.unique_visitor.read().await;
     let referrer_read = ctx.referrer.read().await;
     ctx.id2member.keys().for_each(|id| {
@@ -95,7 +95,7 @@ async fn shutdown_signal(ctx: Arc<Context>) {
             ctx.db_pool.get().unwrap(),
             &Statistics {
                 created_at: _today,
-                updated_at: NaiveDateTime::from_timestamp(Utc::now().timestamp(), 0),
+                updated_at: now_shanghai(),
                 membership_id: id.clone(),
                 unique_visitor: page_view_read.get(id).unwrap_or(&0).clone(),
                 referrer: referrer_read.get(id).unwrap_or(&0).clone(),

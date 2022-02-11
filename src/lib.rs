@@ -1,3 +1,5 @@
+use chrono::{NaiveDateTime, Utc};
+use chrono_tz::Asia::Shanghai;
 use diesel::{
     r2d2::{ConnectionManager, Pool},
     SqliteConnection,
@@ -23,4 +25,8 @@ pub fn establish_connection(database_url: &str) -> DbPool {
         .max_size(5)
         .build(manager)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+}
+
+pub fn now_shanghai() -> NaiveDateTime {
+    Utc::now().with_timezone(&Shanghai).naive_local()
 }

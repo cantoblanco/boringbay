@@ -68,7 +68,7 @@
                     <img src="https://boringbay.com/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
                 </a>
                 <div class="navbar-content ml-auto">
-                    <button class="btn btn-action mr-5" onclick="toggleDarkMode()">
+                    <button class="btn btn-action mr-5" onclick="toggleThemeMode()">
                         <i id="dayNightIcon" class="fa fa-moon"></i>
                     </button>
                     <a class="btn btn-primary btn-block" href="/join-us">一起无聊？</a>
@@ -100,7 +100,7 @@
             el.classList = halfmoon.darkModeOn ? 'fa fa-sun' : 'fa fa-moon'
         }
 
-        function toggleDarkMode() {
+        function toggleThemeMode() {
             halfmoon.toggleDarkMode()
             updateDayNightIcon()
         }
@@ -140,8 +140,8 @@
         }
 
         (function () {
-            if (((halfmoon.getPreferredMode() == 'dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches) != halfmoon.darkModeOn) {
-                toggleDarkMode()
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches != halfmoon.darkModeOn) {
+                toggleThemeMode()
             } else {
                 updateDayNightIcon()
             }

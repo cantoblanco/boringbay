@@ -233,6 +233,8 @@ impl Context {
                 referrer_write.clear();
                 uv_cache.clear();
                 referrer_cache.clear();
+                // 重置访问打点
+                self.cache.clear().await;
                 // 更新上日访问量均值
                 let mut rank_svg = self.rank_svg.write().await;
                 *rank_svg = Statistics::prev_day_rank_avg(self.db_pool.get().unwrap());

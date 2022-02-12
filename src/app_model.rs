@@ -187,7 +187,7 @@ impl Context {
         let mut uv_cache: HashMap<i64, i64> = HashMap::new();
         let mut referrer_cache: HashMap<i64, i64> = HashMap::new();
         let mut changed_list: Vec<i64> = Vec::new();
-        let _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
+        let mut _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
         let id_list = Vec::from_iter(self.id2member.keys());
         loop {
             tokio::time::sleep(Duration::from_secs(60 * 5)).await;
@@ -228,6 +228,7 @@ impl Context {
             });
             let new_day = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
             if new_day.ne(&_today) {
+                _today = new_day;
                 // 如果是跨天重置数据
                 uv_write.clear();
                 referrer_write.clear();

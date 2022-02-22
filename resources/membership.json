@@ -47,5 +47,12 @@
             "name": "GiTMBA",
             "description": "探索新知识的宝藏小站",
             "github_username": "qmxs"
+        },
+        "11": {
+            "domain": "wzwzx.cn",
+            "icon": "https://wzwzx.cn/favicon.ico",
+            "name": "问泽卌",
+            "description": "分享技术和生活的小站",
+            "github_username": "fog-www"
         }
     }

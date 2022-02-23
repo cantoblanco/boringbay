@@ -51,15 +51,19 @@ async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
 }
 
 pub async fn show_badge(
-    Path(domain): Path<String>,
+    Path(mut domain): Path<String>,
     headers: HeaderMap,
     Extension(ctx): Extension<DynContext>,
 ) -> Response {
     let mut v_type = crate::app_model::VisitorType::Badge;
 
-    let domain_referrer = get_domain_from_referrer(&headers);
-    if domain_referrer.is_err() || domain_referrer.unwrap().ne(&domain) {
-        v_type = crate::app_model::VisitorType::ICON;
+    let domain_referrer = get_domain_from_referrer(&headers).unwrap_or("".to_string());
+    if domain_referrer.ne(&domain) {
+        if domain.eq("[domain]") {
+            domain = domain_referrer;
+        } else {
+            v_type = crate::app_model::VisitorType::ICON;
+        }
     }
 
     let tend = ctx.boring_visitor(v_type, &domain, &headers).await;

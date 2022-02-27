@@ -63,7 +63,7 @@ impl Statistics {
             let mut sum = 0;
             let mut count = 0;
             res.iter().for_each(|s| {
-                let view = s.referrer + (s.unique_visitor / 5);
+                let view = s.referrer + s.unique_visitor;
                 sum += view;
                 if view > 0 {
                     count = count + 1;

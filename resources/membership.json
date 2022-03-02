@@ -69,4 +69,11 @@
             "description": "helloworld",
             "github_username": "MCTGyt"
         }
+        "14": {
+            "domain": "us-host.nets.hk",
+            "icon": "http://us-host.nets.hk/application/thumb.php?img=/i/2022/02/28/pga7dl.jpg",
+            "name": "美国主机图床",
+            "description": "By天哥",
+            "github_username": "MCTGyt"
+        }
     }

@@ -61,5 +61,12 @@
             "name": "轩の小窝",
             "description": "玩机教程与日常",
             "github_username": "xuanxuan666niupi666"
+        },
+                "12": {
+            "domain": "mctg.orgs.hk",
+            "icon": "http://us-host.nets.hk/application/thumb.php?img=/i/2022/02/28/pga7dl.jpg",
+            "name": "天哥de博客",
+            "description": "helloworld",
+            "github_username": "MCTGyt"
         }
     }

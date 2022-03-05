@@ -1,72 +1,79 @@
-    {
-        "1": {
-            "domain": "lifelonglearni.ng",
-            "icon": "https://lifelonglearni.ng/static/cactus/images/logo.png",
-            "name": "终身学习",
-            "description": "奶爸的博客",
-            "github_username": "naiba"
-        },
-        "2": {
-            "domain": "boringbay.com",
-            "icon": "/api/icon/boringbay.com",
-            "name": "The Boring Bay",
-            "description": "无聊的人那么多～",
-            "github_username": "boringbay"
-        },
-        "3": {
-            "domain": "www.spiritysdx.top",
-            "icon": "https://ftp.bmp.ovh/imgs/2021/07/7f4988ae3b43e55d.jpg",
-            "name": "二叉树的博客",
-            "description": "二叉树上的我",
-            "github_username": "spiritlhl"
-        },
-        "5": {
-            "domain": "ops.naibahq.com",
-            "icon": "https://ops.naibahq.com/static/logo.svg",
-            "name": "哪吒监控",
-            "description": "没有比这个更好玩的了",
-            "github_username": "naiba/nezha"
-        },
-        "6": {
-            "domain": "www.ifking.cn",
-            "icon": "https://cdn.jsdelivr.net/gh/ilay1678/cdn@master/favicon.png",
-            "name": "我若为王",
-            "description": "Just do it!",
-            "github_username": "ilay1678"
-        },
-        "9": {
-            "domain": "www.ifts.ml",
-            "icon": "https://cdn.jsdelivr.net/gh/DaoChen6/img@main/logo1.png",
-            "name": "辰漉博客",
-            "description": "道辰的博客",
-            "github_username": "DaoChen6"
-        },
-        "10": {
-            "domain": "www.gitmba.com",
-            "icon": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-ec093c08-f8d6-4ae7-ae84-bbd115c10996/dfe39fcf-3e7a-463d-89b9-42b15563fb95.png",
-            "name": "GiTMBA",
-            "description": "探索新知识的宝藏小站",
-            "github_username": "qmxs"
-        },
-        "11": {
-            "domain": "wzwzx.cn",
-            "icon": "https://wzwzx.cn/favicon.ico",
-            "name": "问泽卌",
-            "description": "分享技术和生活的小站",
-            "github_username": "fog-www"
-        },
-        "12": {
-            "domain": "xuannp.top",
-            "icon": "https://i.postimg.cc/8kfJWMYC/QQ-20220212234005.jpg",
-            "name": "轩の小窝",
-            "description": "玩机教程与日常",
-            "github_username": "xuanxuan666niupi666"
-        },
-                "13": {
-            "domain": "mctg.orgs.hk",
-            "icon": "http://us-host.nets.hk/application/thumb.php?img=/i/2022/02/28/pga7dl.jpg",
-            "name": "天哥de博客",
-            "description": "helloworld",
-            "github_username": "MCTGyt"
-        }
-    }
+{
+	"1": {
+		"domain": "lifelonglearni.ng",
+		"icon": "https://lifelonglearni.ng/static/cactus/images/logo.png",
+		"name": "终身学习",
+		"description": "奶爸的博客",
+		"github_username": "naiba"
+	},
+	"2": {
+		"domain": "boringbay.com",
+		"icon": "/api/icon/boringbay.com",
+		"name": "The Boring Bay",
+		"description": "无聊的人那么多～",
+		"github_username": "boringbay"
+	},
+	"3": {
+		"domain": "www.spiritysdx.top",
+		"icon": "https://ftp.bmp.ovh/imgs/2021/07/7f4988ae3b43e55d.jpg",
+		"name": "二叉树的博客",
+		"description": "二叉树上的我",
+		"github_username": "spiritlhl"
+	},
+	"5": {
+		"domain": "ops.naibahq.com",
+		"icon": "https://ops.naibahq.com/static/logo.svg",
+		"name": "哪吒监控",
+		"description": "没有比这个更好玩的了",
+		"github_username": "naiba/nezha"
+	},
+	"6": {
+		"domain": "www.ifking.cn",
+		"icon": "https://cdn.jsdelivr.net/gh/ilay1678/cdn@master/favicon.png",
+		"name": "我若为王",
+		"description": "Just do it!",
+		"github_username": "ilay1678"
+	},
+	"9": {
+		"domain": "www.ifts.ml",
+		"icon": "https://cdn.jsdelivr.net/gh/DaoChen6/img@main/logo1.png",
+		"name": "辰漉博客",
+		"description": "道辰的博客",
+		"github_username": "DaoChen6"
+	},
+	"10": {
+		"domain": "www.gitmba.com",
+		"icon": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-ec093c08-f8d6-4ae7-ae84-bbd115c10996/dfe39fcf-3e7a-463d-89b9-42b15563fb95.png",
+		"name": "GiTMBA",
+		"description": "探索新知识的宝藏小站",
+		"github_username": "qmxs"
+	},
+	"11": {
+		"domain": "wzwzx.cn",
+		"icon": "https://wzwzx.cn/favicon.ico",
+		"name": "问泽卌",
+		"description": "分享技术和生活的小站",
+		"github_username": "fog-www"
+	},
+	"12": {
+		"domain": "xuannp.top",
+		"icon": "https://i.postimg.cc/8kfJWMYC/QQ-20220212234005.jpg",
+		"name": "轩の小窝",
+		"description": "玩机教程与日常",
+		"github_username": "xuanxuan666niupi666"
+	},
+	"13": {
+		"domain": "mctg.orgs.hk",
+		"icon": "http://us-host.nets.hk/application/thumb.php?img=/i/2022/02/28/pga7dl.jpg",
+		"name": "天哥de博客",
+		"description": "helloworld",
+		"github_username": "MCTGyt"
+	},
+	"14": {
+		"domain": "us-host.nets.hk",
+		"icon": "http://us-host.nets.hk/application/thumb.php?img=/i/2022/02/28/pga7dl.jpg",
+		"name": "美国主机图床",
+		"description": "By天哥",
+		"github_username": "MCTGyt"
+	}
+}

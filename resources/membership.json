@@ -34,6 +34,13 @@
 		"description": "Just do it!",
 		"github_username": "ilay1678"
 	},
+	"8": {
+		"domain": "lajilao.com",
+		"icon": "https://lajilao.com/img/logo.png",
+		"name": "垃圾佬",
+		"description": "奶爸的米表",
+		"github_username": "naiba"
+	},
 	"9": {
 		"domain": "www.ifts.ml",
 		"icon": "https://cdn.jsdelivr.net/gh/DaoChen6/img@main/logo1.png",
@@ -76,7 +83,7 @@
 		"description": "By天哥",
 		"github_username": "MCTGyt"
 	},
-		"15": {
+	"15": {
 		"domain": "www.lizhichen.cn",
 		"icon": "https://www.lizhichen.cn/zb_users/upload/2021/10/202110151634246697912592.png",
 		"name": "懋和道人",

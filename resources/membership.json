@@ -4,14 +4,14 @@
 		"icon": "https://lifelonglearni.ng/static/cactus/images/logo.png",
 		"name": "终身学习",
 		"description": "奶爸的博客",
-		"github_username": "naiba"
+		"github_username": "naiba/solitudes"
 	},
 	"2": {
 		"domain": "boringbay.com",
 		"icon": "/api/icon/boringbay.com",
 		"name": "The Boring Bay",
 		"description": "无聊的人那么多～",
-		"github_username": "boringbay"
+		"github_username": "boringbay/naive"
 	},
 	"3": {
 		"domain": "www.spiritysdx.top",
@@ -39,7 +39,7 @@
 		"icon": "https://lajilao.com/img/logo.png",
 		"name": "垃圾佬",
 		"description": "奶爸的米表",
-		"github_username": "naiba"
+		"github_username": "naiba/domain-portfolio"
 	},
 	"9": {
 		"domain": "www.ifts.ml",

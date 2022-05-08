@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 
 use anyhow::anyhow;
 use askama::Template;
@@ -123,6 +123,9 @@ pub async fn show_icon(
 struct HomeTemplate {
     version: String,
     membership: Vec<Membership>,
+    uv: HashMap<i64, i64>,
+    referrer: HashMap<i64, i64>,
+    level: HashMap<i64, i64>,
 }
 
 pub async fn home_page(
@@ -142,6 +145,7 @@ pub async fn home_page(
     let referrer_read = ctx.referrer.read().await;
     let uv_read = ctx.unique_visitor.read().await;
 
+    let mut level: HashMap<i64, i64> = HashMap::new();
     let mut rank_vec: Vec<(i64, i64)> = Vec::new();
 
     for k in ctx.id2member.keys() {
@@ -150,6 +154,7 @@ pub async fn home_page(
         let rv = referrer_read.get(k).unwrap_or(&0).to_owned();
         if uv > 0 || rv > 0 {
             rank_vec.push((k.to_owned(), (rv + uv) / rank_svg));
+            level.insert(k.to_owned(), ctx.get_tend_from_uv_and_rv(uv, rv).await);
         }
     }
 
@@ -162,6 +167,9 @@ pub async fn home_page(
 
     let tpl = HomeTemplate {
         membership,
+        uv: uv_read.clone(),
+        referrer: referrer_read.clone(),
+        level,
         version: GIT_HASH[0..8].to_string(),
     };
     let html = tpl.render().map_err(|err| err.to_string())?;

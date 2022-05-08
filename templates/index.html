@@ -9,7 +9,17 @@
         {% for m in membership %}
         <div class="w-md-quarter p-5">
             <div class="d-flex p-5 border rounded shadow">
-                <img class="d-block w-50 h-50 rounded" src="{{ m.icon }}">
+                <div class="d-block position-relative">
+                    <img class="w-50 h-50 rounded" src="{{ m.icon }}">
+                    <p class="position-absolute top-0 right-0 m-0 text-right font-weight-bolder"
+                        style="font-size: 0.6rem;line-height: 0.7rem;">
+                        UV{{uv.get(m.id).unwrap()}}
+                        <br>
+                        RV{{referrer.get(m.id).unwrap()}}
+                        <br>
+                        Lv.{{level.get(m.id).unwrap()}}
+                    </p>
+                </div>
                 <div class="flex-grow-1 pl-10">
                     <a target="_blank" class="text-reset font-weight-bolder" href="https://{{ m.domain }}"
                         title="{{ m.name|e }}">

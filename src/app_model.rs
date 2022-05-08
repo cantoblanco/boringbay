@@ -58,6 +58,16 @@ pub struct Context {
 }
 
 impl Context {
+    pub async fn get_tend_from_uv_and_rv(&self, uv: i64, rv: i64) -> i64 {
+        let tend = (uv + rv) / self.rank_svg.read().await.to_owned();
+        if tend > 10 {
+            return 10;
+        } else if tend < 1 {
+            return 1;
+        }
+        tend
+    }
+
     pub async fn boring_visitor(
         &self,
         v_type: VisitorType,
@@ -105,12 +115,7 @@ impl Context {
             }
             drop(uv);
 
-            let mut tend = (dist_r + dist_uv) / self.rank_svg.read().await.to_owned();
-            if tend > 10 {
-                tend = 10;
-            } else if tend < 1 {
-                tend = 1
-            }
+            let tend = self.get_tend_from_uv_and_rv(dist_uv, dist_r).await;
 
             if notification {
                 // 广播访客信息
@@ -150,11 +155,12 @@ impl Context {
             referrer.insert(s.membership_id, s.referrer);
         });
 
-        let membership: HashMap<i64, Membership> =
+        let mut membership: HashMap<i64, Membership> =
             serde_json::from_str(&fs::read_to_string("./resources/membership.json").unwrap())
                 .unwrap();
         let mut domain2id: HashMap<String, i64> = HashMap::new();
-        membership.iter().for_each(|(k, v)| {
+        membership.iter_mut().for_each(|(k, v)| {
+            v.id = k.clone(); // 将 ID 补给 member
             domain2id.insert(v.domain.clone(), k.clone());
         });
 

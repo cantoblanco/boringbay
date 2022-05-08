@@ -89,5 +89,12 @@
 		"name": "懋和道人",
 		"description": "全真道名至臣，正壹道名和道，茅山道名懋和",
 		"github_username": "wulintang"
+	},
+	"16": {
+		"domain": "blog.dwz0.top",
+		"icon": "https://blog.dwz0.top/wp-content/uploads/2022/05/feCAt.png",
+		"name": "ShSuperyun-Blog",
+		"description": "I like my website.",
+		"github_username": "hjh-cn"
 	}
 }

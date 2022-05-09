@@ -13,11 +13,11 @@
                     <img class="w-50 h-50 rounded" src="{{ m.icon }}">
                     <p class="position-absolute top-0 right-0 m-0 text-right font-weight-bolder"
                         style="font-size: 0.6rem;line-height: 0.7rem;">
-                        UV{{uv.get(m.id).unwrap()}}
+                        UV{{uv.get(m.id).cloned().unwrap_or_default()}}
                         <br>
-                        RV{{referrer.get(m.id).unwrap()}}
+                        RV{{referrer.get(m.id).cloned().unwrap_or_default()}}
                         <br>
-                        Lv.{{level.get(m.id).unwrap()}}
+                        Lv.{{level.get(m.id).cloned().unwrap_or_default()}}
                     </p>
                 </div>
                 <div class="flex-grow-1 pl-10">

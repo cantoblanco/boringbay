@@ -96,5 +96,12 @@
 		"name": "ShSuperyun-Blog",
 		"description": "I like my website.",
 		"github_username": "hjh-cn"
+	},
+	"17": {
+		"domain": "pay.superyun.sh.cn",
+		"icon": "https://blog.dwz0.top/wp-content/uploads/2022/05/feCAt.png",
+		"name": "ShSuperyun-Pay",
+		"description": "My payment is convenient",
+		"github_username": "hjh-cn"
 	}
 }

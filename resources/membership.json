@@ -110,5 +110,12 @@
 		"name": "WoL's Blog",
 		"description": "Welcome to WoL's Blog!",
 		"github_username": "WoLeo-Z"
-	}	
+	},
+	"19": {
+		"domain": "hi.sy",
+		"icon": "https://hi.sy/wp-content/uploads/2021/11/android-chrome-512x512-2.png",
+		"name": "白歌",
+		"description": "Just for funnnnn!!",
+		"github_username": "hhhkkk520"
+	}
 }

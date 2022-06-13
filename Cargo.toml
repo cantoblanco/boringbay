@@ -12,8 +12,8 @@ askama = "0.11.0"
 axum = {version = "0.4.4", features = ["headers", "ws"]}
 chrono = "0.4"
 chrono-tz = "0.6.1"
-diesel = {version = "^2.0.0", features = ["sqlite", "chrono", "r2d2"], git = "https://github.com/diesel-rs/diesel"}
-diesel_migrations = {version = "^2.0.0", git = "https://github.com/diesel-rs/diesel/"}
+diesel = {version = "2.0.0-rc.0", features = ["bigdecimal", "chrono", "r2d2", "sqlite"]}
+diesel_migrations = "2.0.0-rc.0"
 dotenv = "0.15.0"
 headers = "0.3.5"
 lazy_static = "1.4.0"

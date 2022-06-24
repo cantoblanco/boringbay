@@ -8,58 +8,51 @@ on:
 jobs:
   publish-image:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            docker: linux/amd64
+          - target: aarch64-unknown-linux-gnu
+            docker: linux/arm64
     steps:
-      - name: Extract branch name
-        run: |
-          export BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
-          echo "##[set-output name=branch;]$BRANCH_NAME"
-          if [ $BRANCH_NAME = "main" ] || [ $BRANCH_NAME = "master" ]
-            then echo "##[set-output name=tag;]latest"
-            else echo "##[set-output name=tag;]$BRANCH_NAME"
-          fi
-        id: extract_branch
       - uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.extract_branch.outputs.branch }}
-      - name: Install sccache (ubuntu-latest)
-        env:
-          LINK: https://github.com/mozilla/sccache/releases/download
-          SCCACHE_VERSION: v0.2.15
-        run: |
-          export SCCACHE_FILE=sccache-$SCCACHE_VERSION-x86_64-unknown-linux-musl
-          mkdir -p $HOME/.local/bin
-          curl -L "$LINK/$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz" | tar xz
-          mv -f $SCCACHE_FILE/sccache $HOME/.local/bin/sccache
-          chmod +x $HOME/.local/bin/sccache
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Setup cargo cache
         uses: actions/cache@v2
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-
-      - name: Setup sccache
-        uses: actions/cache@v2
+            ${{ runner.os }}-${{ matrix.target }}-cargo-
+      - name: install toolchain
+        uses: actions-rs/toolchain@v1
         with:
-          path: "/home/runner/.cache/sccache"
-          key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-sccache-
-      - name: Start sccache server
-        run: sccache --start-server
-      - name: Build targets
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+      - name: install latest cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+      - name: compile
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target=${{ matrix.target }}
+      - name: move target
         run: |
-          export RUSTC_WRAPPER="$HOME/.local/bin/sccache"
-          cargo build --release
-      - name: Print sccache stats
-        run: sccache --show-stats
-      - name: Stop sccache server
-        run: sccache --stop-server || true
-      - name: Build and push docker images
-        run: |
-          echo ${{secrets.GITHUB_TOKEN}} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker build -f Dockerfile --tag ghcr.io/boringbay/naive:${{ steps.extract_branch.outputs.tag }} .
-          docker push ghcr.io/boringbay/naive:${{ steps.extract_branch.outputs.tag }}
+          mkdir release && mv target/${{ matrix.target }}/release/naive release/
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: docker build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: ${{ matrix.docker }}
+          push: true
+          tags: |
+            ghcr.io/boringbay/naive

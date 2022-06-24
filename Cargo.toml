@@ -25,3 +25,9 @@ tokio = {version = "1.0", features = ["full"]}
 tracing = "0.1"
 tracing-subscriber = {version = "0.3", features = ["env-filter"]}
 url = "2.2.2"
+
+[package.metadata.cross.target.aarch64-unknown-linux-gnu]
+pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libsqlite3-dev:arm64"]
+
+[package.metadata.cross.target.x86_64-unknown-linux-gnu]
+pre-build = ["apt-get update && apt-get install --assume-yes libsqlite3-dev"]

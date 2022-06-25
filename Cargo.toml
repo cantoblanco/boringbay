@@ -26,14 +26,10 @@ tracing = "0.1"
 tracing-subscriber = {version = "0.3", features = ["env-filter"]}
 url = "2.2.2"
 
-[package.metadata.cross.target.build]
-build-std = true
-xargo = true
-
 [package.metadata.cross.target.aarch64-unknown-linux-gnu]
 image = "ghcr.io/cross-rs/aarch64-unknown-linux-gnu:edge"
-pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes libsqlite3-dev:arm64"]
+pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes sqlite3:arm64 libsqlite3-dev:arm64"]
 
 [package.metadata.cross.target.x86_64-unknown-linux-gnu]
 image = "ghcr.io/cross-rs/x86_64-unknown-linux-gnu:edge"
-pre-build = ["apt-get update && apt-get install --assume-yes libsqlite3-dev"]
+pre-build = ["apt-get update && apt-get install --assume-yes sqlite3 libsqlite3-dev"]

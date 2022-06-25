@@ -36,6 +36,8 @@ jobs:
           override: true
       - name: compile
         uses: actions-rs/cargo@v1
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS: "-lsqlite3"
         with:
           use-cross: ${{ matrix.cross }}
           command: build

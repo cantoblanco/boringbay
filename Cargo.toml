@@ -32,7 +32,5 @@ url = "2.2.2"
 [package.metadata.cross.target.aarch64-unknown-linux-gnu]
 image = "ghcr.io/cross-rs/aarch64-unknown-linux-gnu:edge"
 pre-build = [
-  "dpkg --add-architecture arm64",
-  "apt-get update",
-  "apt-get install --assume-yes sqlite3 sqlite3:arm64 libsqlite3-dev libsqlite3-dev:arm64",
+  "dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes sqlite3 sqlite3:arm64 libsqlite3-dev libsqlite3-dev:arm64",
 ]

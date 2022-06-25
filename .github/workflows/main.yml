@@ -42,7 +42,9 @@ jobs:
           args: --release --target=${{ matrix.target }}
       - name: move target
         run: |
-          mkdir release && mv target/${{ matrix.target }}/release/naive release/
+          ls -al target/${{ matrix.target }}/release/
+          mkdir release
+          mv target/${{ matrix.target }}/release/naive release/
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx

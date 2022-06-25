@@ -32,8 +32,6 @@ jobs:
           toolchain: stable
           target: ${{ matrix.target }}
           override: true
-      - name: install latest cross
-        run: cargo install cross --git https://github.com/cross-rs/cross --branch main
       - name: compile
         uses: actions-rs/cargo@v1
         with:

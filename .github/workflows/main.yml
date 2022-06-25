@@ -33,11 +33,11 @@ jobs:
         with:
           toolchain: stable
           target: ${{ matrix.target }}
-          override: ${{ matrix.cross }}
+          override: true
       - name: compile
         uses: actions-rs/cargo@v1
         with:
-          use-cross: true
+          use-cross: ${{ matrix.cross }}
           command: build
           args: --release --target=${{ matrix.target }}
       - name: move target

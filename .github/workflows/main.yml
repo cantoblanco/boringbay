@@ -11,9 +11,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: x86_64-unknown-linux-gnu
-            docker: linux/amd64
-            cross: false
+          # - target: x86_64-unknown-linux-gnu
+          #   docker: linux/amd64
+          #   cross: false
           - target: aarch64-unknown-linux-gnu
             docker: linux/arm64
             cross: true

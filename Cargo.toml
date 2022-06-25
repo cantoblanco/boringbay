@@ -29,6 +29,10 @@ url = "2.2.2"
 # [target.i686-unknown-linux-gnu.env]
 # passthrough = ["CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS"]
 
-# [package.metadata.cross.target.aarch64-unknown-linux-gnu]
-# image = "ghcr.io/cross-rs/aarch64-unknown-linux-gnu:edge"
-# pre-build = ["dpkg --add-architecture arm64 && apt-get update && apt-get install --assume-yes sqlite3:arm64 libsqlite3-dev:arm64"]
+[package.metadata.cross.target.aarch64-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/aarch64-unknown-linux-gnu:edge"
+pre-build = [
+  "dpkg --add-architecture arm64",
+  "apt-get update",
+  "apt-get install --assume-yes sqlite3 sqlite3:arm64 libsqlite3-dev libsqlite3-dev:arm64",
+]

@@ -13,8 +13,10 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             docker: linux/amd64
+            cross: false
           - target: aarch64-unknown-linux-gnu
             docker: linux/arm64
+            cross: true
     steps:
       - uses: actions/checkout@v2
       - name: Setup cargo cache
@@ -31,7 +33,7 @@ jobs:
         with:
           toolchain: stable
           target: ${{ matrix.target }}
-          override: true
+          override: ${{ matrix.cross }}
       - name: compile
         uses: actions-rs/cargo@v1
         with:

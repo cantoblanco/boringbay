@@ -44,10 +44,9 @@ jobs:
           args: --release --target=${{ matrix.target }}
       - name: move target
         run: |
-          mkdir -p target/release/${{ matrix.docker }}/
-          mv target/${{ matrix.target }}/release/${{ matrix.binary }} target/release/${{ matrix.docker }}/
+          mkdir -p action-release/${{ matrix.docker }}/
+          mv target/${{ matrix.target }}/release/${{ matrix.binary }} action-release/${{ matrix.docker }}/
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          path: target/release/${{ matrix.docker }}/${{ matrix.binary }}
-      
+          path: action-release/

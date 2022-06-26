@@ -6,13 +6,14 @@ on:
     branches: [main]
     types:
       - completed
-  workflow_dispatch:
 
 jobs:
   docker-build-push:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: Log in to the GHCR
         uses: docker/login-action@master
         with:

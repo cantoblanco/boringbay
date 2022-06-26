@@ -27,16 +27,17 @@ tracing-subscriber = {version = "0.3", features = ["env-filter"]}
 url = "2.2.2"
 
 [dependencies.libsqlite3-sys]
-version = ">=0.17.2, <0.25.0"
+# https://github.com/diesel-rs/diesel/issues/2943
 features = ["bundled"]
+version = ">=0.17.2, <0.25.0"
 
 # [target.i686-unknown-linux-gnu.env]
 # passthrough = ["CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS"]
 
 [package.metadata.cross.target.aarch64-unknown-linux-gnu]
 image = "ghcr.io/cross-rs/aarch64-unknown-linux-gnu:latest"
-pre-build = [
-  "dpkg --add-architecture arm64",
-  "apt-get update",
-  "apt-get install --assume-yes libsqlite3-dev libsqlite3-dev:arm64",
-]
+# pre-build = [
+#   "dpkg --add-architecture arm64",
+#   "apt-get update",
+#   "apt-get install --assume-yes libsqlite3-dev libsqlite3-dev:arm64",
+# ]

@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND="noninteractive" && apt update && apt install -y ca-c
 
 WORKDIR /webapp
 COPY ./artifact/$TARGETPLATFORM/naive ./naive
+RUN chmod +x ./naive
 COPY ./migrations ./migrations
 COPY ./resources ./resources
 COPY ./templates ./templates

@@ -1,4 +1,5 @@
 FROM ubuntu:latest
+ARG TARGETPLATFORM
 ENV TZ="Asia/Shanghai"
 
 RUN export DEBIAN_FRONTEND="noninteractive" && apt update && apt install -y ca-certificates tzdata \
@@ -8,7 +9,7 @@ RUN export DEBIAN_FRONTEND="noninteractive" && apt update && apt install -y ca-c
     dpkg-reconfigure tzdata
 
 WORKDIR /webapp
-COPY ./target/release/naive ./naive
+COPY ./target/release/$TARGETPLATFORM/naive ./naive
 COPY ./migrations ./migrations
 COPY ./resources ./resources
 COPY ./templates ./templates

@@ -117,5 +117,12 @@
 		"name": "白歌",
 		"description": "Just for funnnnn!!",
 		"github_username": "hhhkkk520"
+	},
+	"20": {
+		"domain": "pawswrite.xyz",
+		"icon": "https://pawswrite.xyz/images/avatar.gif",
+		"name": "fever",
+		"description": "好想发财",
+		"github_username": "tech-fever"
 	}
 }

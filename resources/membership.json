@@ -124,5 +124,12 @@
 		"name": "fever",
 		"description": "好想发财",
 		"github_username": "tech-fever"
+	},
+	"21": {
+		"domain": "maolog.com",
+		"icon": "https://maolog.com/logo",
+		"name": "茂茂の部落格",
+		"description": "随笔记录",
+		"github_username": "maolog"
 	}
 }

@@ -131,5 +131,12 @@
 		"name": "茂茂の部落格",
 		"description": "随笔记录",
 		"github_username": "maolog"
+	},
+	"22": {
+		"domain": "yuanzj.top",
+		"icon": "https://yuanzj.top/img/favicon.jpg",
+		"name": "圆周率的博客",
+		"description": "My Blog!",
+		"github_username": "yzl3014"
 	}
 }

@@ -138,5 +138,12 @@
 		"name": "圆周率的博客",
 		"description": "My Blog!",
 		"github_username": "yzl3014"
+	},
+	"23": {
+		"domain": "tuerxuan.com",
+		"icon": "http://photo.tuerxuan.com/image.png",
+		"name": "兔儿轩の小破站",
+		"description": "一只码兔~",
+		"github_username": "Rabbit_xuan"
 	}
 }

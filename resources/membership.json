@@ -152,5 +152,12 @@
 		"name": "大大棉的博客",
 		"description": "无聊时写点，写点无聊事",
 		"github_username": "muyan0709"
+	},
+	"25": {
+		"domain": "www.57blog.cn",
+		"icon": "https://www.57img.tk/LightPicture/2022/05/d7c66f56f1c8569a.jpg",
+		"name": "无心博客",
+		"description": "生命不等于是呼吸，生命是活动",
+		"github_username": "phong057"
 	}
 }

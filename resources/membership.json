@@ -159,5 +159,12 @@
 		"name": "无心博客",
 		"description": "生命不等于是呼吸，生命是活动",
 		"github_username": "phong057"
+	},
+	"25": {
+		"domain": "boring.studio",
+		"icon": "https://boring.studio/assets/images/boring.studio.ico.svg",
+		"name": "无聊工作室",
+		"description": "专注一切无聊事物",
+		"github_username": "xiongbao"
 	}
 }

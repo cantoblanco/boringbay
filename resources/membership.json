@@ -166,5 +166,12 @@
 		"name": "无聊工作室",
 		"description": "专注一切无聊事物",
 		"github_username": "xiongbao"
+	},
+	"27": {
+		"domain": "joker.cc",
+		"icon": "https://www.joker.cc/images/favicon.ico",
+		"name": "Joker",
+		"description": "我是傻逼！",
+		"github_username": "zhufacai"
 	}
 }

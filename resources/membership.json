@@ -173,5 +173,12 @@
 		"name": "Joker",
 		"description": "我是傻逼！",
 		"github_username": "zhufacai"
+	},
+        "28": {
+		"domain": "www.kuhehe.top",
+		"icon": "https://img2.woyaogexing.com/2022/12/19/cb41d5dd363151ea1a45f629e526615d.jpeg",
+		"name": "酷小呵",
+		"description": "爱分享的酷小呵",
+		"github_username": "Kuhehe666"
 	}
 }

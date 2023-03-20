@@ -148,8 +148,8 @@
 	},
         "24": {
 		"domain": "blog.dmxvx.cc",
-		"icon": "https://blog.dmxvx.cc/img/logo.jpg",
-		"name": "大大棉的博客",
+		"icon": "https://cdn.dmxvx.cc/img/logo.png",
+		"name": "大棉博客",
 		"description": "无聊时写点，写点无聊事",
 		"github_username": "muyan0709"
 	},

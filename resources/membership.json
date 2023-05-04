@@ -187,5 +187,12 @@
 		"name": "澪度の博客",
 		"description": "可能会随便写点什么",
 		"github_username": "lingdu2333"
+	},
+        "30": {
+		"domain": "solitud.es",
+		"icon": "https://s3.solitud.es/solitude/photo_2023-04-20_22-16-39.jpg",
+		"name": "The Lonely House",
+		"description": "Solitude and Reflection",
+		"github_username": "dysf888"
 	}
 }

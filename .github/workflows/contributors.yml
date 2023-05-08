@@ -14,7 +14,8 @@ jobs:
         with:
           filter-author: (renovate\[bot\]|renovate-bot|dependabot\[bot\])
           hideName: 'false' # Hide names in htmlTable
-          avatarSize: 100  # Set the avatar size.
+          avatarSize: 66  # Set the avatar size.
+          truncate: 6
 
       - name: Modify htmlTable README.md
         uses: jaywcjlove/github-action-modify-file-content@main

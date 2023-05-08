@@ -23,4 +23,4 @@ jobs:
           openDelimiter: '<!--GAMFC_DELIMITER-->'
           closeDelimiter: '<!--GAMFC_DELIMITER_END-->'
           path: README.md
-          body: '${{steps.contributors.outputs.htmlTable}}'
+          body: '${{steps.contributors.outputs.htmlList}}'

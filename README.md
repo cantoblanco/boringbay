@@ -6,7 +6,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 
 提交 PR 将你的网站添加进 `resources/membership.json`
 
-<!--GAMFC_DELIMITER-->will be replaced here<!--GAMFC_DELIMITER-END-->
+<!--GAMFC_DELIMITER--> will be replaced here <!--GAMFC_DELIMITER_END-->
 
 ## Migration
 

@@ -8,19 +8,19 @@ jobs:
   contributors:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - name: Generate Contributors Images
         uses: jaywcjlove/github-action-contributors@main
         id: contributors
         with:
           filter-author: (renovate\[bot\]|renovate-bot|dependabot\[bot\])
           openDelimiter: '<!--GAMFC_DELIMITER-->'
-          closeDelimiter: '<!--GAMFC_DELIMITER-END-->'
+          closeDelimiter: '<!--GAMFC_DELIMITER_END-->'
           hideName: 'false' # Hide names in htmlTable
           avatarSize: 100  # Set the avatar size.
 
       - name: Modify htmlTable README.md
         uses: jaywcjlove/github-action-modify-file-content@main
         with:
+          message: update contributors[no ci]
           path: README.md
           body: '${{steps.contributors.outputs.htmlTable}}'

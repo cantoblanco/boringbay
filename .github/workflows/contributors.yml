@@ -13,8 +13,6 @@ jobs:
         id: contributors
         with:
           filter-author: (renovate\[bot\]|renovate-bot|dependabot\[bot\])
-          openDelimiter: '<!--GAMFC_DELIMITER-->'
-          closeDelimiter: '<!--GAMFC_DELIMITER_END-->'
           hideName: 'false' # Hide names in htmlTable
           avatarSize: 100  # Set the avatar size.
 
@@ -22,5 +20,7 @@ jobs:
         uses: jaywcjlove/github-action-modify-file-content@main
         with:
           message: update contributors[no ci]
+          openDelimiter: '<!--GAMFC_DELIMITER-->'
+          closeDelimiter: '<!--GAMFC_DELIMITER_END-->'
           path: README.md
           body: '${{steps.contributors.outputs.htmlTable}}'

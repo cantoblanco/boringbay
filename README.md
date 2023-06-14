@@ -54,8 +54,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/lingdu2333" title="lingdu2333">
   <img src="https://avatars.githubusercontent.com/u/117048039?v=4" width="66;" alt="lingdu2333"/>
 </a>
-<a href="https://github.com/spiritLHLS" title="spiritLHLS">
-  <img src="https://avatars.githubusercontent.com/u/103393591?v=4" width="66;" alt="spiritLHLS"/>
+<a href="https://github.com/spiritLHLS" title="spiritlhl">
+  <img src="https://avatars.githubusercontent.com/u/103393591?v=4" width="66;" alt="spiritlhl"/>
 </a>
 <a href="https://github.com/tech-fever" title="tech-fever">
   <img src="https://avatars.githubusercontent.com/u/105153585?v=4" width="66;" alt="tech-fever"/>
@@ -69,8 +69,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/xiongbao" title="熊宝">
   <img src="https://avatars.githubusercontent.com/u/4247191?v=4" width="66;" alt="熊宝"/>
 </a>
-<a href="https://github.com/DaoChen6" title="道辰">
-  <img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="道辰"/>
+<a href="https://github.com/penislong" title="penislong">
+  <img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="penislong"/>
 </a>
 <a href="https://github.com/dysf888" title="黑歌">
   <img src="https://avatars.githubusercontent.com/u/47450409?v=4" width="66;" alt="黑歌"/>

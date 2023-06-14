@@ -194,5 +194,12 @@
 		"name": "The Lonely House",
 		"description": "Solitude and Reflection",
 		"github_username": "dysf888"
+	},
+        "31": {
+		"domain": "bigtoyscompany.com",
+		"icon": "https://bigtoyscompany.com/assets/logo.e75135c1.png",
+		"name": "大玩具公司",
+		"description": "Big toys for big boys.",
+		"github_username": "naiba"
 	}
 }

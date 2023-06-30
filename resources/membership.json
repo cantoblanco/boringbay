@@ -201,5 +201,12 @@
 		"name": "大玩具公司",
 		"description": "Big toys for big boys.",
 		"github_username": "naiba"
+	},
+	"32": {
+		"domain": "blog.qcmoe.com",
+		"icon": "https://blog.qcmoe.com/content/uploadfile/tpl_options-master/favicon.jpg",
+		"name": "倾丞の小窝",
+		"description": "倾丞的小窝，❤心随我意，行路千里。.",
+		"github_username": "Jochen233"
 	}
 }

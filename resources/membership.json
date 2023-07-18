@@ -215,5 +215,12 @@
 		"name": "2B·随笔",
 		"description": "一只会书写的2B铅笔",
 		"github_username": "xiaoxing07"
+	},
+	"34": {
+		"domain": "jipa.uk",
+		"icon": "https://jipa.uk/static/avatar.jpg",
+		"name": "JIPA233の小窝",
+		"description": "Deed divides beings into lower and higher ones.",
+		"github_username": "jipa233"
 	}
 }

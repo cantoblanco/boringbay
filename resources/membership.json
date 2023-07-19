@@ -210,10 +210,17 @@
 		"github_username": "Jochen233"
 	},
 	"33": {
-		"domain": "2b.sb",
-		"icon": "https://2b.sb/logo.png",
-		"name": "2B·随笔",
-		"description": "一只会书写的2B铅笔",
+		"domain": "zhen.fan",
+		"icon": "https://zhen.fan/logo.png",
+		"name": "真烦博客",
+		"description": "一个用来发牢骚的博客",
 		"github_username": "xiaoxing07"
+	},
+	"34": {
+		"domain": "jipa.uk",
+		"icon": "https://jipa.uk/static/avatar.jpg",
+		"name": "JIPA233の小窝",
+		"description": "Deed divides beings into lower and higher ones.",
+		"github_username": "jipa233"
 	}
 }

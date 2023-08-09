@@ -18,11 +18,11 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/WoLeo-Z" title="WoL">
   <img src="https://avatars.githubusercontent.com/u/45914900?v=4" width="66;" alt="WoL"/>
 </a>
-<a href="https://github.com/qmxs" title="gitmba">
-  <img src="https://avatars.githubusercontent.com/u/49803761?v=4" width="66;" alt="gitmba"/>
-</a>
 <a href="https://github.com/xiaoxing07" title="2B">
   <img src="https://avatars.githubusercontent.com/u/99374145?v=4" width="66;" alt="2B"/>
+</a>
+<a href="https://github.com/qmxs" title="gitmba">
+  <img src="https://avatars.githubusercontent.com/u/49803761?v=4" width="66;" alt="gitmba"/>
 </a>
 <a href="https://github.com/maolog" title="Mauzhu">
   <img src="https://avatars.githubusercontent.com/u/17608225?v=4" width="66;" alt="Mauzhu"/>
@@ -78,8 +78,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/xiongbao" title="熊宝">
   <img src="https://avatars.githubusercontent.com/u/4247191?v=4" width="66;" alt="熊宝"/>
 </a>
-<a href="https://github.com/penislong" title="penislong">
-  <img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="penislong"/>
+<a href="https://github.com/zaxigia" title="langpa">
+  <img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/>
 </a>
 <a href="https://github.com/dysf888" title="黑歌">
   <img src="https://avatars.githubusercontent.com/u/47450409?v=4" width="66;" alt="黑歌"/>

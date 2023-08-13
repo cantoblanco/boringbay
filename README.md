@@ -75,6 +75,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/wulintang" title="南通伍林堂文化传播有限公司">
   <img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="南通伍林堂文化传播有限公司"/>
 </a>
+<a href="https://github.com/xiowo" title="汐沫">
+  <img src="https://avatars.githubusercontent.com/u/87068069?v=4" width="66;" alt="汐沫"/>
+</a>
 <a href="https://github.com/xiongbao" title="熊宝">
   <img src="https://avatars.githubusercontent.com/u/4247191?v=4" width="66;" alt="熊宝"/>
 </a>

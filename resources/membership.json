@@ -222,5 +222,12 @@
 		"name": "JIPA233の小窝",
 		"description": "Deed divides beings into lower and higher ones.",
 		"github_username": "jipa233"
+	},
+	35": {
+		"domain": "blog.xiowo.net",
+		"icon": "https://blog.xiowo.net/img/avatar.png",
+		"name": "Mo的记事簿",
+		"description": "万年鸽王，哈哈OvO",
+		"github_username": "xiowo"
 	}
 }

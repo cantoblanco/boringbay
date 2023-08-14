@@ -69,6 +69,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/tech-fever" title="tech-fever">
   <img src="https://avatars.githubusercontent.com/u/105153585?v=4" width="66;" alt="tech-fever"/>
 </a>
+<a href="https://github.com/tosspi" title="tosspi">
+  <img src="https://avatars.githubusercontent.com/u/91527286?v=4" width="66;" alt="tosspi"/>
+</a>
 <a href="https://github.com/wzwzx" title="Diq Xia">
   <img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="Diq Xia"/>
 </a>

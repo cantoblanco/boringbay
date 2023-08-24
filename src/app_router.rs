@@ -16,8 +16,8 @@ use tokio::select;
 use crate::{
     app_model::{Context, DynContext},
     boring_face::BoringFace,
-    membership_model::Membership,
-    GIT_HASH,
+    membership_model::{Membership, RankAndMembership},
+    now_shanghai, GIT_HASH,
 };
 
 pub async fn ws_upgrade(
@@ -125,6 +125,8 @@ struct HomeTemplate {
     membership: Vec<Membership>,
     uv: HashMap<i64, i64>,
     referrer: HashMap<i64, i64>,
+    rank: Vec<RankAndMembership>,
+    to_be_remove: Vec<RankAndMembership>,
     level: HashMap<i64, i64>,
 }
 
@@ -165,10 +167,35 @@ pub async fn home_page(
         membership.push(ctx.id2member.get(&v.0).unwrap().to_owned());
     }
 
+    let rank = ctx.rank.read().await.to_owned();
+
+    let mut rank_and_membership_to_be_remove = Vec::new();
+    let mut rank_and_membership = Vec::new();
+
+    rank.iter()
+        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
+        .for_each(|r| {
+            if r.updated_at > now_shanghai() - chrono::Duration::days(30) {
+                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
+                rank_and_membership.push(RankAndMembership {
+                    rank: r.to_owned(),
+                    membership: m,
+                });
+            } else {
+                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
+                rank_and_membership_to_be_remove.push(RankAndMembership {
+                    rank: r.to_owned(),
+                    membership: m,
+                });
+            }
+        });
+
     let tpl = HomeTemplate {
         membership,
         uv: uv_read.clone(),
         referrer: referrer_read.clone(),
+        rank: rank_and_membership,
+        to_be_remove: rank_and_membership_to_be_remove,
         level,
         version: GIT_HASH[0..8].to_string(),
     };

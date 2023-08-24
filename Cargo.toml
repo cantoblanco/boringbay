@@ -9,21 +9,26 @@ version = "0.1.0"
 [dependencies]
 anyhow = "1.0.44"
 askama = "0.11.0"
-axum = {version = "0.4.4", features = ["headers", "ws"]}
-chrono = "0.4"
+axum = { version = "0.4.4", features = ["headers", "ws"] }
+chrono = { version = "0.4", features = ["serde"] }
 chrono-tz = "0.6.1"
-diesel = {version = "2.0.0-rc.0", features = ["bigdecimal", "chrono", "r2d2", "sqlite"]}
+diesel = { version = "2.0.0-rc.0", features = [
+    "bigdecimal",
+    "chrono",
+    "r2d2",
+    "sqlite",
+] }
 diesel_migrations = "2.0.0-rc.0"
 dotenv = "0.15.0"
 headers = "0.3.5"
 lazy_static = "1.4.0"
 r-cache = "0.4.4"
 regex = "1.5.4"
-serde = {version = "1.0", features = ["derive"]}
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = {version = "1.0", features = ["full"]}
+tokio = { version = "1.0", features = ["full"] }
 tracing = "0.1"
-tracing-subscriber = {version = "0.3", features = ["env-filter"]}
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 url = "2.2.2"
 
 [dependencies.libsqlite3-sys]

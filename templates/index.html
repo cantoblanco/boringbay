@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="content">
-    <h2 class="font-size-18 text-center">会员列表</h2>
+    <h2 class="font-size-18 text-center">今日存活</h2>
     <div class="d-flex flex-wrap member-list">
         {% for m in membership %}
         <div class="w-md-quarter p-5">
@@ -34,6 +34,80 @@
         </div>
         {% endfor %}
     </div>
+
+
+    <h2 class="font-size-18 text-center">成员排行</h2>
+    <div class="card table-responsive specific-w-300 mw-100 mx-auto rounded-0">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">排名</th>
+                    <th scope="col">站点</th>
+                    <th scope="col">UV</th>
+                    <th scope="col">RV</th>
+                    <th scope="col">加入时间</th>
+                    <th scope="col">最后活跃</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in rank %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>
+                        <a target="_blank" class="text-reset font-weight-bolder"
+                            href="https://{{ r.membership.domain }}" title="{{ r.membership.name|e }}">
+                            {{ r.membership.name|e }}
+                        </a>
+                    </td>
+                    <td>{{ r.rank.unique_visitor }}</td>
+                    <td>{{ r.rank.referrer }}</td>
+                    <td>{{ r.rank.created_at }}</td>
+                    <td>{{ r.rank.updated_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="font-size-18 text-center">即将移除</h2>
+    <div class="card table-responsive specific-w-300 mw-100 mx-auto rounded-0">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">编号</th>
+                    <th scope="col">站点</th>
+                    <th scope="col">UV</th>
+                    <th scope="col">RV</th>
+                    <th scope="col">加入时间</th>
+                    <th scope="col">最后活跃</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in to_be_remove %}
+                <tr>
+                    <th scope="row">
+                        <del>
+                            {{ loop.index }}
+                        </del>
+                    </th>
+                    <td>
+                        <del>
+                            <a target="_blank" class="text-reset font-weight-bolder"
+                                href="https://{{ r.membership.domain }}" title="{{ r.membership.name|e }}">
+                                {{ r.membership.name|e }}
+                            </a>
+                        </del>
+                    </td>
+                    <td><del>{{ r.rank.unique_visitor }}</del></td>
+                    <td><del>{{ r.rank.referrer }}</del></td>
+                    <td><del>{{ r.rank.created_at }}</del></td>
+                    <td><del>{{ r.rank.updated_at }}</del></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     <div class="text-center font-size-14 mt-10">
         （排名按照今日站点流量由高至低，当日无访客将被<b>隐藏</b>）
         <br>

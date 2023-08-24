@@ -54,6 +54,8 @@ pub struct Context {
     pub visitor_tx: Sender<String>,
     pub visitor_rx: Receiver<String>,
 
+    pub rank: RwLock<Vec<Statistics>>,
+
     pub cache: r_cache::cache::Cache<String, ()>,
 }
 
@@ -164,6 +166,13 @@ impl Context {
             domain2id.insert(v.domain.clone(), k.clone());
         });
 
+        let rank = Statistics::rank_between(
+            db_pool.get().unwrap(),
+            NaiveDateTime::from_timestamp(0, 0),
+            now_shanghai(),
+        )
+        .unwrap();
+
         let (visitor_tx, visitor_rx) = watch::channel::<String>("".to_string());
 
         let rank_svg = Statistics::prev_day_rank_avg(db_pool.get().unwrap());
@@ -177,6 +186,7 @@ impl Context {
             unique_visitor: RwLock::new(page_view),
             referrer: RwLock::new(referrer),
             rank_svg: RwLock::new(rank_svg),
+            rank: RwLock::new(rank),
 
             domain2id: domain2id,
             id2member: membership,
@@ -248,6 +258,14 @@ impl Context {
             }
             drop(uv_write);
             drop(referrer_write);
+
+            let mut rank = self.rank.write().await;
+            *rank = Statistics::rank_between(
+                self.db_pool.get().unwrap(),
+                NaiveDateTime::from_timestamp(0, 0),
+                now_shanghai(),
+            )
+            .unwrap_or_default();
         }
     }
 }

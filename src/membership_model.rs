@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Clone, Serialize)]
+use crate::statistics_model::Statistics;
+
+#[derive(Deserialize, Clone, Debug, Serialize)]
 pub struct Membership {
     #[serde(skip_deserializing)]
     pub id: i64,
@@ -9,4 +11,10 @@ pub struct Membership {
     pub icon: String,
     pub description: String,
     pub github_username: String,
+}
+
+#[derive(Deserialize, Clone, Serialize)]
+pub struct RankAndMembership {
+    pub rank: Statistics,
+    pub membership: Membership,
 }

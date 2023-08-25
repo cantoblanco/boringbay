@@ -54,8 +54,9 @@
                 <tr>
                     <th scope="row">{{ loop.index }}</th>
                     <td>
-                        <a target="_blank" class="text-reset font-weight-bolder"
-                            href="https://{{ r.membership.domain }}" title="{{ r.membership.name|e }}">
+                        <a target="_blank" class="text-reset font-weight-bolder" data-toggle="tooltip"
+                            data-title="{{ r.membership.description }}" href="https://{{ r.membership.domain }}"
+                            title="{{ r.membership.name|e }}">
                             {{ r.membership.name|e }}
                         </a>
                     </td>
@@ -92,8 +93,9 @@
                     </th>
                     <td>
                         <del>
-                            <a target="_blank" class="text-reset font-weight-bolder"
-                                href="https://{{ r.membership.domain }}" title="{{ r.membership.name|e }}">
+                            <a target="_blank" data-toggle="tooltip" data-title="{{ r.membership.description }}"
+                                class="text-reset font-weight-bolder" href="https://{{ r.membership.domain }}"
+                                title="{{ r.membership.name|e }}">
                                 {{ r.membership.name|e }}
                             </a>
                         </del>

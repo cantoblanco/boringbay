@@ -87,15 +87,15 @@ impl Statistics {
     ) -> Result<Vec<Statistics>, anyhow::Error> {
         let res = statistics
             .select((
-                sql::<diesel::sql_types::BigInt>("SUM(membership_id) as membership_id"),
-                sql::<diesel::sql_types::Timestamp>("MIN(created_at) as created_at"),
-                sql::<diesel::sql_types::BigInt>("SUM(unique_visitor) as unique_visitor"),
-                sql::<diesel::sql_types::BigInt>("SUM(referrer) as referrer"),
+                membership_id,
+                sql::<diesel::sql_types::Timestamp>("MIN(created_at) as m_created_at"),
+                sql::<diesel::sql_types::BigInt>("SUM(unique_visitor) as s_unique_visitor"),
+                sql::<diesel::sql_types::BigInt>("SUM(referrer) as s_referrer"),
             ))
             .filter(created_at.between(start, end))
             .group_by(membership_id)
             .order(sql::<diesel::sql_types::BigInt>(
-                "unique_visitor + referrer*1.5",
+                "s_unique_visitor + s_referrer*2 DESC",
             ))
             .load::<(i64, NaiveDateTime, i64, i64)>(&mut conn);
 

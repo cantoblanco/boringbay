@@ -34,13 +34,6 @@
 		"description": "Just do it!",
 		"github_username": "ilay1678"
 	},
-	"8": {
-		"domain": "lajilao.com",
-		"icon": "https://lajilao.com/img/logo.png",
-		"name": "垃圾佬",
-		"description": "奶爸的米表",
-		"github_username": "naiba/domain-portfolio"
-	},
 	"9": {
 		"domain": "www.ifts.ml",
 		"icon": "https://cdn.jsdelivr.net/gh/DaoChen6/img@main/logo1.png",
@@ -54,13 +47,6 @@
 		"name": "GiTMBA",
 		"description": "探索新知识的宝藏小站",
 		"github_username": "qmxs"
-	},
-	"11": {
-		"domain": "wzwzx.cn",
-		"icon": "https://wzwzx.cn/favicon.ico",
-		"name": "问泽卌",
-		"description": "分享技术和生活的小站",
-		"github_username": "fog-www"
 	},
 	"12": {
 		"domain": "cymj.ltd",
@@ -76,13 +62,6 @@
 		"description": "helloworld",
 		"github_username": "MCTGyt"
 	},
-	"14": {
-		"domain": "us-host.nets.hk",
-		"icon": "http://us-host.nets.hk/application/thumb.php?img=/i/2022/02/28/pga7dl.jpg",
-		"name": "美国主机图床",
-		"description": "By天哥",
-		"github_username": "MCTGyt"
-	},
 	"15": {
 		"domain": "www.lizhichen.cn",
 		"icon": "https://www.lizhichen.cn/zb_users/upload/2021/10/202110151634246697912592.png",
@@ -90,20 +69,6 @@
 		"description": "全真道名至臣，正壹道名和道，茅山道名懋和",
 		"github_username": "wulintang"
 	},
-	"16": {
-		"domain": "blog.dwz0.top",
-		"icon": "https://blog.dwz0.top/wp-content/uploads/2022/05/feCAt.png",
-		"name": "ShSuperyun-Blog",
-		"description": "I like my website.",
-		"github_username": "hjh-cn"
-	},
-	"17": {
-		"domain": "pay.superyun.sh.cn",
-		"icon": "https://blog.dwz0.top/wp-content/uploads/2022/05/feCAt.png",
-		"name": "ShSuperyun-Pay",
-		"description": "My payment is convenient",
-		"github_username": "hjh-cn"
-	},	
 	"18": {
 		"domain": "blog.wol1.xyz",
 		"icon": "https://blog.wol1.xyz/favicon.ico",
@@ -146,56 +111,35 @@
 		"description": "一只码兔~",
 		"github_username": "Rabbit_xuan"
 	},
-        "24": {
+	"24": {
 		"domain": "www.dmxvx.cc",
 		"icon": "https://cdn.dmxvx.cc/img/logo.png",
 		"name": "大棉博客",
 		"description": "念念不忘，必有回响",
 		"github_username": "muyan0709"
 	},
-	"25": {
-		"domain": "www.57blog.cn",
-		"icon": "https://www.57img.tk/LightPicture/2022/05/d7c66f56f1c8569a.jpg",
-		"name": "无心博客",
-		"description": "生命不等于是呼吸，生命是活动",
-		"github_username": "phong057"
-	},
-	"26": {
-		"domain": "boring.studio",
-		"icon": "https://boring.studio/assets/images/boring.studio.ico.svg",
-		"name": "无聊工作室",
-		"description": "专注一切无聊事物",
-		"github_username": "xiongbao"
-	},
-	"27": {
-		"domain": "joker.cc",
-		"icon": "https://www.joker.cc/images/favicon.ico",
-		"name": "Joker",
-		"description": "我是傻逼！",
-		"github_username": "zhufacai"
-	},
-        "28": {
+	"28": {
 		"domain": "www.kuhehe.top",
 		"icon": "https://img2.woyaogexing.com/2022/12/19/cb41d5dd363151ea1a45f629e526615d.jpeg",
 		"name": "酷小呵",
 		"description": "爱分享的酷小呵",
 		"github_username": "Kuhehe666"
 	},
-        "29": {
+	"29": {
 		"domain": "www.0du.top",
 		"icon": "https://www.0du.top/favicon.ico",
 		"name": "澪度の博客",
 		"description": "可能会随便写点什么",
 		"github_username": "lingdu2333"
 	},
-        "30": {
+	"30": {
 		"domain": "solitud.es",
 		"icon": "https://s3.solitud.es/solitude/photo_2023-04-20_22-16-39.jpg",
 		"name": "The Lonely House",
 		"description": "Solitude and Reflection",
 		"github_username": "dysf888"
 	},
-        "31": {
+	"31": {
 		"domain": "bigtoyscompany.com",
 		"icon": "https://bigtoyscompany.com/assets/logo.e75135c1.png",
 		"name": "大玩具公司",

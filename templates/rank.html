@@ -1,42 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}首页{% endblock %}
+{% block title %}排行{% endblock %}
 
 {% block content %}
 <div class="content">
-    <h2 class="font-size-18 text-center">今日无聊</h2>
-    <div class="d-flex flex-wrap member-list">
-        {% for m in membership %}
-        <div class="w-md-quarter p-5">
-            <div class="d-flex p-5 border rounded shadow">
-                <div class="d-block position-relative">
-                    <img class="w-50 h-50 rounded" src="{{ m.icon }}">
-                    <p class="position-absolute top-0 right-0 m-0 text-right font-weight-bolder"
-                        style="font-size: 0.6rem;line-height: 0.7rem;">
-                        UV{{uv.get(m.id).cloned().unwrap_or_default()}}
-                        <br>
-                        RV{{referrer.get(m.id).cloned().unwrap_or_default()}}
-                        <br>
-                        Lv.{{level.get(m.id).cloned().unwrap_or_default()}}
-                    </p>
-                </div>
-                <div class="flex-grow-1 pl-10">
-                    <a target="_blank" class="text-reset font-weight-bolder" href="https://{{ m.domain }}"
-                        title="{{ m.name|e }}">
-                        {{ m.name|e }}
-                    </a><br>
-                    <small title="{{ m.description|e }}">{{ m.description|e }}</small><br>
-                    <a target="_blank" href="https://github.com/{{ m.github_username }}"
-                        title="{{ m.github_username|e }}"><small><i class="fab fa-github"></i>
-                            {{ m.github_username|e }}</small></a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-
-    <h2 class="font-size-18 text-center">30 天排行</h2>
+    <h2 class="font-size-18 text-center">总排行</h2>
     <div class="card table-responsive specific-w-300 mw-100 mx-auto rounded-0">
         <table class="table">
             <thead>
@@ -108,14 +76,6 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-
-    <div class="text-center font-size-14 mt-10">
-        （排名按照今日站点流量由高至低，当日无访客将被<b>隐藏</b>）
-        <br>
-        QQ交流群：136231667（仅限会员加入）
-        <br>
-        <img class="mt-5" height="30rem" src="/api/badge/boringbay.com">
     </div>
 </div>
 {% endblock %}

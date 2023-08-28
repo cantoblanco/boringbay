@@ -55,6 +55,7 @@ pub struct Context {
     pub visitor_rx: Receiver<String>,
 
     pub rank: RwLock<Vec<Statistics>>,
+    pub monthly_rank: RwLock<Vec<Statistics>>,
 
     pub cache: r_cache::cache::Cache<String, ()>,
 }
@@ -173,6 +174,13 @@ impl Context {
         )
         .unwrap();
 
+        let monthly_rank = Statistics::rank_between(
+            db_pool.get().unwrap(),
+            now_shanghai() - chrono::Duration::days(30),
+            now_shanghai(),
+        )
+        .unwrap();
+
         let (visitor_tx, visitor_rx) = watch::channel::<String>("".to_string());
 
         let rank_svg = Statistics::prev_day_rank_avg(db_pool.get().unwrap());
@@ -187,6 +195,7 @@ impl Context {
             referrer: RwLock::new(referrer),
             rank_svg: RwLock::new(rank_svg),
             rank: RwLock::new(rank),
+            monthly_rank: RwLock::new(monthly_rank),
 
             domain2id: domain2id,
             id2member: membership,
@@ -262,7 +271,7 @@ impl Context {
             let mut rank = self.rank.write().await;
             *rank = Statistics::rank_between(
                 self.db_pool.get().unwrap(),
-                NaiveDateTime::from_timestamp(0, 0),
+                now_shanghai(),
                 now_shanghai(),
             )
             .unwrap_or_default();

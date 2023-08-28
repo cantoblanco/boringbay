@@ -68,9 +68,10 @@
                     <img src="https://boringbay.com/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
                 </a>
                 <div class="navbar-content ml-auto">
-                    <button class="btn btn-action mr-5" onclick="toggleThemeMode()">
+                    <button class="btn btn-action mr-5 px-5" onclick="toggleThemeMode()">
                         <i id="dayNightIcon" class="fa fa-moon"></i>
                     </button>
+                    <a class="btn btn-block mr-5" href="/rank">排行榜</a>
                     <a class="btn btn-block" href="/join-us">一起无聊？</a>
                 </div>
             </div>
@@ -79,6 +80,12 @@
         <div class="content-wrapper">
             <div class="container">
                 {% block content %}{% endblock %}
+            </div>
+
+            <div class="text-center font-size-14 mt-10">
+                QQ交流群：136231667（仅限会员加入）
+                <br>
+                <img class="mt-5" height="30rem" src="/api/badge/boringbay.com">
             </div>
 
             <div class="text-center font-weight-bolder font-size-14 mt-10 mb-5">

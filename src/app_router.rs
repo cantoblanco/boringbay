@@ -167,7 +167,7 @@ pub async fn home_page(
         membership.push(ctx.id2member.get(&v.0).unwrap().to_owned());
     }
 
-    let rank = ctx.rank.read().await.to_owned();
+    let rank = ctx.monthly_rank.read().await.to_owned();
 
     let mut rank_and_membership_to_be_remove = Vec::new();
     let mut rank_and_membership = Vec::new();
@@ -176,6 +176,9 @@ pub async fn home_page(
         .filter(|r| ctx.id2member.contains_key(&r.membership_id))
         .for_each(|r| {
             if r.updated_at > now_shanghai() - chrono::Duration::days(30) {
+                if rank_and_membership.len() >= 10 {
+                    return;
+                }
                 let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
                 rank_and_membership.push(RankAndMembership {
                     rank: r.to_owned(),
@@ -211,6 +214,62 @@ struct JoinUsTemplate {
 
 pub async fn join_us_page() -> Result<Html<String>, String> {
     let tpl = JoinUsTemplate {
+        version: GIT_HASH[0..8].to_string(),
+    };
+    let html = tpl.render().map_err(|err| err.to_string())?;
+    Ok(Html(html))
+}
+
+#[derive(Template)]
+#[template(path = "rank.html")]
+struct RankTemplate {
+    version: String,
+    rank: Vec<RankAndMembership>,
+    to_be_remove: Vec<RankAndMembership>,
+}
+
+pub async fn rank_page(
+    Extension(ctx): Extension<DynContext>,
+    headers: HeaderMap,
+) -> Result<Html<String>, String> {
+    let domain = get_domain_from_referrer(&headers);
+    if domain.is_ok() {
+        let _ = ctx
+            .boring_visitor(
+                crate::app_model::VisitorType::Referrer,
+                &domain.unwrap(),
+                &headers,
+            )
+            .await;
+    }
+
+    let rank = ctx.rank.read().await.to_owned();
+
+    let mut rank_and_membership_to_be_remove = Vec::new();
+
+    let mut rank_and_membership = Vec::new();
+
+    rank.iter()
+        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
+        .for_each(|r| {
+            if r.updated_at > now_shanghai() - chrono::Duration::days(30) {
+                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
+                rank_and_membership.push(RankAndMembership {
+                    rank: r.to_owned(),
+                    membership: m,
+                });
+            } else {
+                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
+                rank_and_membership_to_be_remove.push(RankAndMembership {
+                    rank: r.to_owned(),
+                    membership: m,
+                });
+            }
+        });
+
+    let tpl = RankTemplate {
+        rank: rank_and_membership,
+        to_be_remove: rank_and_membership_to_be_remove,
         version: GIT_HASH[0..8].to_string(),
     };
     let html = tpl.render().map_err(|err| err.to_string())?;

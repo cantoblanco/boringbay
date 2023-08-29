@@ -271,10 +271,18 @@ impl Context {
             let mut rank = self.rank.write().await;
             *rank = Statistics::rank_between(
                 self.db_pool.get().unwrap(),
-                now_shanghai(),
+                NaiveDateTime::from_timestamp(0, 0),
                 now_shanghai(),
             )
-            .unwrap_or_default();
+            .unwrap();
+
+            let mut monthly_rank = self.monthly_rank.write().await;
+            *monthly_rank = Statistics::rank_between(
+                self.db_pool.get().unwrap(),
+                now_shanghai() - chrono::Duration::days(30),
+                now_shanghai(),
+            )
+            .unwrap();
         }
     }
 }

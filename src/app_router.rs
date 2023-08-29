@@ -167,24 +167,31 @@ pub async fn home_page(
         membership.push(ctx.id2member.get(&v.0).unwrap().to_owned());
     }
 
-    let rank = ctx.monthly_rank.read().await.to_owned();
-
     let mut rank_and_membership_to_be_remove = Vec::new();
     let mut rank_and_membership = Vec::new();
 
+    let monthly_rank = ctx.monthly_rank.read().await.to_owned();
+    monthly_rank
+        .iter()
+        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
+        .for_each(|r| {
+            if rank_and_membership.len() >= 10
+                || r.updated_at < now_shanghai() - chrono::Duration::days(30)
+            {
+                return;
+            }
+            let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
+            rank_and_membership.push(RankAndMembership {
+                rank: r.to_owned(),
+                membership: m,
+            });
+        });
+
+    let rank = ctx.rank.read().await.to_owned();
     rank.iter()
         .filter(|r| ctx.id2member.contains_key(&r.membership_id))
         .for_each(|r| {
-            if r.updated_at > now_shanghai() - chrono::Duration::days(30) {
-                if rank_and_membership.len() >= 10 {
-                    return;
-                }
-                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-                rank_and_membership.push(RankAndMembership {
-                    rank: r.to_owned(),
-                    membership: m,
-                });
-            } else {
+            if r.updated_at < now_shanghai() - chrono::Duration::days(30) {
                 let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
                 rank_and_membership_to_be_remove.push(RankAndMembership {
                     rank: r.to_owned(),

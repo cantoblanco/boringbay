@@ -48,9 +48,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/zhufacai" title="Joker">
   <img src="https://avatars.githubusercontent.com/u/14821269?v=4" width="66;" alt="Joker"/>
 </a>
-<a href="https://github.com/Kuhehe666" title="Kuhehe666">
-  <img src="https://avatars.githubusercontent.com/u/112221949?v=4" width="66;" alt="Kuhehe666"/>
-</a>
 <a href="https://github.com/rabbitxuanxuan" title="Rabbit_xuan">
   <img src="https://avatars.githubusercontent.com/u/112363084?v=4" width="66;" alt="Rabbit_xuan"/>
 </a>
@@ -60,8 +57,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/jipa233" title="jipa233">
   <img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/>
 </a>
-<a href="https://github.com/lingdu2333" title="lingdu2333">
-  <img src="https://avatars.githubusercontent.com/u/117048039?v=4" width="66;" alt="lingdu2333"/>
+<a href="https://github.com/lingdu2333" title="澪度">
+  <img src="https://avatars.githubusercontent.com/u/117048039?v=4" width="66;" alt="澪度"/>
 </a>
 <a href="https://github.com/spiritLHLS" title="spiritlhl">
   <img src="https://avatars.githubusercontent.com/u/103393591?v=4" width="66;" alt="spiritlhl"/>
@@ -75,8 +72,11 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/wzwzx" title="Diq Xia">
   <img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="Diq Xia"/>
 </a>
-<a href="https://github.com/wulintang" title="南通伍林堂文化传播有限公司">
-  <img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="南通伍林堂文化传播有限公司"/>
+<a href="https://github.com/xxyxxvii" title="xxYxxVii">
+  <img src="https://avatars.githubusercontent.com/u/81088023?v=4" width="66;" alt="xxYxxVii"/>
+</a>
+<a href="https://github.com/wulintang" title="懋和道人">
+  <img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="懋和道人"/>
 </a>
 <a href="https://github.com/xiowo" title="汐沫">
   <img src="https://avatars.githubusercontent.com/u/87068069?v=4" width="66;" alt="汐沫"/>

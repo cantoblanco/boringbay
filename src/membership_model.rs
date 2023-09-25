@@ -11,6 +11,7 @@ pub struct Membership {
     pub icon: String,
     pub description: String,
     pub github_username: String,
+    pub hidden: Option<bool>,
 }
 
 #[derive(Deserialize, Clone, Serialize)]

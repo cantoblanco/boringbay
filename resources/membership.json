@@ -32,7 +32,8 @@
 		"icon": "https://cdn.jsdelivr.net/gh/ilay1678/cdn@master/favicon.png",
 		"name": "我若为王",
 		"description": "Just do it!",
-		"github_username": "ilay1678"
+		"github_username": "ilay1678",
+		"hidden": true
 	},
 	"9": {
 		"domain": "www.ifts.ml",
@@ -46,21 +47,24 @@
 		"icon": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-ec093c08-f8d6-4ae7-ae84-bbd115c10996/dfe39fcf-3e7a-463d-89b9-42b15563fb95.png",
 		"name": "GiTMBA",
 		"description": "探索新知识的宝藏小站",
-		"github_username": "qmxs"
+		"github_username": "qmxs",
+		"hidden": true
 	},
 	"12": {
 		"domain": "cymj.ltd",
 		"icon": "https://www.imageoss.com/images/2022/10/19/64f03244415031698418cd627f638651.jpg",
 		"name": "轻梦",
 		"description": "日常或加入一个小家庭",
-		"github_username": "xuanxuan666niupi666"
+		"github_username": "xuanxuan666niupi666",
+		"hidden": true
 	},
 	"13": {
 		"domain": "mctg.ink",
 		"icon": "http://us-host.nets.hk/application/thumb.php?img=/i/2022/02/28/pga7dl.jpg",
 		"name": "天哥de博客",
 		"description": "helloworld",
-		"github_username": "MCTGyt"
+		"github_username": "MCTGyt",
+		"hidden": true
 	},
 	"15": {
 		"domain": "www.lizhichen.cn",
@@ -74,7 +78,8 @@
 		"icon": "https://blog.wol1.xyz/favicon.ico",
 		"name": "WoL's Blog",
 		"description": "Powered by WoL",
-		"github_username": "WoLeo-Z"
+		"github_username": "WoLeo-Z",
+		"hidden": true
 	},
 	"19": {
 		"domain": "hi.sy",
@@ -95,7 +100,8 @@
 		"icon": "https://maolog.com/logo",
 		"name": "茂茂の部落格",
 		"description": "随笔记录",
-		"github_username": "maolog"
+		"github_username": "maolog",
+		"hidden": true
 	},
 	"22": {
 		"domain": "www.yuanzj.top",

@@ -161,6 +161,8 @@ impl Context {
         let mut membership: HashMap<i64, Membership> =
             serde_json::from_str(&fs::read_to_string("./resources/membership.json").unwrap())
                 .unwrap();
+        membership.retain(|_, v| v.hidden.is_none() || !v.hidden.unwrap());
+
         let mut domain2id: HashMap<String, i64> = HashMap::new();
         membership.iter_mut().for_each(|(k, v)| {
             v.id = k.clone(); // 将 ID 补给 member

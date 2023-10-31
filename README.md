@@ -30,6 +30,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/xuanxuan666niupi666" title="XCATX">
   <img src="https://avatars.githubusercontent.com/u/86157698?v=4" width="66;" alt="XCATX"/>
 </a>
+<a href="https://github.com/jipa233" title="jipa233">
+  <img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/>
+</a>
 <a href="https://github.com/xxyxxvii" title="xxYxxVii">
   <img src="https://avatars.githubusercontent.com/u/81088023?v=4" width="66;" alt="xxYxxVii"/>
 </a>
@@ -56,9 +59,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 </a>
 <a href="https://github.com/hhhkkk520" title="Kris">
   <img src="https://avatars.githubusercontent.com/u/52115472?v=4" width="66;" alt="Kris"/>
-</a>
-<a href="https://github.com/jipa233" title="jipa233">
-  <img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/>
 </a>
 <a href="https://github.com/lingdu2333" title="澪度">
   <img src="https://avatars.githubusercontent.com/u/117048039?v=4" width="66;" alt="澪度"/>

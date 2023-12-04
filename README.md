@@ -54,6 +54,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/zhufacai" title="Joker">
   <img src="https://avatars.githubusercontent.com/u/14821269?v=4" width="66;" alt="Joker"/>
 </a>
+<a href="https://github.com/cantoblanco" title="Kris">
+  <img src="https://avatars.githubusercontent.com/u/116849421?v=4" width="66;" alt="Kris"/>
+</a>
 <a href="https://github.com/rabbitxuanxuan" title="Rabbit_xuan">
   <img src="https://avatars.githubusercontent.com/u/112363084?v=4" width="66;" alt="Rabbit_xuan"/>
 </a>

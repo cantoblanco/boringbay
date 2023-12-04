@@ -86,7 +86,7 @@
 		"icon": "https://hi.sy/wp-content/uploads/2021/11/android-chrome-512x512-2.png",
 		"name": "白歌",
 		"description": "Just for funnnnn!!",
-		"github_username": "hhhkkk520"
+		"github_username": "cantoblanco"
 	},
 	"20": {
 		"domain": "pawswrite.xyz",
@@ -200,5 +200,12 @@
 		"name": "D1gital_D3mon's Blog",
 		"description": "分享实用软件",
 		"github_username": "trevorcomputer"
+	},
+	"39": {
+		"domain": "v.hi.sy",
+		"icon": "https://hi.sy/wp-content/uploads/2021/11/android-chrome-512x512-2.png",
+		"name": "白歌-V",
+		"description": "Just for funnnnn!!",
+		"github_username": "cantoblanco"
 	}
 }

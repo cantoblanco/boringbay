@@ -207,5 +207,12 @@
 		"name": "白歌-V",
 		"description": "Just for funnnnn!!",
 		"github_username": "cantoblanco"
+	},
+	"40": {
+		"domain": "wuminboke.site",
+		"icon": "https://wuminboke.site/avatar.jpg",
+		"name": "无名博客",
+		"description": "一个无聊的人罢了",
+		"github_username": "sdfghjwmbkdouble"
 	}
 }

@@ -1,4 +1,6 @@
-table! {
+// @generated automatically by Diesel CLI.
+
+diesel::table! {
     statistics (id) {
         id -> Integer,
         created_at -> Timestamp,
@@ -6,5 +8,6 @@ table! {
         membership_id -> BigInt,
         unique_visitor -> BigInt,
         referrer -> BigInt,
+        latest_referrered_at -> Timestamp,
     }
 }

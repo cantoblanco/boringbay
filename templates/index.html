@@ -43,10 +43,15 @@
                 <tr>
                     <th scope="col">排名</th>
                     <th scope="col">站点</th>
-                    <th scope="col">UV</th>
-                    <th scope="col">RV</th>
+                    <th scope="col">UV
+                        <p class="d-inline font-size-12 m-0">独立访客</p>
+                    </th>
+                    <th scope="col">RV
+                        <p class="d-inline font-size-12 m-0">来访访客</p>
+                    </th>
+                    <th scope="col">最后链入</th>
+                    <th scope="col">最后受访</th>
                     <th scope="col">加入时间</th>
-                    <th scope="col">最后活跃</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,8 +67,9 @@
                     </td>
                     <td>{{ r.rank.unique_visitor }}</td>
                     <td>{{ r.rank.referrer }}</td>
-                    <td>{{ r.rank.created_at }}</td>
-                    <td>{{ r.rank.updated_at }}</td>
+                    <td>{{ r.rank.latest_referrered_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.rank.updated_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.rank.created_at.format("%Y-%m-%d %H:%M:%S") }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -77,10 +83,15 @@
                 <tr>
                     <th scope="col">编号</th>
                     <th scope="col">站点</th>
-                    <th scope="col">UV</th>
-                    <th scope="col">RV</th>
+                    <th scope="col">UV
+                        <p class="d-inline font-size-12 m-0">独立访客</p>
+                    </th>
+                    <th scope="col">RV
+                        <p class="d-inline font-size-12 m-0">来访访客</p>
+                    </th>
+                    <th scope="col">最后链入</th>
+                    <th scope="col">最后受访</th>
                     <th scope="col">加入时间</th>
-                    <th scope="col">最后活跃</th>
                 </tr>
             </thead>
             <tbody>
@@ -102,8 +113,9 @@
                     </td>
                     <td><del>{{ r.rank.unique_visitor }}</del></td>
                     <td><del>{{ r.rank.referrer }}</del></td>
-                    <td><del>{{ r.rank.created_at }}</del></td>
-                    <td><del>{{ r.rank.updated_at }}</del></td>
+                    <td>{{ r.rank.latest_referrered_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.rank.updated_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.rank.created_at.format("%Y-%m-%d %H:%M:%S") }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

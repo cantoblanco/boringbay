@@ -61,11 +61,10 @@ impl BoringFace {
     }
 
     pub fn render_svg(&self, name: &str, uv: i64, rv: i64, rank: i64) -> String {
-        assert!(rank >= 1 && rank <= 10);
+        assert!((1..=10).contains(&rank));
         let mut content = SVG_HEADER
             .replace("#fill_white#", &self.fill_white)
-            .replace("#fill_black#", &self.fill_black)
-            .to_string();
+            .replace("#fill_black#", &self.fill_black);
 
         for i in 0..10 {
             content.push_str(&format!(
@@ -78,7 +77,7 @@ impl BoringFace {
             ));
         }
 
-        content.push_str(&SVG_FOOTER);
+        content.push_str(SVG_FOOTER);
 
         content = content.replace(
             "#svg_viewport#",

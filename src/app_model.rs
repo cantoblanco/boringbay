@@ -2,9 +2,9 @@ use std::fs;
 use std::time::Duration;
 use std::{collections::HashMap, sync::Arc};
 
-use crate::now_shanghai;
 use crate::statistics_model::Statistics;
 use crate::{boring_face::BoringFace, DbPool};
+use crate::{now_shanghai, SYSTEM_DOMAIN};
 
 use crate::membership_model::Membership;
 use anyhow::anyhow;
@@ -31,7 +31,7 @@ struct VistEvent {
     member: Membership,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum VisitorType {
     Referrer,
     Badge,
@@ -44,8 +44,8 @@ pub struct Context {
     pub icon: BoringFace,
 
     pub db_pool: DbPool,
-    pub unique_visitor: RwLock<HashMap<i64, i64>>,
-    pub referrer: RwLock<HashMap<i64, i64>>,
+    pub unique_visitor: RwLock<HashMap<i64, (i64, NaiveDateTime)>>,
+    pub referrer: RwLock<HashMap<i64, (i64, NaiveDateTime)>>,
     pub rank_svg: RwLock<i64>,
 
     pub domain2id: HashMap<String, i64>,
@@ -77,6 +77,9 @@ impl Context {
         domain: &str,
         headers: &HeaderMap,
     ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
+        if v_type == VisitorType::Referrer && domain.eq(&*SYSTEM_DOMAIN) {
+            return Err(anyhow!("system domain"));
+        }
         if let Some(id) = self.domain2id.get(domain) {
             let ip =
                 String::from_utf8(headers.get("CF-Connecting-IP").unwrap().as_bytes().to_vec())
@@ -100,25 +103,25 @@ impl Context {
             let mut notification = false;
 
             let mut referrer = self.referrer.write().await;
-            let mut dist_r = referrer.get(id).or(Some(&0)).unwrap().clone();
+            let mut dist_r = referrer.get(id).unwrap_or(&(0, now_shanghai())).to_owned();
             if matches!(v_type, VisitorType::Referrer) && visitor_cache.is_none() {
-                dist_r = dist_r + 1;
-                referrer.insert(id.clone(), dist_r);
+                dist_r.0 += 1;
+                referrer.insert(*id, dist_r);
             }
             drop(referrer);
 
             let mut uv = self.unique_visitor.write().await;
-            let mut dist_uv = uv.get(id).or(Some(&0)).unwrap().clone();
+            let mut dist_uv = uv.get(id).unwrap_or(&(0, now_shanghai())).to_owned();
             if matches!(v_type, VisitorType::Badge) {
                 if visitor_cache.is_none() {
-                    dist_uv = dist_uv + 1;
-                    uv.insert(id.clone(), dist_uv);
+                    dist_uv.0 += 1;
+                    uv.insert(*id, dist_uv);
                 }
                 notification = true;
             }
             drop(uv);
 
-            let tend = self.get_tend_from_uv_and_rv(dist_uv, dist_r).await;
+            let tend = self.get_tend_from_uv_and_rv(dist_uv.0, dist_r.0).await;
 
             if notification {
                 // 广播访客信息
@@ -130,10 +133,7 @@ impl Context {
                 let _ = self.visitor_tx.send(
                     serde_json::json!(VistEvent {
                         ip: IPV6_MASK
-                            .replace_all(
-                                &IPV4_MASK.replace_all(&ip, "$1****$2").to_string(),
-                                "$1****$2"
-                            )
+                            .replace_all(&IPV4_MASK.replace_all(&ip, "$1****$2"), "$1****$2")
                             .to_string(),
                         country,
                         member,
@@ -142,20 +142,25 @@ impl Context {
                 );
             }
 
-            return Ok((&self.id2member.get(id).unwrap().name, dist_uv, dist_r, tend));
+            return Ok((
+                &self.id2member.get(id).unwrap().name,
+                dist_uv.0,
+                dist_r.0,
+                tend,
+            ));
         }
-        return Err(anyhow!("not a member"));
+        Err(anyhow!("not a member"))
     }
 
     pub async fn default(db_pool: DbPool) -> Context {
         let statistics = Statistics::today(db_pool.get().unwrap()).unwrap_or_default();
 
-        let mut page_view: HashMap<i64, i64> = HashMap::new();
-        let mut referrer: HashMap<i64, i64> = HashMap::new();
+        let mut page_view: HashMap<i64, (i64, NaiveDateTime)> = HashMap::new();
+        let mut referrer: HashMap<i64, (i64, NaiveDateTime)> = HashMap::new();
 
         statistics.iter().for_each(|s| {
-            page_view.insert(s.membership_id, s.unique_visitor);
-            referrer.insert(s.membership_id, s.referrer);
+            page_view.insert(s.membership_id, (s.unique_visitor, s.updated_at));
+            referrer.insert(s.membership_id, (s.referrer, s.latest_referrered_at));
         });
 
         let mut membership: HashMap<i64, Membership> =
@@ -165,8 +170,8 @@ impl Context {
 
         let mut domain2id: HashMap<String, i64> = HashMap::new();
         membership.iter_mut().for_each(|(k, v)| {
-            v.id = k.clone(); // 将 ID 补给 member
-            domain2id.insert(v.domain.clone(), k.clone());
+            v.id = *k; // 将 ID 补给 member
+            domain2id.insert(v.domain.clone(), *k);
         });
 
         let rank = Statistics::rank_between(
@@ -199,7 +204,7 @@ impl Context {
             rank: RwLock::new(rank),
             monthly_rank: RwLock::new(monthly_rank),
 
-            domain2id: domain2id,
+            domain2id,
             id2member: membership,
 
             visitor_rx,
@@ -211,8 +216,8 @@ impl Context {
 
     // 每五分钟存一次，发现隔天刷新
     pub async fn save_per_5_minutes(&self) {
-        let mut uv_cache: HashMap<i64, i64> = HashMap::new();
-        let mut referrer_cache: HashMap<i64, i64> = HashMap::new();
+        let mut uv_cache: HashMap<i64, (i64, NaiveDateTime)> = HashMap::new();
+        let mut referrer_cache: HashMap<i64, (i64, NaiveDateTime)> = HashMap::new();
         let mut changed_list: Vec<i64> = Vec::new();
         let mut _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
         let id_list = Vec::from_iter(self.id2member.keys());
@@ -223,31 +228,34 @@ impl Context {
             let mut uv_write = self.unique_visitor.write().await;
             let mut referrer_write = self.referrer.write().await;
             id_list.iter().for_each(|id| {
-                let uv = uv_cache.get(id).unwrap_or(&0).clone();
-                let new_uv = uv_write.get(id).unwrap_or(&0).clone();
-                if uv.ne(&new_uv) {
-                    uv_cache.insert(id.clone().clone(), new_uv);
-                    changed_list.push(id.clone().clone());
+                let uv = *uv_cache.get(id).unwrap_or(&(0, now_shanghai()));
+                let new_uv = *uv_write.get(id).unwrap_or(&(0, now_shanghai()));
+                if uv.0.ne(&new_uv.0) {
+                    uv_cache.insert(**id, new_uv);
+                    changed_list.push(**id);
                 }
-                let referrer = referrer_cache.get(id).unwrap_or(&0).clone();
-                let new_referrer = referrer_write.get(id).unwrap_or(&0).clone();
-                if referrer.ne(&new_referrer) {
-                    referrer_cache.insert(id.clone().clone(), new_referrer);
+                let referrer = *referrer_cache.get(id).unwrap_or(&(0, now_shanghai()));
+                let new_referrer = *referrer_write.get(id).unwrap_or(&(0, now_shanghai()));
+                if referrer.0.ne(&new_referrer.0) {
+                    referrer_cache.insert(**id, new_referrer);
                     if !changed_list.contains(id) {
-                        changed_list.push(id.clone().clone());
+                        changed_list.push(**id);
                     }
                 }
             });
             // 更新到数据库
             changed_list.iter().for_each(|id| {
+                let id_uv = *uv_cache.get(id).unwrap_or(&(0, now_shanghai()));
+                let id_referrer = *referrer_cache.get(id).unwrap_or(&(0, now_shanghai()));
                 Statistics::insert_or_update(
                     self.db_pool.get().unwrap(),
                     &Statistics {
                         created_at: _today,
-                        updated_at: now_shanghai(),
-                        membership_id: id.clone(),
-                        unique_visitor: uv_cache.get(id).unwrap_or(&0).clone(),
-                        referrer: referrer_cache.get(id).unwrap_or(&0).clone(),
+                        membership_id: *id,
+                        unique_visitor: id_uv.0,
+                        updated_at: id_uv.1,
+                        referrer: id_referrer.0,
+                        latest_referrered_at: id_referrer.1,
                         id: 0,
                     },
                 )

@@ -23,14 +23,10 @@ async fn main() {
 
     let db_pool: DbPool = establish_connection(&env::var("DATABASE_URL").unwrap());
 
-    let args: Vec<String> = std::env::args().collect();
-    if args.len() > 1 && args[1] == "migration" {
-        tracing::info!(
-            "migration {:?}",
-            db_pool.get().unwrap().run_pending_migrations(MIGRATIONS)
-        );
-        return;
-    }
+    tracing::info!(
+        "migration {:?}",
+        db_pool.get().unwrap().run_pending_migrations(MIGRATIONS)
+    );
 
     let context = Arc::new(Context::default(db_pool).await) as DynContext;
 
@@ -94,14 +90,17 @@ async fn shutdown_signal(ctx: Arc<Context>) {
     let page_view_read = ctx.unique_visitor.read().await;
     let referrer_read = ctx.referrer.read().await;
     ctx.id2member.keys().for_each(|id| {
+        let uv = *page_view_read.get(id).unwrap_or(&(0, now_shanghai()));
+        let referrer = *referrer_read.get(id).unwrap_or(&(0, now_shanghai()));
         Statistics::insert_or_update(
             ctx.db_pool.get().unwrap(),
             &Statistics {
                 created_at: _today,
-                updated_at: now_shanghai(),
-                membership_id: id.clone(),
-                unique_visitor: page_view_read.get(id).unwrap_or(&0).clone(),
-                referrer: referrer_read.get(id).unwrap_or(&0).clone(),
+                membership_id: *id,
+                unique_visitor: uv.0,
+                updated_at: uv.1,
+                referrer: referrer.0,
+                latest_referrered_at: referrer.1,
                 id: 0,
             },
         )

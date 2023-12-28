@@ -10,6 +10,7 @@ use axum::{
     http::StatusCode,
     response::{Headers, Html, IntoResponse, Response},
 };
+use chrono::NaiveDateTime;
 use headers::HeaderMap;
 use tokio::select;
 
@@ -148,15 +149,17 @@ pub async fn home_page(
     let uv_read = ctx.unique_visitor.read().await;
 
     let mut level: HashMap<i64, i64> = HashMap::new();
-    let mut rank_vec: Vec<(i64, i64)> = Vec::new();
+    let mut rank_vec: Vec<(i64, NaiveDateTime)> = Vec::new();
 
     for k in ctx.id2member.keys() {
-        let rank_svg = ctx.rank_svg.read().await.to_owned();
-        let uv = uv_read.get(k).unwrap_or(&0).to_owned();
-        let rv = referrer_read.get(k).unwrap_or(&0).to_owned();
-        if uv > 0 || rv > 0 {
-            rank_vec.push((k.to_owned(), (rv + uv) / rank_svg));
-            level.insert(k.to_owned(), ctx.get_tend_from_uv_and_rv(uv, rv).await);
+        let uv = uv_read.get(k).unwrap_or(&(0, now_shanghai())).to_owned();
+        let rv = referrer_read
+            .get(k)
+            .unwrap_or(&(0, now_shanghai()))
+            .to_owned();
+        if uv.0 > 0 || rv.0 > 0 {
+            rank_vec.push((k.to_owned(), rv.1));
+            level.insert(k.to_owned(), ctx.get_tend_from_uv_and_rv(uv.0, rv.0).await);
         }
     }
 
@@ -202,8 +205,14 @@ pub async fn home_page(
 
     let tpl = HomeTemplate {
         membership,
-        uv: uv_read.clone(),
-        referrer: referrer_read.clone(),
+        uv: uv_read
+            .iter()
+            .map(|(k, v)| (k.to_owned(), v.0))
+            .collect::<HashMap<i64, i64>>(),
+        referrer: referrer_read
+            .iter()
+            .map(|(k, v)| (k.to_owned(), v.0))
+            .collect::<HashMap<i64, i64>>(),
         rank: rank_and_membership,
         to_be_remove: rank_and_membership_to_be_remove,
         level,

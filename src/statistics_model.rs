@@ -19,6 +19,7 @@ pub struct Statistics {
     pub membership_id: i64,
     pub unique_visitor: i64,
     pub referrer: i64,
+    pub latest_referrered_at: NaiveDateTime,
 }
 
 impl Statistics {
@@ -41,7 +42,7 @@ impl Statistics {
                 referrer.eq(stat.referrer),
                 updated_at.eq(stat.updated_at),
             ));
-        println!("sql: {}", debug_query::<Sqlite, _>(&statement).to_string());
+        println!("sql: {}", debug_query::<Sqlite, _>(&statement));
         statement.execute(&mut conn)
     }
 
@@ -67,7 +68,7 @@ impl Statistics {
                 let view = s.referrer + s.unique_visitor;
                 sum += view;
                 if view > 0 {
-                    count = count + 1;
+                    count += 1;
                 }
             });
             if count > 0 {
@@ -94,9 +95,7 @@ impl Statistics {
             ))
             .filter(created_at.between(start, end))
             .group_by(membership_id)
-            .order(sql::<diesel::sql_types::BigInt>(
-                "s_unique_visitor + s_referrer*2 DESC",
-            ))
+            .order(sql::<diesel::sql_types::BigInt>("s_referrer DESC"))
             .load::<(i64, NaiveDateTime, i64, i64)>(&mut conn);
 
         let updated_at_list = statistics
@@ -115,6 +114,24 @@ impl Statistics {
             .map(|s| (s.0, s.1))
             .collect::<std::collections::HashMap<i64, NaiveDateTime>>();
 
+        let latest_referrered_at_list = statistics
+            .select((
+                membership_id,
+                sql::<diesel::sql_types::Timestamp>(
+                    "MAX(latest_referrered_at) as m_latest_referrered_at",
+                ),
+            ))
+            .filter(unique_visitor.gt(0).or(referrer.gt(0)))
+            .group_by(membership_id)
+            .order(sql::<diesel::sql_types::BigInt>("m_latest_referrered_at"))
+            .load::<(i64, NaiveDateTime)>(&mut conn);
+
+        let id_to_latest_referrered_at = latest_referrered_at_list
+            .unwrap_or(Vec::new())
+            .iter()
+            .map(|s| (s.0, s.1))
+            .collect::<std::collections::HashMap<i64, NaiveDateTime>>();
+
         match res {
             Ok(all) => {
                 let mut result = Vec::new();
@@ -123,6 +140,10 @@ impl Statistics {
                         id: 0,
                         created_at: s.1,
                         updated_at: id_to_updated_at
+                            .get(&s.0)
+                            .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
+                            .to_owned(),
+                        latest_referrered_at: id_to_latest_referrered_at
                             .get(&s.0)
                             .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
                             .to_owned(),
@@ -154,7 +175,7 @@ fn load_statistics_by_created_at(
 ) -> Result<Vec<Statistics>, anyhow::Error> {
     println!(
         "sql: {}",
-        debug_query::<Sqlite, _>(&statistics.filter(created_at.eq(_created_at))).to_string()
+        debug_query::<Sqlite, _>(&statistics.filter(created_at.eq(_created_at)))
     );
     let res = statistics
         .filter(created_at.eq(_created_at))

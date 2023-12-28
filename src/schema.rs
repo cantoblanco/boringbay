@@ -8,6 +8,6 @@ diesel::table! {
         membership_id -> BigInt,
         unique_visitor -> BigInt,
         referrer -> BigInt,
-        latest_referrered_at -> Timestamp,
+        latest_referrer_at -> Timestamp,
     }
 }

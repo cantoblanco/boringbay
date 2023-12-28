@@ -38,7 +38,7 @@ static SVG_HEADER: &str = r###"<?xml version="1.0" encoding="utf-8"?>
 static SVG_BORDER: &str = r###"
 <rect class="fill-white" width="577.762" height="110" style="stroke: rgb(189, 14, 43); stroke-width: 5;" rx="50"/>
 <text style="font-size: 38px; white-space: pre; text-anchor: middle;" x="335" y="48.074">#site_name# 🥱</text>
-<text style="font-size: 24px; white-space: pre; font-style: italic; text-anchor: middle;" x="335" y="91.615">UV: #site_uv#  Referrer: #site_referrer#  Level: #site_rank#</text>
+<text style="font-size: 24px; white-space: pre; font-style: italic; text-anchor: middle;" x="335" y="91.615">UV: #site_uv#  Referer: #site_referrer#  Level: #site_rank#</text>
 "###;
 static SVG_FOOTER: &str = r###"
     </g>

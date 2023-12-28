@@ -19,7 +19,7 @@ pub struct Statistics {
     pub membership_id: i64,
     pub unique_visitor: i64,
     pub referrer: i64,
-    pub latest_referrered_at: NaiveDateTime,
+    pub latest_referrer_at: NaiveDateTime,
 }
 
 impl Statistics {
@@ -34,6 +34,7 @@ impl Statistics {
                 membership_id.eq(stat.membership_id),
                 unique_visitor.eq(stat.unique_visitor),
                 referrer.eq(stat.referrer),
+                latest_referrer_at.eq(stat.latest_referrer_at),
             ))
             .on_conflict((membership_id, created_at))
             .do_update()
@@ -41,6 +42,7 @@ impl Statistics {
                 unique_visitor.eq(stat.unique_visitor),
                 referrer.eq(stat.referrer),
                 updated_at.eq(stat.updated_at),
+                latest_referrer_at.eq(stat.latest_referrer_at),
             ));
         println!("sql: {}", debug_query::<Sqlite, _>(&statement));
         statement.execute(&mut conn)
@@ -114,19 +116,19 @@ impl Statistics {
             .map(|s| (s.0, s.1))
             .collect::<std::collections::HashMap<i64, NaiveDateTime>>();
 
-        let latest_referrered_at_list = statistics
+        let latest_referrer_at_list = statistics
             .select((
                 membership_id,
                 sql::<diesel::sql_types::Timestamp>(
-                    "MAX(latest_referrered_at) as m_latest_referrered_at",
+                    "MAX(latest_referrer_at) as m_latest_referrer_at",
                 ),
             ))
             .filter(unique_visitor.gt(0).or(referrer.gt(0)))
             .group_by(membership_id)
-            .order(sql::<diesel::sql_types::BigInt>("m_latest_referrered_at"))
+            .order(sql::<diesel::sql_types::BigInt>("m_latest_referrer_at"))
             .load::<(i64, NaiveDateTime)>(&mut conn);
 
-        let id_to_latest_referrered_at = latest_referrered_at_list
+        let id_to_latest_referrer_at = latest_referrer_at_list
             .unwrap_or(Vec::new())
             .iter()
             .map(|s| (s.0, s.1))
@@ -143,7 +145,7 @@ impl Statistics {
                             .get(&s.0)
                             .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
                             .to_owned(),
-                        latest_referrered_at: id_to_latest_referrered_at
+                        latest_referrer_at: id_to_latest_referrer_at
                             .get(&s.0)
                             .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
                             .to_owned(),

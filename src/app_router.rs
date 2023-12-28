@@ -139,7 +139,7 @@ pub async fn home_page(
     if domain.is_ok() {
         let _ = ctx
             .boring_visitor(
-                crate::app_model::VisitorType::Referrer,
+                crate::app_model::VisitorType::Referer,
                 &domain.unwrap(),
                 &headers,
             )
@@ -252,7 +252,7 @@ pub async fn rank_page(
     if domain.is_ok() {
         let _ = ctx
             .boring_visitor(
-                crate::app_model::VisitorType::Referrer,
+                crate::app_model::VisitorType::Referer,
                 &domain.unwrap(),
                 &headers,
             )

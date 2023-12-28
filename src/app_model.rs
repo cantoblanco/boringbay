@@ -13,6 +13,7 @@ use headers::HeaderMap;
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Serialize;
+use serde_repr::*;
 use tokio::sync::watch::{self, Receiver, Sender};
 use tokio::sync::RwLock;
 use tracing::info;
@@ -29,13 +30,15 @@ struct VistEvent {
     ip: String,
     country: String,
     member: Membership,
+    vt: VisitorType,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Serialize_repr, Debug, PartialEq)]
+#[repr(u8)]
 pub enum VisitorType {
-    Referrer,
-    Badge,
-    ICON,
+    Referer = 1,
+    Badge = 2,
+    ICON = 3,
 }
 
 pub struct Context {
@@ -77,7 +80,7 @@ impl Context {
         domain: &str,
         headers: &HeaderMap,
     ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
-        if v_type == VisitorType::Referrer && domain.eq(&*SYSTEM_DOMAIN) {
+        if v_type == VisitorType::Referer && domain.eq(&*SYSTEM_DOMAIN) {
             return Err(anyhow!("system domain"));
         }
         if let Some(id) = self.domain2id.get(domain) {
@@ -104,10 +107,11 @@ impl Context {
 
             let mut referrer = self.referrer.write().await;
             let mut dist_r = referrer.get(id).unwrap_or(&(0, now_shanghai())).to_owned();
-            if matches!(v_type, VisitorType::Referrer) && visitor_cache.is_none() {
+            if matches!(v_type, VisitorType::Referer) && visitor_cache.is_none() {
                 dist_r.0 += 1;
                 dist_r.1 = now_shanghai();
                 referrer.insert(*id, dist_r);
+                notification = true;
             }
             drop(referrer);
 
@@ -126,7 +130,6 @@ impl Context {
             let tend = self.get_tend_from_uv_and_rv(dist_uv.0, dist_r.0).await;
 
             if notification {
-                // 广播访客信息
                 let mut member = self.id2member.get(id).unwrap().to_owned();
                 member.description = "".to_string();
                 member.icon = "".to_string();
@@ -139,6 +142,7 @@ impl Context {
                             .to_string(),
                         country,
                         member,
+                        vt: v_type,
                     })
                     .to_string(),
                 );
@@ -162,7 +166,7 @@ impl Context {
 
         statistics.iter().for_each(|s| {
             page_view.insert(s.membership_id, (s.unique_visitor, s.updated_at));
-            referrer.insert(s.membership_id, (s.referrer, s.latest_referrered_at));
+            referrer.insert(s.membership_id, (s.referrer, s.latest_referrer_at));
         });
 
         let mut membership: HashMap<i64, Membership> =
@@ -257,7 +261,7 @@ impl Context {
                         unique_visitor: id_uv.0,
                         updated_at: id_uv.1,
                         referrer: id_referrer.0,
-                        latest_referrered_at: id_referrer.1,
+                        latest_referrer_at: id_referrer.1,
                         id: 0,
                     },
                 )

@@ -85,7 +85,7 @@
             <div class="text-center font-size-14 mt-10">
                 QQ交流群：136231667（仅限会员加入）
                 <br>
-                <img referrerpolicy="no-referrer" class="mt-5" height="30rem" src="/api/badge/boringbay.com">
+                <!-- <img referrerpolicy="no-referrer" class="mt-5" height="30rem" src="/api/badge/boringbay.com"> -->
             </div>
 
             <div class="text-center font-weight-bolder font-size-14 mt-10 mb-5">
@@ -119,18 +119,26 @@
         const styles = ['', "alert-success", "alert-primary", "alert-secondary", "alert-danger"]
         var styleIndex = 0
 
+        function getWelcome(data) {
+            if (data.vt == 2) {
+                return "来自「" + data.country + "」的「" + data.ip + "」访问了 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a>。"
+            }
+            return "来自「" + data.country + "」的「" + data.ip + "」从 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a> 访问了本站。"
+        }
+
         function connect() {
             const protocol = 'https:' == document.location.protocol ? 'wss' : 'ws'
             var ws = new WebSocket(protocol + '://' + document.location.host + '/api/ws');
             ws.onmessage = function (e) {
                 if (e.data) {
                     const data = JSON.parse(e.data)
+                    console.log(data);
                     const styleIndexInner = styleIndex++
                     if (styleIndex >= styles.length) {
                         styleIndex = 0
                     }
                     halfmoon.initStickyAlert({
-                        content: "来自「" + data.country + "」的「" + data.ip + "」访问了 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a>。",
+                        content: getWelcome(data),
                         title: "无聊的沙雕 +1",
                         alertType: styles[styleIndexInner],
                         fillType: "filled-lm",

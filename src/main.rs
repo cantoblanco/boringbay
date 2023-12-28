@@ -25,7 +25,11 @@ async fn main() {
 
     tracing::info!(
         "migration {:?}",
-        db_pool.get().unwrap().run_pending_migrations(MIGRATIONS)
+        db_pool
+            .get()
+            .unwrap()
+            .run_pending_migrations(MIGRATIONS)
+            .unwrap()
     );
 
     let context = Arc::new(Context::default(db_pool).await) as DynContext;

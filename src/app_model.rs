@@ -106,6 +106,7 @@ impl Context {
             let mut dist_r = referrer.get(id).unwrap_or(&(0, now_shanghai())).to_owned();
             if matches!(v_type, VisitorType::Referrer) && visitor_cache.is_none() {
                 dist_r.0 += 1;
+                dist_r.1 = now_shanghai();
                 referrer.insert(*id, dist_r);
             }
             drop(referrer);
@@ -115,6 +116,7 @@ impl Context {
             if matches!(v_type, VisitorType::Badge) {
                 if visitor_cache.is_none() {
                     dist_uv.0 += 1;
+                    dist_uv.1 = now_shanghai();
                     uv.insert(*id, dist_uv);
                 }
                 notification = true;

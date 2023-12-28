@@ -1,4 +1,4 @@
 ALTER TABLE
     `statistics`
 ADD
-    latest_referrered_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+    latest_referrered_at TIMESTAMP;

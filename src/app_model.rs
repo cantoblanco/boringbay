@@ -30,10 +30,10 @@ struct VistEvent {
     ip: String,
     country: String,
     member: Membership,
-    vt: VisitorType,
+    vt: Option<VisitorType>,
 }
 
-#[derive(Serialize_repr, Debug, PartialEq)]
+#[derive(Serialize_repr, Debug, PartialEq, Clone, Copy)]
 #[repr(u8)]
 pub enum VisitorType {
     Referer = 1,
@@ -76,11 +76,11 @@ impl Context {
 
     pub async fn boring_visitor(
         &self,
-        v_type: VisitorType,
+        v_type: Option<VisitorType>,
         domain: &str,
         headers: &HeaderMap,
     ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
-        if v_type == VisitorType::Referer && domain.eq(&*SYSTEM_DOMAIN) {
+        if v_type.is_some_and(|v| v == VisitorType::Referer) && domain.eq(&*SYSTEM_DOMAIN) {
             return Err(anyhow!("system domain"));
         }
         if let Some(id) = self.domain2id.get(domain) {
@@ -97,7 +97,9 @@ impl Context {
             let visitor_key = format!("{}_{}_{:?}", ip, id, v_type);
             let visitor_cache = self.cache.get(&visitor_key).await;
 
-            if visitor_cache.is_none() {
+            if v_type.is_some_and(|v| [VisitorType::Referer, VisitorType::Badge].contains(&v))
+                && visitor_cache.is_none()
+            {
                 self.cache
                     .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
                     .await;
@@ -110,7 +112,7 @@ impl Context {
                 .get(id)
                 .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
                 .to_owned();
-            if matches!(v_type, VisitorType::Referer) {
+            if v_type.is_some_and(|v| v == VisitorType::Referer) {
                 if visitor_cache.is_none() {
                     dist_r.0 += 1;
                     dist_r.1 = now_shanghai();
@@ -125,7 +127,7 @@ impl Context {
                 .get(id)
                 .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
                 .to_owned();
-            if matches!(v_type, VisitorType::Badge) {
+            if v_type.is_some_and(|v| v == VisitorType::Badge) {
                 if visitor_cache.is_none() {
                     dist_uv.0 += 1;
                     dist_uv.1 = now_shanghai();

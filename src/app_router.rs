@@ -56,14 +56,14 @@ pub async fn show_badge(
     headers: HeaderMap,
     Extension(ctx): Extension<DynContext>,
 ) -> Response {
-    let mut v_type = crate::app_model::VisitorType::Badge;
+    let mut v_type = Some(crate::app_model::VisitorType::Badge);
 
     let domain_referrer = get_domain_from_referrer(&headers).unwrap_or("".to_string());
     if domain_referrer.ne(&domain) {
         if domain.eq("[domain]") {
             domain = domain_referrer;
         } else {
-            v_type = crate::app_model::VisitorType::ICON;
+            v_type = None;
         }
     }
 
@@ -86,7 +86,7 @@ pub async fn show_favicon(
     Extension(ctx): Extension<DynContext>,
 ) -> Response {
     let tend = ctx
-        .boring_visitor(crate::app_model::VisitorType::ICON, &domain, &headers)
+        .boring_visitor(Some(crate::app_model::VisitorType::ICON), &domain, &headers)
         .await;
     if tend.is_err() {
         return (
@@ -105,7 +105,7 @@ pub async fn show_icon(
     Extension(ctx): Extension<DynContext>,
 ) -> Response {
     let tend = ctx
-        .boring_visitor(crate::app_model::VisitorType::ICON, &domain, &headers)
+        .boring_visitor(Some(crate::app_model::VisitorType::ICON), &domain, &headers)
         .await;
     if tend.is_err() {
         return (
@@ -139,7 +139,7 @@ pub async fn home_page(
     if domain.is_ok() {
         let _ = ctx
             .boring_visitor(
-                crate::app_model::VisitorType::Referer,
+                Some(crate::app_model::VisitorType::Referer),
                 &domain.unwrap(),
                 &headers,
             )
@@ -255,7 +255,7 @@ pub async fn rank_page(
     if domain.is_ok() {
         let _ = ctx
             .boring_visitor(
-                crate::app_model::VisitorType::Referer,
+                Some(crate::app_model::VisitorType::Referer),
                 &domain.unwrap(),
                 &headers,
             )

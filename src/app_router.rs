@@ -152,10 +152,13 @@ pub async fn home_page(
     let mut rank_vec: Vec<(i64, NaiveDateTime)> = Vec::new();
 
     for k in ctx.id2member.keys() {
-        let uv = uv_read.get(k).unwrap_or(&(0, now_shanghai())).to_owned();
+        let uv = uv_read
+            .get(k)
+            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+            .to_owned();
         let rv = referrer_read
             .get(k)
-            .unwrap_or(&(0, now_shanghai()))
+            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
             .to_owned();
         if uv.0 > 0 || rv.0 > 0 {
             rank_vec.push((k.to_owned(), rv.1));

@@ -106,17 +106,25 @@ impl Context {
             let mut notification = false;
 
             let mut referrer = self.referrer.write().await;
-            let mut dist_r = referrer.get(id).unwrap_or(&(0, now_shanghai())).to_owned();
-            if matches!(v_type, VisitorType::Referer) && visitor_cache.is_none() {
-                dist_r.0 += 1;
-                dist_r.1 = now_shanghai();
-                referrer.insert(*id, dist_r);
+            let mut dist_r = referrer
+                .get(id)
+                .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+                .to_owned();
+            if matches!(v_type, VisitorType::Referer) {
+                if visitor_cache.is_none() {
+                    dist_r.0 += 1;
+                    dist_r.1 = now_shanghai();
+                    referrer.insert(*id, dist_r);
+                }
                 notification = true;
             }
             drop(referrer);
 
             let mut uv = self.unique_visitor.write().await;
-            let mut dist_uv = uv.get(id).unwrap_or(&(0, now_shanghai())).to_owned();
+            let mut dist_uv = uv
+                .get(id)
+                .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+                .to_owned();
             if matches!(v_type, VisitorType::Badge) {
                 if visitor_cache.is_none() {
                     dist_uv.0 += 1;
@@ -234,14 +242,22 @@ impl Context {
             let mut uv_write = self.unique_visitor.write().await;
             let mut referrer_write = self.referrer.write().await;
             id_list.iter().for_each(|id| {
-                let uv = *uv_cache.get(id).unwrap_or(&(0, now_shanghai()));
-                let new_uv = *uv_write.get(id).unwrap_or(&(0, now_shanghai()));
+                let uv = *uv_cache
+                    .get(id)
+                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+                let new_uv = *uv_write
+                    .get(id)
+                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
                 if uv.0.ne(&new_uv.0) {
                     uv_cache.insert(**id, new_uv);
                     changed_list.push(**id);
                 }
-                let referrer = *referrer_cache.get(id).unwrap_or(&(0, now_shanghai()));
-                let new_referrer = *referrer_write.get(id).unwrap_or(&(0, now_shanghai()));
+                let referrer = *referrer_cache
+                    .get(id)
+                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+                let new_referrer = *referrer_write
+                    .get(id)
+                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
                 if referrer.0.ne(&new_referrer.0) {
                     referrer_cache.insert(**id, new_referrer);
                     if !changed_list.contains(id) {
@@ -251,8 +267,12 @@ impl Context {
             });
             // 更新到数据库
             changed_list.iter().for_each(|id| {
-                let id_uv = *uv_cache.get(id).unwrap_or(&(0, now_shanghai()));
-                let id_referrer = *referrer_cache.get(id).unwrap_or(&(0, now_shanghai()));
+                let id_uv = *uv_cache
+                    .get(id)
+                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+                let id_referrer = *referrer_cache
+                    .get(id)
+                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
                 Statistics::insert_or_update(
                     self.db_pool.get().unwrap(),
                     &Statistics {

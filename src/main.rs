@@ -94,8 +94,8 @@ async fn shutdown_signal(ctx: Arc<Context>) {
     let page_view_read = ctx.unique_visitor.read().await;
     let referrer_read = ctx.referrer.read().await;
     ctx.id2member.keys().for_each(|id| {
-        let uv = *page_view_read.get(id).unwrap_or(&(0, now_shanghai()));
-        let referrer = *referrer_read.get(id).unwrap_or(&(0, now_shanghai()));
+        let uv = *page_view_read.get(id).unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+        let referrer = *referrer_read.get(id).unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
         Statistics::insert_or_update(
             ctx.db_pool.get().unwrap(),
             &Statistics {

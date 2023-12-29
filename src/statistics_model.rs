@@ -9,6 +9,7 @@ use diesel::r2d2::{ConnectionManager, PooledConnection};
 use diesel::sqlite::Sqlite;
 use diesel::{debug_query, prelude::*};
 use diesel::{Queryable, SqliteConnection};
+use tracing::debug;
 
 #[derive(Queryable, Debug, Clone, Insertable, serde::Serialize, serde::Deserialize)]
 #[diesel(table_name = statistics)]
@@ -44,7 +45,7 @@ impl Statistics {
                 updated_at.eq(stat.updated_at),
                 latest_referrer_at.eq(stat.latest_referrer_at),
             ));
-        println!("sql: {}", debug_query::<Sqlite, _>(&statement));
+        debug!("sql: {}", debug_query::<Sqlite, _>(&statement));
         statement.execute(&mut conn)
     }
 
@@ -105,9 +106,9 @@ impl Statistics {
                 membership_id,
                 sql::<diesel::sql_types::Timestamp>("MAX(updated_at) as m_updated_at"),
             ))
-            .filter(unique_visitor.gt(0).or(referrer.gt(0)))
+            .filter(updated_at.is_not_null().and(unique_visitor.gt(0)))
             .group_by(membership_id)
-            .order(sql::<diesel::sql_types::BigInt>("m_updated_at"))
+            .order(sql::<diesel::sql_types::Timestamp>("m_updated_at"))
             .load::<(i64, NaiveDateTime)>(&mut conn);
 
         let id_to_updated_at = updated_at_list
@@ -123,9 +124,9 @@ impl Statistics {
                     "MAX(latest_referrer_at) as m_latest_referrer_at",
                 ),
             ))
-            .filter(unique_visitor.gt(0).or(referrer.gt(0)))
+            .filter(latest_referrer_at.is_not_null().and(referrer.gt(0)))
             .group_by(membership_id)
-            .order(sql::<diesel::sql_types::BigInt>("m_latest_referrer_at"))
+            .order(sql::<diesel::sql_types::Timestamp>("m_latest_referrer_at"))
             .load::<(i64, NaiveDateTime)>(&mut conn);
 
         let id_to_latest_referrer_at = latest_referrer_at_list
@@ -175,7 +176,7 @@ fn load_statistics_by_created_at(
     mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
     _created_at: NaiveDateTime,
 ) -> Result<Vec<Statistics>, anyhow::Error> {
-    println!(
+    debug!(
         "sql: {}",
         debug_query::<Sqlite, _>(&statistics.filter(created_at.eq(_created_at)))
     );

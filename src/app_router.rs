@@ -149,7 +149,7 @@ pub async fn home_page(
     let uv_read = ctx.unique_visitor.read().await;
 
     let mut level: HashMap<i64, i64> = HashMap::new();
-    let mut rank_vec: Vec<(i64, NaiveDateTime)> = Vec::new();
+    let mut rank_vec: Vec<(i64, NaiveDateTime, i64)> = Vec::new();
 
     for k in ctx.id2member.keys() {
         let uv = uv_read
@@ -161,12 +161,15 @@ pub async fn home_page(
             .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
             .to_owned();
         if uv.0 > 0 || rv.0 > 0 {
-            rank_vec.push((k.to_owned(), rv.1));
+            rank_vec.push((k.to_owned(), rv.1, uv.0));
             level.insert(k.to_owned(), ctx.get_tend_from_uv_and_rv(uv.0, rv.0).await);
         }
     }
 
-    rank_vec.sort_by(|a, b| b.1.cmp(&a.1));
+    rank_vec.sort_by(|a, b| match b.1.cmp(&a.1) {
+        std::cmp::Ordering::Equal => b.2.cmp(&a.2),
+        _ => b.1.cmp(&a.1),
+    });
 
     let mut membership = Vec::new();
     for v in rank_vec {

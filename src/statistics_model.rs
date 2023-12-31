@@ -98,7 +98,8 @@ impl Statistics {
             ))
             .filter(created_at.between(start, end))
             .group_by(membership_id)
-            .order(sql::<diesel::sql_types::BigInt>("s_referrer DESC"))
+            .order_by(sql::<diesel::sql_types::BigInt>("s_referrer DESC"))
+            .then_order_by(sql::<diesel::sql_types::BigInt>("s_unique_visitor DESC"))
             .load::<(i64, NaiveDateTime, i64, i64)>(&mut conn);
 
         let updated_at_list = statistics

@@ -214,5 +214,12 @@
 		"name": "无名博客",
 		"description": "一个无聊的人罢了",
 		"github_username": "sdfghjwmbkdouble"
+	},
+	"41": {
+		"domain": "www.5had0w.com",
+		"icon": "https://www.5had0w.com/assets/logo.png",
+		"name": "5had0w",
+		"description": "一个游走在互联网边缘的影子，希望在这个世界留下一点痕迹。",
+		"github_username": "imshadow"
 	}
 }

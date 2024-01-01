@@ -214,5 +214,12 @@
 		"name": "无名博客",
 		"description": "一个无聊的人罢了",
 		"github_username": "sdfghjwmbkdouble"
+	},
+	"41": {
+		"domain": "blog.sinzmise.top",
+		"icon": "https://blog.sinzmise.top/img/avatar.png",
+		"name": "九弦之屋",
+		"description": "欢迎旅行者，来到这个平凡但又记载了许多故事的小屋",
+		"github_username": "SinzMise"
 	}
 }

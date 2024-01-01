@@ -66,6 +66,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/hhhkkk520" title="Kris">
   <img src="https://avatars.githubusercontent.com/u/52115472?v=4" width="66;" alt="Kris"/>
 </a>
+<a href="https://github.com/imshadow" title="imshadow">
+  <img src="https://avatars.githubusercontent.com/u/23455967?v=4" width="66;" alt="imshadow"/>
+</a>
 <a href="https://github.com/lingdu2333" title="澪度">
   <img src="https://avatars.githubusercontent.com/u/117048039?v=4" width="66;" alt="澪度"/>
 </a>
@@ -92,6 +95,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 </a>
 <a href="https://github.com/xiongbao" title="熊宝">
   <img src="https://avatars.githubusercontent.com/u/4247191?v=4" width="66;" alt="熊宝"/>
+</a>
+<a href="https://github.com/SinzMise" title="王九弦SZ·Ninty">
+  <img src="https://avatars.githubusercontent.com/u/120767492?v=4" width="66;" alt="王九弦SZ·Ninty"/>
 </a>
 <a href="https://github.com/zaxigia" title="langpa">
   <img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/>

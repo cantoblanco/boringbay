@@ -33,6 +33,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/jipa233" title="jipa233">
   <img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/>
 </a>
+<a href="https://github.com/trevorcomputer" title="trevorcomputer">
+  <img src="https://avatars.githubusercontent.com/u/119119641?v=4" width="66;" alt="trevorcomputer"/>
+</a>
 <a href="https://github.com/xxyxxvii" title="xxYxxVii">
   <img src="https://avatars.githubusercontent.com/u/81088023?v=4" width="66;" alt="xxYxxVii"/>
 </a>
@@ -77,9 +80,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 </a>
 <a href="https://github.com/tosspi" title="tosspi">
   <img src="https://avatars.githubusercontent.com/u/91527286?v=4" width="66;" alt="tosspi"/>
-</a>
-<a href="https://github.com/trevorcomputer" title="trevorcomputer">
-  <img src="https://avatars.githubusercontent.com/u/119119641?v=4" width="66;" alt="trevorcomputer"/>
 </a>
 <a href="https://github.com/wzwzx" title="Diq Xia">
   <img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="Diq Xia"/>

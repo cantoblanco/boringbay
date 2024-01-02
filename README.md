@@ -99,6 +99,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/SinzMise" title="王九弦SZ·Ninty">
   <img src="https://avatars.githubusercontent.com/u/120767492?v=4" width="66;" alt="王九弦SZ·Ninty"/>
 </a>
+<a href="https://github.com/ysicing" title="缘生">
+  <img src="https://avatars.githubusercontent.com/u/8605565?v=4" width="66;" alt="缘生"/>
+</a>
 <a href="https://github.com/zaxigia" title="langpa">
   <img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/>
 </a>

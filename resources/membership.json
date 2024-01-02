@@ -228,5 +228,12 @@
 		"name": "5had0w",
 		"description": "一个游走在互联网边缘的影子，希望在这个世界留下一点痕迹。",
 		"github_username": "imshadow"
-  }
+  },
+	"43": {
+		"domain": "ysicing.me",
+		"icon": "https://ysicing.me/static/cactus/images/logo.png",
+		"name": "ysicing",
+		"description": "新时代云缘生农民工",
+		"github_username": "ysicing"
+	}
 }

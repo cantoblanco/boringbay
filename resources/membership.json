@@ -235,5 +235,12 @@
 		"name": "ysicing",
 		"description": "新时代云缘生农民工",
 		"github_username": "ysicing"
+	},
+	"44": {
+		"domain": "boring.studio",
+		"icon": "https://boring.studio/assets/images/boring.studio.ico.svg",
+		"name": "无聊工作室",
+		"description": "无聊的人做无聊的事",
+		"github_username": "xiongbao"
 	}
 }

@@ -54,6 +54,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/hjh-cn" title="黄佳昊">
   <img src="https://avatars.githubusercontent.com/u/71384238?v=4" width="66;" alt="黄佳昊"/>
 </a>
+<a href="https://github.com/CasearF" title="Caesar">
+  <img src="https://avatars.githubusercontent.com/u/75901800?v=4" width="66;" alt="Caesar"/>
+</a>
 <a href="https://github.com/Jochen233" title="Jochen233">
   <img src="https://avatars.githubusercontent.com/u/89528624?v=4" width="66;" alt="Jochen233"/>
 </a>

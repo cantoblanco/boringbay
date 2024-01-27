@@ -137,12 +137,10 @@
                         styleIndex = 0
                     }
                     const isViewportWidthLessThan1234px = window.innerWidth < 1234
-                    if (isViewportWidthLessThan1234px) {
-                        const alerts = document.querySelectorAll(".sticky-alerts .alert");
-                        if (alerts) {
-                            for (let i = alerts.length - 1; i > 1; i--) {
-                                alerts[i].remove();
-                            }
+                    const alerts = document.querySelectorAll(".sticky-alerts .alert");
+                    if (alerts) {
+                        for (let i = alerts.length - 1; i > (isViewportWidthLessThan1234px ? 1 : 10); i--) {
+                            alerts[i].remove();
                         }
                     }
                     halfmoon.initStickyAlert({

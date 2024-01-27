@@ -132,10 +132,18 @@
             ws.onmessage = function (e) {
                 if (e.data) {
                     const data = JSON.parse(e.data)
-                    console.log(data);
                     const styleIndexInner = styleIndex++
                     if (styleIndex >= styles.length) {
                         styleIndex = 0
+                    }
+                    const isViewportWidthLessThan1234px = window.innerWidth < 1234
+                    if (isViewportWidthLessThan1234px) {
+                        const alerts = document.querySelectorAll(".sticky-alerts .alert");
+                        if (alerts) {
+                            for (let i = alerts.length - 1; i > 1; i--) {
+                                alerts[i].remove();
+                            }
+                        }
                     }
                     halfmoon.initStickyAlert({
                         content: getWelcome(data),

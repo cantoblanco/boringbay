@@ -69,6 +69,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/rabbitxuanxuan" title="Rabbit_xuan">
   <img src="https://avatars.githubusercontent.com/u/112363084?v=4" width="66;" alt="Rabbit_xuan"/>
 </a>
+<a href="https://github.com/SEYYl" title="SEYYl">
+  <img src="https://avatars.githubusercontent.com/u/76978511?v=4" width="66;" alt="SEYYl"/>
+</a>
 <a href="https://github.com/hhhkkk520" title="Kris">
   <img src="https://avatars.githubusercontent.com/u/52115472?v=4" width="66;" alt="Kris"/>
 </a>
@@ -96,8 +99,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/wulintang" title="懋和道人">
   <img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="懋和道人"/>
 </a>
-<a href="https://github.com/xiowo" title="爱摸鱼的Mo">
-  <img src="https://avatars.githubusercontent.com/u/87068069?v=4" width="66;" alt="爱摸鱼的Mo"/>
+<a href="https://github.com/xiowo" title="MortalCat">
+  <img src="https://avatars.githubusercontent.com/u/87068069?v=4" width="66;" alt="MortalCat"/>
 </a>
 <a href="https://github.com/SinzMise" title="王九弦SZ·Ninty">
   <img src="https://avatars.githubusercontent.com/u/120767492?v=4" width="66;" alt="王九弦SZ·Ninty"/>

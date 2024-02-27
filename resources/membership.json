@@ -256,5 +256,12 @@
 		"name": "南兮栎",
 		"description": "当风筝厌倦了天空，能否会义无反顾的坠入大海。",
 		"github_username": "SEYYl"
+	},
+	"47": {
+		"domain": "xieboke.net",
+		"icon": "http://pic.xieboke.net/joyoblog.png",
+		"name": "卓越笔记",
+		"description": "成长的时候，能帮有需要的你。",
+		"github_username": "yinzhuoqun"
 	}
 }

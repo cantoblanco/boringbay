@@ -96,6 +96,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/wzwzx" title="Diq Xia">
   <img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="Diq Xia"/>
 </a>
+<a href="https://github.com/yinzhuoqun" title="yinzhuoqun">
+  <img src="https://avatars.githubusercontent.com/u/12694828?v=4" width="66;" alt="yinzhuoqun"/>
+</a>
 <a href="https://github.com/wulintang" title="懋和道人">
   <img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="懋和道人"/>
 </a>

@@ -110,13 +110,6 @@
 		"description": "My Blog!",
 		"github_username": "yzl3014"
 	},
-	"23": {
-		"domain": "tuerxuan.com",
-		"icon": "http://photo.tuerxuan.com/image.png",
-		"name": "兔儿轩の小破站",
-		"description": "一只码兔~",
-		"github_username": "Rabbit_xuan"
-	},
 	"24": {
 		"domain": "www.dmxvx.cc",
 		"icon": "https://cdn.dmxvx.cc/img/logo.png",
@@ -194,13 +187,6 @@
 		"description": "xxYxxVii.COM 收集并分享不同的信息",
 		"github_username": "xxyxxvii"
 	},
-	"38": {
-		"domain": "docs.tctt.org.cn",
-		"icon": "https://image.tctt.org.cn/file/fa6447ecaf38ce83c2833.jpg",
-		"name": "D1gital_D3mon's Blog",
-		"description": "分享实用干货",
-		"github_username": "trevorcomputer"
-	},
 	"39": {
 		"domain": "v.hi.sy",
 		"icon": "https://hi.sy/wp-content/uploads/2021/11/android-chrome-512x512-2.png",
@@ -236,26 +222,12 @@
 		"description": "新时代云缘生农民工",
 		"github_username": "ysicing"
 	},
-	"44": {
-		"domain": "boring.studio",
-		"icon": "https://boring.studio/assets/images/boring.studio.ico.svg",
-		"name": "无聊工作室",
-		"description": "无聊的人做无聊的事",
-		"github_username": "xiongbao"
-	},
 	"45": {
 		"domain": "casear.cn",
 		"icon": "https://casear.cn/static/img/f26eee3d0f6a05778ad6469e888a9e8b.touxiang.webp",
 		"name": "Casear的技术栈",
 		"description": "如果你有机会到好望角，请在海岸线旁寻找一块坚硬的石头,然后把我的故事刻在石头上👨‍💻",
 		"github_username": "CasearF"
-	},
-	"46": {
-		"domain": "wanfe.top",
-		"icon": "https://img.wanfe.top/img/wz_logo.webp",
-		"name": "南兮栎",
-		"description": "当风筝厌倦了天空，能否会义无反顾的坠入大海。",
-		"github_username": "SEYYl"
 	},
 	"47": {
 		"domain": "xieboke.net",

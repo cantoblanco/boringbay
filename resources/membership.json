@@ -11,7 +11,7 @@
 		"icon": "/api/icon/boringbay.com",
 		"name": "The Boring Bay",
 		"description": "无聊的人那么多～",
-		"github_username": "naiba/boringbay"
+		"github_username": "cantoblanco/boringbay"
 	},
 	"3": {
 		"domain": "www.spiritysdx.top",
@@ -32,8 +32,7 @@
 		"icon": "https://cdn.jsdelivr.net/gh/ilay1678/cdn@master/favicon.png",
 		"name": "我若为王",
 		"description": "Just do it!",
-		"github_username": "ilay1678",
-		"hidden": true
+		"github_username": "ilay1678"
 	},
 	"9": {
 		"domain": "www.ifts.ml",

@@ -7,8 +7,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 提交 PR 将你的网站添加进 `resources/membership.json`
 
 <!--GAMFC_DELIMITER--><a href="https://github.com/naiba" title="naiba"><img src="https://avatars.githubusercontent.com/u/29243953?v=4" width="66;" alt="naiba"/></a>
-<a href="https://github.com/xiaoxing07" title="2B"><img src="https://avatars.githubusercontent.com/u/99374145?v=4" width="66;" alt="2B"/></a>
 <a href="https://github.com/cantoblanco" title="Kris"><img src="https://avatars.githubusercontent.com/u/116849421?v=4" width="66;" alt="Kris"/></a>
+<a href="https://github.com/xiaoxing07" title="2B"><img src="https://avatars.githubusercontent.com/u/99374145?v=4" width="66;" alt="2B"/></a>
 <a href="https://github.com/MCTGyt" title="MCTGyt"><img src="https://avatars.githubusercontent.com/u/75358424?v=4" width="66;" alt="MCTGyt"/></a>
 <a href="https://github.com/muyan0709" title="Mello-M"><img src="https://avatars.githubusercontent.com/u/72654383?v=4" width="66;" alt="Mello-M"/></a>
 <a href="https://github.com/WoLeo-Z" title="WoL"><img src="https://avatars.githubusercontent.com/u/45914900?v=4" width="66;" alt="WoL"/></a>
@@ -22,6 +22,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/phong057" title="无心v"><img src="https://avatars.githubusercontent.com/u/81139357?v=4" width="66;" alt="无心v"/></a>
 <a href="https://github.com/xiongbao" title="熊宝"><img src="https://avatars.githubusercontent.com/u/4247191?v=4" width="66;" alt="熊宝"/></a>
 <a href="https://github.com/hjh-cn" title="黄佳昊"><img src="https://avatars.githubusercontent.com/u/71384238?v=4" width="66;" alt="黄佳昊"/></a>
+<a href="https://github.com/9527DHX" title="9527DHX"><img src="https://avatars.githubusercontent.com/u/31348749?v=4" width="66;" alt="9527DHX"/></a>
 <a href="https://github.com/CasearF" title="Caesar"><img src="https://avatars.githubusercontent.com/u/75901800?v=4" width="66;" alt="Caesar"/></a>
 <a href="https://github.com/Jochen233" title="Jochen233"><img src="https://avatars.githubusercontent.com/u/89528624?v=4" width="66;" alt="Jochen233"/></a>
 <a href="https://github.com/zhufacai" title="Joker"><img src="https://avatars.githubusercontent.com/u/14821269?v=4" width="66;" alt="Joker"/></a>

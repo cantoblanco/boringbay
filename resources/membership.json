@@ -241,5 +241,12 @@
 		"name": "9527DHX's Blog",
 		"description": "Always Belive That.",
 		"github_username": "9527DHX"
+	},
+	"49": {
+		"domain": "chuishen.xyz",
+		"icon": "https://chuishen.xyz/img/logo.png",
+		"name": "Lafcadia's Blog",
+		"description": "Et in Arcadia, ego.",
+		"github_username": "Lafcadia"
 	}
 }

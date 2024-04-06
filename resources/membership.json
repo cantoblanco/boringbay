@@ -248,5 +248,12 @@
 		"name": "Lafcadia's Blog",
 		"description": "Et in Arcadia, ego.",
 		"github_username": "Lafcadia"
+	},
+	"50": {
+		"domain": "blog.awaae001.top",
+		"icon": "https://blog.awaae001.top/ico.webp",
+		"name": "呓语梦轩",
+		"description": "用心感受生活",
+		"github_username": "awaae001"
 	}
 }

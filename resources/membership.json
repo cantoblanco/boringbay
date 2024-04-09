@@ -255,5 +255,12 @@
 		"name": "呓语梦轩",
 		"description": "用心感受生活",
 		"github_username": "awaae001"
+	},
+	"50": {
+		"domain": "www.efu.me",
+		"icon": "https://s3.qjqq.cn/47/660a7ece07609.webp!color",
+		"name": "Efu",
+		"description": "小心翼翼地拥有并努力着。",
+		"github_username": "efuo"
 	}
 }

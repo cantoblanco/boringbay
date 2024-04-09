@@ -14,6 +14,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/WoLeo-Z" title="WoL"><img src="https://avatars.githubusercontent.com/u/45914900?v=4" width="66;" alt="WoL"/></a>
 <a href="https://github.com/qmxs" title="gitmba"><img src="https://avatars.githubusercontent.com/u/49803761?v=4" width="66;" alt="gitmba"/></a>
 <a href="https://github.com/ilay1678" title="我若为王"><img src="https://avatars.githubusercontent.com/u/7021399?v=4" width="66;" alt="我若为王"/></a>
+<a href="https://github.com/efuo" title="Efu"><img src="https://avatars.githubusercontent.com/u/74389842?v=4" width="66;" alt="Efu"/></a>
 <a href="https://github.com/maolog" title="Mauzhu"><img src="https://avatars.githubusercontent.com/u/17608225?v=4" width="66;" alt="Mauzhu"/></a>
 <a href="https://github.com/xuanxuan666niupi666" title="XCATX"><img src="https://avatars.githubusercontent.com/u/86157698?v=4" width="66;" alt="XCATX"/></a>
 <a href="https://github.com/jipa233" title="jipa233"><img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/></a>

@@ -128,7 +128,8 @@
 		"icon": "https://www.0du.top/favicon.ico",
 		"name": "澪度の博客",
 		"description": "可能会随便写点什么",
-		"github_username": "lingdu2333"
+		"github_username": "lingdu2333"，
+		"hidden": true
 	},
 	"30": {
 		"domain": "solitud.es",
@@ -191,7 +192,8 @@
 		"icon": "https://hi.sy/wp-content/uploads/2021/11/android-chrome-512x512-2.png",
 		"name": "白歌-V",
 		"description": "Just for funnnnn!!",
-		"github_username": "cantoblanco"
+		"github_username": "cantoblanco",
+		"hidden": true
 	},
 	"40": {
 		"domain": "wuminboke.site",

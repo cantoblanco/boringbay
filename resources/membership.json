@@ -271,5 +271,12 @@
 		"name": "青桔气球",
 		"description": "春风若有怜花意 可否许我再少年",
 		"github_username": "PearsSauce"
+	},
+	"53": {
+		"domain": "blog.btwoa.com",
+		"icon": "https://blog.btwoa.com/btwoa.jpg",
+		"name": "btwoa",
+		"description": "世界为你简单",
+		"github_username": "btwoa"
 	}
 }

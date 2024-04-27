@@ -39,7 +39,8 @@
 		"icon": "https://cdn.jsdelivr.net/gh/DaoChen6/img@main/logo1.png",
 		"name": "辰漉博客",
 		"description": "道辰的博客",
-		"github_username": "DaoChen6"
+		"github_username": "DaoChen6",
+		"hidden": true
 	},
 	"10": {
 		"domain": "www.gitmba.com",

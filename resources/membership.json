@@ -83,7 +83,7 @@
 	},
 	"19": {
 		"domain": "hi.sy",
-		"icon": "https://hi.sy/wp-content/uploads/2021/11/android-chrome-512x512-2.png",
+		"icon": "https://telegraph-image-e2j.pages.dev/file/aace1ce621c93938d3dfb.png",
 		"name": "白歌",
 		"description": "Just for funnnnn!!",
 		"github_username": "cantoblanco"
@@ -190,11 +190,10 @@
 	},
 	"39": {
 		"domain": "v.hi.sy",
-		"icon": "https://hi.sy/wp-content/uploads/2021/11/android-chrome-512x512-2.png",
+		"icon": "https://telegraph-image-e2j.pages.dev/file/aace1ce621c93938d3dfb.png",
 		"name": "白歌-V",
 		"description": "Just for funnnnn!!",
-		"github_username": "cantoblanco",
-		"hidden": true
+		"github_username": "cantoblanco"
 	},
 	"40": {
 		"domain": "wuminboke.site",

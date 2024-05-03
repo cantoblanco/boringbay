@@ -278,5 +278,12 @@
 		"name": "btwoa",
 		"description": "世界为你简单",
 		"github_username": "btwoa"
+	},
+	"54": {
+		"domain": "www.heiu.top",
+		"icon": "https://www.heiu.top/images/favicon.ico",
+		"name": "heiu",
+		"description": "可可爱爱",
+		"github_username": "xiaoheiyo"
 	}
 }

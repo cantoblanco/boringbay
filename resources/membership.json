@@ -285,5 +285,12 @@
 		"name": "heiu",
 		"description": "可可爱爱",
 		"github_username": "xiaoheiyo"
+	},
+	"55": {
+		"domain": "blog.luckyits.com",
+		"icon": "https://blog.luckyits.com/favicon.ico",
+		"name": "西柚",
+		"description": "我想要两颗西柚 （i want to see you）",
+		"github_username": "SaboZhang"
 	}
 }

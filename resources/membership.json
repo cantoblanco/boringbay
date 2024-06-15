@@ -299,5 +299,12 @@
 		"name": "fly6022",
 		"description": "满载一船星辉，在星辉斑斓里放歌。",
 		"github_username": "fly6022"
+	},
+	"57": {
+		"domain": "hexo.dreamerhe.cn",
+		"icon": "https://hexo.dreamerhe.cn/img/logo/apple-touch-icon.pngg",
+		"name": "何星梦",
+		"description": "朝着梦想前进，纵有万般阻挠，也绝不会让我停下脚步，待到成功时，之喜唯有我独享！",
+		"github_username": "dreamerhe114514"
 	}
 }

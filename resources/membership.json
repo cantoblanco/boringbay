@@ -306,5 +306,12 @@
 		"name": "何星梦",
 		"description": "朝着梦想前进，纵有万般阻挠，也绝不会让我停下脚步，待到成功时，之喜唯有我独享！",
 		"github_username": "dreamerhe114514"
+	},
+	"58": {
+		"domain": "blog.yunzeo.cn",
+		"icon": "https://www.yunzeo.cn/img/favicon.png",
+		"name": "云泽记",
+		"description": "热爱可抵岁月漫长！",
+		"github_username": "yunzeo"
 	}
 }

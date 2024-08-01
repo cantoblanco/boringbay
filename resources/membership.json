@@ -308,10 +308,17 @@
 		"github_username": "dreamerhe114514"
 	},
 	"58": {
-		"domain": "setbun.com",
+		"domain": "blog.yunzeo.cn",
+		"icon": "https://www.yunzeo.cn/img/favicon.png",
+		"name": "云泽记",
+		"description": "热爱可抵岁月漫长！",
+		"github_username": "yunzeo"
+	},
+  "59": {
+    "domain": "setbun.com",
 		"icon": "https://cdn.jsdelivr.net/gh/FrederickBun/upyun-rhimgcdn@img/upload/202405182223432.png",
 		"name": "磅说宇宙",
 		"description": "多试试，总能找到什么",
 		"github_username": "FrederickBun"
-	}
+  }
 }

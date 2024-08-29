@@ -27,6 +27,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/maolog" title="Mauzhu"><img src="https://avatars.githubusercontent.com/u/17608225?v=4" width="66;" alt="Mauzhu"/></a>
 <a href="https://github.com/everfu" title="一小只托尼"><img src="https://avatars.githubusercontent.com/u/74389842?v=4" width="66;" alt="一小只托尼"/></a>
 <a href="https://github.com/CasearF" title="Caesar"><img src="https://avatars.githubusercontent.com/u/75901800?v=4" width="66;" alt="Caesar"/></a>
+<a href="https://github.com/longchunxin" title="longchunxin"><img src="https://avatars.githubusercontent.com/u/169962016?v=4" width="66;" alt="longchunxin"/></a>
 <a href="https://github.com/sdfghjwmbkdouble" title="sdfghjwmbkdouble"><img src="https://avatars.githubusercontent.com/u/153349302?v=4" width="66;" alt="sdfghjwmbkdouble"/></a>
 <a href="https://github.com/spiritLHLS" title="spiritlhl"><img src="https://avatars.githubusercontent.com/u/103393591?v=4" width="66;" alt="spiritlhl"/></a>
 <a href="https://github.com/tech-fever" title="tech-fever"><img src="https://avatars.githubusercontent.com/u/105153585?v=4" width="66;" alt="tech-fever"/></a>

@@ -314,11 +314,18 @@
 		"description": "热爱可抵岁月漫长！",
 		"github_username": "yunzeo"
 	},
-  "59": {
-    "domain": "www.setbun.com",
+	"59": {
+	        "domain": "www.setbun.com",
 		"icon": "https://cdn.jsdelivr.net/gh/FrederickBun/upyun-rhimgcdn@img/upload/202405182223432.png",
 		"name": "磅说宇宙",
 		"description": "多试试，总能找到什么",
 		"github_username": "FrederickBun"
-  }
+	},
+       "60": {
+	        "domain": "987654321.org",
+		"icon": "https://987654321.org/img/tx.png",
+		"name": "LCX",
+		"description": "这是一个博客，同时也是一个知识库。",
+		"github_username": "longchunxin"
+	}
 }

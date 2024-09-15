@@ -12,7 +12,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/MCTGyt" title="MCTGyt"><img src="https://avatars.githubusercontent.com/u/75358424?v=4" width="66;" alt="MCTGyt"/></a>
 <a href="https://github.com/muyan0709" title="Mello-M"><img src="https://avatars.githubusercontent.com/u/72654383?v=4" width="66;" alt="Mello-M"/></a>
 <a href="https://github.com/WoLeo-Z" title="WoL"><img src="https://avatars.githubusercontent.com/u/45914900?v=4" width="66;" alt="WoL"/></a>
-<a href="https://github.com/FrederickBun" title="磅豆龙"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="磅豆龙"/></a>
+<a href="https://github.com/FrederickBun" title="BunDragon"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="BunDragon"/></a>
 <a href="https://github.com/qmxs" title="gitmba"><img src="https://avatars.githubusercontent.com/u/49803761?v=4" width="66;" alt="gitmba"/></a>
 <a href="https://github.com/wulintang" title="懋和道人"><img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="懋和道人"/></a>
 <a href="https://github.com/hjh-cn" title="黄佳昊"><img src="https://avatars.githubusercontent.com/u/71384238?v=4" width="66;" alt="黄佳昊"/></a>
@@ -20,6 +20,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/xiongbao" title="熊宝"><img src="https://avatars.githubusercontent.com/u/4247191?v=4" width="66;" alt="熊宝"/></a>
 <a href="https://github.com/phong057" title="无心v"><img src="https://avatars.githubusercontent.com/u/81139357?v=4" width="66;" alt="无心v"/></a>
 <a href="https://github.com/yzl3014" title="圆周率3014"><img src="https://avatars.githubusercontent.com/u/79385954?v=4" width="66;" alt="圆周率3014"/></a>
+<a href="https://github.com/yunzeo" title="yunze"><img src="https://avatars.githubusercontent.com/u/97683172?v=4" width="66;" alt="yunze"/></a>
 <a href="https://github.com/trevorcomputer" title="trevorcomputer"><img src="https://avatars.githubusercontent.com/u/119119641?v=4" width="66;" alt="trevorcomputer"/></a>
 <a href="https://github.com/jipa233" title="jipa233"><img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/></a>
 <a href="https://github.com/xuanxuan666niupi666" title="XCATX"><img src="https://avatars.githubusercontent.com/u/86157698?v=4" width="66;" alt="XCATX"/></a>
@@ -32,10 +33,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/spiritLHLS" title="spiritlhl"><img src="https://avatars.githubusercontent.com/u/103393591?v=4" width="66;" alt="spiritlhl"/></a>
 <a href="https://github.com/tech-fever" title="tech-fever"><img src="https://avatars.githubusercontent.com/u/105153585?v=4" width="66;" alt="tech-fever"/></a>
 <a href="https://github.com/tosspi" title="tosspi"><img src="https://avatars.githubusercontent.com/u/91527286?v=4" width="66;" alt="tosspi"/></a>
-<a href="https://github.com/wzwzx" title="Diq Xia"><img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="Diq Xia"/></a>
+<a href="https://github.com/wzwzx" title="BinBin224"><img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="BinBin224"/></a>
 <a href="https://github.com/xiaoheiyo" title="嘿哟"><img src="https://avatars.githubusercontent.com/u/26519690?v=4" width="66;" alt="嘿哟"/></a>
 <a href="https://github.com/yinzhuoqun" title="yinzhuoqun"><img src="https://avatars.githubusercontent.com/u/12694828?v=4" width="66;" alt="yinzhuoqun"/></a>
-<a href="https://github.com/yunzeo" title="yunze"><img src="https://avatars.githubusercontent.com/u/97683172?v=4" width="66;" alt="yunze"/></a>
 <a href="https://github.com/wumingblog" title="无名博客"><img src="https://avatars.githubusercontent.com/u/176279568?v=4" width="66;" alt="无名博客"/></a>
 <a href="https://github.com/xiowo" title="MortalCat"><img src="https://avatars.githubusercontent.com/u/87068069?v=4" width="66;" alt="MortalCat"/></a>
 <a href="https://github.com/ysicing" title="缘生"><img src="https://avatars.githubusercontent.com/u/8605565?v=4" width="66;" alt="缘生"/></a>

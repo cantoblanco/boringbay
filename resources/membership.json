@@ -312,7 +312,8 @@
 		"icon": "https://www.yunzeo.cn/img/favicon.png",
 		"name": "云泽记",
 		"description": "热爱可抵岁月漫长！",
-		"github_username": "yunzeo"
+		"github_username": "yunzeo",
+		"hidden": true
 	},
 	"59": {
 	        "domain": "blog.setbun.com",

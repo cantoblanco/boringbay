@@ -328,5 +328,12 @@
 		"name": "LCX",
 		"description": "这是一个博客，同时也是一个知识库。",
 		"github_username": "longchunxin"
+	},
+       "61": {
+		"domain": "blog.calyee.top",
+		"icon": "https://blog.calyee.top/favicon.svg",
+		"name": "CALYEE",
+		"description": "追求充实，分享快乐。",
+		"github_username": "yikoutian1"
 	}
 }

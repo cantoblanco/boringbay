@@ -93,7 +93,8 @@
 		"icon": "https://pawswrite.xyz/images/avatar.gif",
 		"name": "fever",
 		"description": "好想发财",
-		"github_username": "tech-fever"
+		"github_username": "tech-fever",
+		"hidden": true
 	},
 	"21": {
 		"domain": "maolog.com",
@@ -263,7 +264,8 @@
 		"icon": "https://s3.qjqq.cn/47/660a7ece07609.webp!color",
 		"name": "Efu",
 		"description": "小心翼翼地拥有并努力着。",
-		"github_username": "efuo"
+		"github_username": "efuo",
+		"hidden": true
 	},
 	"52": {
 		"domain": "blog.qjqq.cn",
@@ -305,7 +307,8 @@
 		"icon": "https://hexo.dreamerhe.cn/img/logo/apple-touch-icon.pngg",
 		"name": "何星梦",
 		"description": "朝着梦想前进，纵有万般阻挠，也绝不会让我停下脚步，待到成功时，之喜唯有我独享！",
-		"github_username": "dreamerhe114514"
+		"github_username": "dreamerhe114514",
+		"hidden": true
 	},
 	"58": {
 		"domain": "blog.yunzeo.cn",
@@ -349,5 +352,12 @@
 		"name": "Handsome's Blog",
 		"description": "心若有所向往,何惧道阻且长",
 		"github_username": "acanyo"
+	},
+	"64": {
+		"domain": "kokona.top",
+		"icon": "https://kokona.top/wp-content/uploads/2023/05/kokona_avatar-300x300.png",
+		"name": "Kokona Blog",
+		"description": "发现有趣项目，分享实践经历",
+		"github_username": "kokona-shiki"
 	}
 }

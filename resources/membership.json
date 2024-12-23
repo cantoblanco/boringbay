@@ -350,4 +350,11 @@
 		"description": "心若有所向往,何惧道阻且长",
 		"github_username": "acanyo"
 	}
+	"64": {
+		"domain": "kokona.top",
+		"icon": "https://kokona.top/wp-content/uploads/2023/05/kokona_avatar-300x300.png",
+		"name": "Kokona Blog",
+		"description": "发现有趣项目，分享实践经历",
+		"github_username": "kokona-shiki"
+	}
 }

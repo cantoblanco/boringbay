@@ -360,4 +360,11 @@
 		"description": "发现有趣项目，分享实践经历",
 		"github_username": "kokona-shiki"
 	}
+	"65": {
+		"domain": "blog.veitzn.top",
+		"icon": "https://img.veitzn.top/img/VeiLogoN.webp",
+		"name": "Vei Blog",
+		"description": "松窗竹户，万千潇洒",
+		"github_username": "veitzn1"
+	}
 }

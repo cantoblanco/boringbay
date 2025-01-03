@@ -10,7 +10,7 @@
 		"domain": "boringbay.com",
 		"icon": "/api/icon/boringbay.com",
 		"name": "The Boring Bay",
-		"description": "无聊的人那么多～",
+		"description": "无聊的人那么多～", 
 		"github_username": "cantoblanco/boringbay"
 	},
 	"3": {
@@ -347,9 +347,9 @@
 		"github_username": "KyomuDesu"
 	},
 	"63": {
-		"domain": "mmm.sd",
-		"icon": "https://www.mmm.sd/upload/logo.png",
-		"name": "Handsome's Blog",
+		"domain": "lik.cc",
+		"icon": "https://www.lik.cc/upload/logo.png",
+		"name": "Handsome",
 		"description": "心若有所向往,何惧道阻且长",
 		"github_username": "acanyo"
 	},

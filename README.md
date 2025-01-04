@@ -9,8 +9,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <!--GAMFC_DELIMITER--><a href="https://github.com/naiba" title="naiba"><img src="https://avatars.githubusercontent.com/u/29243953?v=4" width="66;" alt="naiba"/></a>
 <a href="https://github.com/cantoblanco" title="Kris"><img src="https://avatars.githubusercontent.com/u/116849421?v=4" width="66;" alt="Kris"/></a>
 <a href="https://github.com/diaozhenda" title="JB20CM"><img src="https://avatars.githubusercontent.com/u/99374145?v=4" width="66;" alt="JB20CM"/></a>
-<a href="https://github.com/MCTGyt" title="MCTGyt"><img src="https://avatars.githubusercontent.com/u/75358424?v=4" width="66;" alt="MCTGyt"/></a>
 <a href="https://github.com/muyan0709" title="Mello"><img src="https://avatars.githubusercontent.com/u/72654383?v=4" width="66;" alt="Mello"/></a>
+<a href="https://github.com/MCTGyt" title="MCTGyt"><img src="https://avatars.githubusercontent.com/u/75358424?v=4" width="66;" alt="MCTGyt"/></a>
 <a href="https://github.com/WoLeo-Z" title="WoL"><img src="https://avatars.githubusercontent.com/u/45914900?v=4" width="66;" alt="WoL"/></a>
 <a href="https://github.com/ToothlessHaveBun" title="Frederick Chen"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="Frederick Chen"/></a>
 <a href="https://github.com/kokona-shiki" title="Kokona_Shiki"><img src="https://avatars.githubusercontent.com/u/119119641?v=4" width="66;" alt="Kokona_Shiki"/></a>
@@ -24,7 +24,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/yzl3014" title="圆周率3014"><img src="https://avatars.githubusercontent.com/u/79385954?v=4" width="66;" alt="圆周率3014"/></a>
 <a href="https://github.com/yunzeo" title="yunze"><img src="https://avatars.githubusercontent.com/u/97683172?v=4" width="66;" alt="yunze"/></a>
 <a href="https://github.com/CasearF" title="Caesar"><img src="https://avatars.githubusercontent.com/u/75901800?v=4" width="66;" alt="Caesar"/></a>
-<a href="https://github.com/everfu" title="伍十七"><img src="https://avatars.githubusercontent.com/u/74389842?v=4" width="66;" alt="伍十七"/></a>
+<a href="https://github.com/everfu" title="伍十七/Everly"><img src="https://avatars.githubusercontent.com/u/74389842?v=4" width="66;" alt="伍十七/Everly"/></a>
 <a href="https://github.com/acanyo" title="Handsome"><img src="https://avatars.githubusercontent.com/u/76821797?v=4" width="66;" alt="Handsome"/></a>
 <a href="https://github.com/maolog" title="Mauzhu"><img src="https://avatars.githubusercontent.com/u/17608225?v=4" width="66;" alt="Mauzhu"/></a>
 <a href="https://github.com/SaboZhang" title="SaboZhang"><img src="https://avatars.githubusercontent.com/u/34998007?v=4" width="66;" alt="SaboZhang"/></a>

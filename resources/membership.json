@@ -373,5 +373,12 @@
 		"name": "谋生者 I Create Life",
 		"description": "一个居住在苏州的牛马，分享生活经验和见闻",
 		"github_username": "xqk"
+	},
+		"67": {
+		"domain": "suus.me",
+		"icon": "https://suus.me/avatar.webp",
+		"name": "蘇 SU",
+		"description": "在数字的海洋中，寻找属于自己的星辰。",
+		"github_username": "suuseer"
 	}
 }

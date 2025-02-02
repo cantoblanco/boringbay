@@ -48,6 +48,6 @@ jobs:
           mkdir -p action-release/${{ matrix.docker }}/
           mv target/${{ matrix.target }}/release/${{ matrix.binary }} action-release/${{ matrix.docker }}/
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: action-release/

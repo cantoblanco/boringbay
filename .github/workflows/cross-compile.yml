@@ -55,5 +55,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.docker == 'linux/amd64' ? 'linux-amd64-artifact' : 'linux-arm64-artifact' }}
+          name: ${{ matrix.docker == 'linux/amd64' && 'linux-amd64-artifact' || 'linux-arm64-artifact' }}
           path: artifact/
+

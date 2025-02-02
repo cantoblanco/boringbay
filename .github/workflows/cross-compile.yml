@@ -22,6 +22,7 @@ jobs:
             binary: naive
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup cargo cache
         uses: actions/cache@v3
         with:
@@ -31,25 +32,28 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.target }}-cargo-
+
       - name: install toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           target: ${{ matrix.target }}
           override: true
+
       - name: compile
         uses: actions-rs/cargo@v1
         with:
           use-cross: ${{ matrix.cross }}
           command: build
           args: --release --target=${{ matrix.target }}
-      - name: move target
+
+      - name: Move target
         run: |
-          mkdir -p action-release/${{ matrix.docker }}/
-          mv target/${{ matrix.target }}/release/${{ matrix.binary }} action-release/${{ matrix.docker }}/
+          mkdir -p artifact/${{ matrix.docker }}/
+          mv target/${{ matrix.target }}/release/${{ matrix.binary }} artifact/${{ matrix.docker }}/
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.docker == 'linux/amd64' && 'linux-amd64-artifact' || 'linux-arm64-artifact' }}
-          path: action-release/
-
+          name: ${{ matrix.docker == 'linux/amd64' ? 'linux-amd64-artifact' : 'linux-arm64-artifact' }}
+          path: artifact/

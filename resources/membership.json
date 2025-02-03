@@ -380,12 +380,19 @@
 		"name": "梅之夏",
 		"description": "Explore. Dream. Discover.",
 		"github_username": "Mcenahle"
-  }, 
-		"68": {
+  	}, 
+	"68": {
 		"domain": "suus.me",
 		"icon": "https://suus.me/avatar.webp",
 		"name": "蘇 SU",
 		"description": "在数字的海洋中，寻找属于自己的星辰。",
 		"github_username": "suuseer"
+	},	
+	"69": {
+		"domain": "moecx.com",
+		"icon": "https://q1.qlogo.cn/g?b=qq&nk=1131596911&s=640",
+		"name": "VxiN's Blog",
+		"description": "未寄出的信，未命名的诗",
+		"github_username": "chenxin-source"
 	}
 }

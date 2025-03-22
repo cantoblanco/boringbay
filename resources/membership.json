@@ -401,5 +401,12 @@
 		"name": "可执行程序の天境小屋🥝",
 		"description": "The boy who lived",
 		"github_username": "exef-star"
+	},
+	"71": {
+		"domain": "blog.245179.xyz",
+		"icon": "https://blog.245179.xyz/images/atiq.png",
+		"name": "龙星划空",
+		"description": "人生近看是悲剧，远看是喜剧",
+		"github_username": "Catwb"
 	}
 }

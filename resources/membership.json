@@ -422,5 +422,12 @@
 		"name": "Watermelonabc",
 		"description": "Re苦手的小博客",
 		"github_username": "rt265"
+	},
+	"74": {
+		"domain": "blog.moodlog.cn",
+		"icon": "https://img.moodlog.cn/i/2025/04/23/logo.webp",
+		"name": "Moodlog",
+		"description": "繁华已尽，空散云烟。",
+		"github_username": "zlemoni"
 	}
 }

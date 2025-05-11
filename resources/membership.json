@@ -429,5 +429,12 @@
 		"name": "Moodlog",
 		"description": "繁华已尽，空散云烟。",
 		"github_username": "zlemoni"
+	},
+	"75": {
+		"domain": "blog.starchen.top",
+		"icon": "https://blog.starchen.top/favicon.jpg",
+		"name": "星辰博客",
+		"description": "以热爱之名，点亮技术探索者的漫长岁月！",
+		"github_username": "Pstarchen"
 	}
 }

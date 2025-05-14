@@ -436,5 +436,12 @@
 		"name": "星辰博客",
 		"description": "以热爱之名，点亮技术探索者的漫长岁月！",
 		"github_username": "Pstarchen"
+	},
+	"76": {
+		"domain": "howiehz.top",
+		"icon": "https://howiehz.top/upload/ico.ico",
+		"name": "皓子的小站",
+		"description": "互联网是一片海洋，网站犹如一座座孤岛漂浮在其上，唯有超链接将它们联系起来。而此处恰好就是一座小岛，欢迎访问皓子的小站。",
+		"github_username": "HowieHz"
 	}
 }

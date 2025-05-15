@@ -443,5 +443,12 @@
 		"name": "皓子的小站",
 		"description": "互联网是一片海洋，网站犹如一座座孤岛漂浮在其上，唯有超链接将它们联系起来。而此处恰好就是一座小岛，欢迎访问皓子的小站。",
 		"github_username": "HowieHz"
+	},
+	"77": {
+		"domain": "styunlen.cn",
+		"icon": "https://styunlen.cn/hello.png",
+		"name": "九仞之行",
+		"description": "严于律己，宽以待人，深自警省，讷言敏行",
+		"github_username": "Styunlen"
 	}
 }

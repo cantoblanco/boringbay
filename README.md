@@ -31,7 +31,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/acanyo" title="Handsome"><img src="https://avatars.githubusercontent.com/u/76821797?v=4" width="66;" alt="Handsome"/></a>
 <a href="https://github.com/everfu" title="Wang Zhuo"><img src="https://avatars.githubusercontent.com/u/74389842?v=4" width="66;" alt="Wang Zhuo"/></a>
 <a href="https://github.com/CasearF" title="Caesar"><img src="https://avatars.githubusercontent.com/u/75901800?v=4" width="66;" alt="Caesar"/></a>
-<a href="https://github.com/tosspi" title="tosspi"><img src="https://avatars.githubusercontent.com/u/91527286?v=4" width="66;" alt="tosspi"/></a>
 <a href="https://github.com/tech-fever" title="tech-fever"><img src="https://avatars.githubusercontent.com/u/105153585?v=4" width="66;" alt="tech-fever"/></a>
 <a href="https://github.com/spiritLHLS" title="spiritlhl"><img src="https://avatars.githubusercontent.com/u/103393591?v=4" width="66;" alt="spiritlhl"/></a>
 <a href="https://github.com/sdfghjwmbkdouble" title="sdfghjwmbkdouble"><img src="https://avatars.githubusercontent.com/u/153349302?v=4" width="66;" alt="sdfghjwmbkdouble"/></a>
@@ -39,9 +38,11 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/longchunxin" title="longchunxin"><img src="https://avatars.githubusercontent.com/u/169962016?v=4" width="66;" alt="longchunxin"/></a>
 <a href="https://github.com/furlingdu" title="澪度"><img src="https://avatars.githubusercontent.com/u/117048039?v=4" width="66;" alt="澪度"/></a>
 <a href="https://github.com/kufx" title="kufx"><img src="https://avatars.githubusercontent.com/u/144138627?v=4" width="66;" alt="kufx"/></a>
+<a href="https://github.com/it985" title="it985"><img src="https://avatars.githubusercontent.com/u/62421120?v=4" width="66;" alt="it985"/></a>
 <a href="https://github.com/imshadow" title="imshadow"><img src="https://avatars.githubusercontent.com/u/23455967?v=4" width="66;" alt="imshadow"/></a>
 <a href="https://github.com/hhhkkk520" title="Kris"><img src="https://avatars.githubusercontent.com/u/52115472?v=4" width="66;" alt="Kris"/></a>
-<a href="https://github.com/dreamerhe114514" title="dreamerhe114514"><img src="https://avatars.githubusercontent.com/u/156502065?v=4" width="66;" alt="dreamerhe114514"/></a>
+<a href="https://github.com/9527DHX" title="9527DHX"><img src="https://avatars.githubusercontent.com/u/31348749?v=4" width="66;" alt="9527DHX"/></a>
+<a href="https://github.com/tosspi" title="tosspi"><img src="https://avatars.githubusercontent.com/u/91527286?v=4" width="66;" alt="tosspi"/></a>
 <a href="https://github.com/wzwzx" title="wzwzx"><img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="wzwzx"/></a>
 <a href="https://github.com/xiaoheiyo" title="嘿哟"><img src="https://avatars.githubusercontent.com/u/26519690?v=4" width="66;" alt="嘿哟"/></a>
 <a href="https://github.com/vxincode" title="xinye"><img src="https://avatars.githubusercontent.com/u/66963380?v=4" width="66;" alt="xinye"/></a>
@@ -52,7 +53,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/ysicing" title="缘生"><img src="https://avatars.githubusercontent.com/u/8605565?v=4" width="66;" alt="缘生"/></a>
 <a href="https://github.com/zaxigia" title="langpa"><img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/></a>
 <a href="https://github.com/dysf888" title="黑歌"><img src="https://avatars.githubusercontent.com/u/47450409?v=4" width="66;" alt="黑歌"/></a>
-<a href="https://github.com/9527DHX" title="9527DHX"><img src="https://avatars.githubusercontent.com/u/31348749?v=4" width="66;" alt="9527DHX"/></a>
 <a href="https://github.com/Yikoutian1" title="Calyee"><img src="https://avatars.githubusercontent.com/u/90994826?v=4" width="66;" alt="Calyee"/></a>
 <a href="https://github.com/PearsSauce" title="Gil Schneider"><img src="https://avatars.githubusercontent.com/u/56643217?v=4" width="66;" alt="Gil Schneider"/></a>
 <a href="https://github.com/HowieHz" title="HowieHz"><img src="https://avatars.githubusercontent.com/u/94725606?v=4" width="66;" alt="HowieHz"/></a>
@@ -65,14 +65,15 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/rabbitxuanxuan" title="Rabbit_xuan"><img src="https://avatars.githubusercontent.com/u/112363084?v=4" width="66;" alt="Rabbit_xuan"/></a>
 <a href="https://github.com/fly6022" title="fly6022"><img src="https://avatars.githubusercontent.com/u/42091262?v=4" width="66;" alt="fly6022"/></a>
 <a href="https://github.com/SEYYl" title="SEYYl"><img src="https://avatars.githubusercontent.com/u/76978511?v=4" width="66;" alt="SEYYl"/></a>
-<a href="https://github.com/zheep1209" title="SaigyoujiZheep"><img src="https://avatars.githubusercontent.com/u/148862646?v=4" width="66;" alt="SaigyoujiZheep"/></a>
+<a href="https://github.com/zheep1209" title="zheep"><img src="https://avatars.githubusercontent.com/u/148862646?v=4" width="66;" alt="zheep"/></a>
 <a href="https://github.com/suuseer" title="SeerSu"><img src="https://avatars.githubusercontent.com/u/129711970?v=4" width="66;" alt="SeerSu"/></a>
 <a href="https://github.com/Styunlen" title="Styunlen"><img src="https://avatars.githubusercontent.com/u/30810222?v=4" width="66;" alt="Styunlen"/></a>
 <a href="https://github.com/Veitzn1" title="Veitzn"><img src="https://avatars.githubusercontent.com/u/158764398?v=4" width="66;" alt="Veitzn"/></a>
 <a href="https://github.com/rt265" title="Watermelonabc"><img src="https://avatars.githubusercontent.com/u/59759428?v=4" width="66;" alt="Watermelonabc"/></a>
 <a href="https://github.com/zlemoni" title="Zlemoni"><img src="https://avatars.githubusercontent.com/u/36426590?v=4" width="66;" alt="Zlemoni"/></a>
 <a href="https://github.com/awaae001" title="awaae"><img src="https://avatars.githubusercontent.com/u/108462724?v=4" width="66;" alt="awaae"/></a>
-<a href="https://github.com/btwoa" title="btwoa"><img src="https://avatars.githubusercontent.com/u/109867618?v=4" width="66;" alt="btwoa"/></a><!--GAMFC_DELIMITER_END-->
+<a href="https://github.com/btwoa" title="btwoa"><img src="https://avatars.githubusercontent.com/u/109867618?v=4" width="66;" alt="btwoa"/></a>
+<a href="https://github.com/dreamerhe114514" title="dreamerhe114514"><img src="https://avatars.githubusercontent.com/u/156502065?v=4" width="66;" alt="dreamerhe114514"/></a><!--GAMFC_DELIMITER_END-->
 
 ## Migration
 

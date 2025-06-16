@@ -464,5 +464,12 @@
 		"name": "寻梦城",
 		"description": "欲买桂花同载酒 终不似，少年游",
 		"github_username": "it985"
+	},
+	"80":{
+		"domain": "xingwangzhe.fun",
+		"icon": "https://xingwangzhe.fun/favicon.ico",
+		"name": "姓王者的博客",
+		"description": "学习，进步，创造无限可能",
+		"github_username": "xingwangzhe"
 	}
 }

@@ -471,5 +471,12 @@
 		"name": "姓王者的博客",
 		"description": "学习，进步，创造无限可能",
 		"github_username": "xingwangzhe"
+	},
+	"81":{
+		"domain": "echo.imjianhao.cn",
+		"icon": "https://echo.imjianhao.cn/images/User.webp",
+		"name": "小杨的自留地",
+		"description": "记录感悟，分享有趣",
+		"github_username": "yjh2643408123"
 	}
 }

@@ -492,5 +492,12 @@
 		"name": "暗石の小站",
 		"description": "peace&love",
 		"github_username": "Qindarkstone"
+	},
+	"84":{
+		"domain": "kali.rf.gd",
+		"icon": "http://kali.rf.gd/wp-content/uploads/2025/07/1752018321-login_logo-1.webp",
+		"name": "Kaliの妙妙屋",
+		"description": "边走边悟",
+		"github_username": "tianhukj"
 	}
 }

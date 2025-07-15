@@ -8,9 +8,9 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 
 <!--GAMFC_DELIMITER--><a href="https://github.com/naiba" title="naiba"><img src="https://avatars.githubusercontent.com/u/29243953?v=4" width="66;" alt="naiba"/></a>
 <a href="https://github.com/cantoblanco" title="Kris"><img src="https://avatars.githubusercontent.com/u/116849421?v=4" width="66;" alt="Kris"/></a>
+<a href="https://github.com/fenychn0206" title="Frederick Chen"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="Frederick Chen"/></a>
 <a href="https://github.com/diaozhenda" title="JB20CM"><img src="https://avatars.githubusercontent.com/u/99374145?v=4" width="66;" alt="JB20CM"/></a>
 <a href="https://github.com/ImMello223" title="Mello"><img src="https://avatars.githubusercontent.com/u/72654383?v=4" width="66;" alt="Mello"/></a>
-<a href="https://github.com/fenychn0206" title="Frederick Chen"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="Frederick Chen"/></a>
 <a href="https://github.com/MCTGyt" title="MCTGyt"><img src="https://avatars.githubusercontent.com/u/75358424?v=4" width="66;" alt="MCTGyt"/></a>
 <a href="https://github.com/WoLeo-Z" title="WoLeo-Z"><img src="https://avatars.githubusercontent.com/u/45914900?v=4" width="66;" alt="WoLeo-Z"/></a>
 <a href="https://github.com/SinzMise" title="王九弦SZ·Ninty"><img src="https://avatars.githubusercontent.com/u/120767492?v=4" width="66;" alt="王九弦SZ·Ninty"/></a>
@@ -72,7 +72,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/SEYYl" title="SEYYl"><img src="https://avatars.githubusercontent.com/u/76978511?v=4" width="66;" alt="SEYYl"/></a>
 <a href="https://github.com/zheep1209" title="zheep"><img src="https://avatars.githubusercontent.com/u/148862646?v=4" width="66;" alt="zheep"/></a>
 <a href="https://github.com/suuseer" title="SeerSu"><img src="https://avatars.githubusercontent.com/u/129711970?v=4" width="66;" alt="SeerSu"/></a>
-<a href="https://github.com/Styunlen" title="Yitong Zhang"><img src="https://avatars.githubusercontent.com/u/30810222?v=4" width="66;" alt="Yitong Zhang"/></a>
+<a href="https://github.com/Styunlen" title="Styunlen"><img src="https://avatars.githubusercontent.com/u/30810222?v=4" width="66;" alt="Styunlen"/></a>
 <a href="https://github.com/Veitzn1" title="Veitzn"><img src="https://avatars.githubusercontent.com/u/158764398?v=4" width="66;" alt="Veitzn"/></a>
 <a href="https://github.com/rt265" title="Watermelonabc"><img src="https://avatars.githubusercontent.com/u/59759428?v=4" width="66;" alt="Watermelonabc"/></a>
 <a href="https://github.com/zlemoni" title="Zlemoni"><img src="https://avatars.githubusercontent.com/u/36426590?v=4" width="66;" alt="Zlemoni"/></a>

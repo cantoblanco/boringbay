@@ -16,6 +16,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/SinzMise" title="王九弦SZ·Ninty"><img src="https://avatars.githubusercontent.com/u/120767492?v=4" width="66;" alt="王九弦SZ·Ninty"/></a>
 <a href="https://github.com/wulintang" title="懋和道人"><img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="懋和道人"/></a>
 <a href="https://github.com/kokona-shiki" title="Kokona_Shiki"><img src="https://avatars.githubusercontent.com/u/119119641?v=4" width="66;" alt="Kokona_Shiki"/></a>
+<a href="https://github.com/jipa233" title="jipa233"><img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/></a>
 <a href="https://github.com/qmxs" title="gitmba"><img src="https://avatars.githubusercontent.com/u/49803761?v=4" width="66;" alt="gitmba"/></a>
 <a href="https://github.com/KyomuDesu" title="Kyomu"><img src="https://avatars.githubusercontent.com/u/86147570?v=4" width="66;" alt="Kyomu"/></a>
 <a href="https://github.com/hjh-cn" title="ShSuperyun"><img src="https://avatars.githubusercontent.com/u/71384238?v=4" width="66;" alt="ShSuperyun"/></a>
@@ -23,7 +24,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/mfeng057" title="枫韵"><img src="https://avatars.githubusercontent.com/u/81139357?v=4" width="66;" alt="枫韵"/></a>
 <a href="https://github.com/yzl3014" title="圆周率3014"><img src="https://avatars.githubusercontent.com/u/79385954?v=4" width="66;" alt="圆周率3014"/></a>
 <a href="https://github.com/yunzeok" title="yunze"><img src="https://avatars.githubusercontent.com/u/97683172?v=4" width="66;" alt="yunze"/></a>
-<a href="https://github.com/jipa233" title="jipa233"><img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/></a>
 <a href="https://github.com/xuanxuan666niupi666" title="XCATX"><img src="https://avatars.githubusercontent.com/u/86157698?v=4" width="66;" alt="XCATX"/></a>
 <a href="https://github.com/exef-star" title="The hanta"><img src="https://avatars.githubusercontent.com/u/150582140?v=4" width="66;" alt="The hanta"/></a>
 <a href="https://github.com/SaboZhang" title="SaboZhang"><img src="https://avatars.githubusercontent.com/u/34998007?v=4" width="66;" alt="SaboZhang"/></a>

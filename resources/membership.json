@@ -499,5 +499,12 @@
 		"name": "Kaliの妙妙屋",
 		"description": "边走边悟",
 		"github_username": "tianhukj"
+	},
+	"85":{
+		"domain": "gogei.netlify.app",
+		"icon": "https://gogei.netlify.app/images/favicon.ico",
+		"name": "Gogei的静默日志",
+		"description": "字如萤逝，码若流光",
+		"github_username": "gogei-cn"
 	}
 }

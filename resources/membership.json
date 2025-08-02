@@ -507,4 +507,11 @@
 		"description": "字如萤逝，码若流光",
 		"github_username": "gogei-cn"
 	}
+	"86":{
+		"domain": "www.hansjack.com",
+		"icon": "https://www.hansjack.com/favicon.ico",
+		"name": "时光流·言",
+		"description": "个人博客，持续分享网站部署实战经验、精选书评解读和生活观察手记。 这里提供可复用的技术教程、深度阅读指南和真实生活洞察，与技术爱好者一起进步......",
+		"github_username": "TGU-HansJack"
+	}
 }

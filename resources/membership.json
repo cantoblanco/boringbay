@@ -506,5 +506,12 @@
 		"name": "Gogei的静默日志",
 		"description": "字如萤逝，码若流光",
 		"github_username": "gogei-cn"
+	},
+	"86":{
+		"domain": "note.redcha.cn",
+		"icon": "https://note.redcha.cn/favicon.ico",
+		"name": "彬红茶日记",
+		"description": "个人笔记与生活妙妙屋",
+		"github_username": "kuang2714"
 	}
 }

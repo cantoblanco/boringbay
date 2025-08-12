@@ -527,5 +527,12 @@
 		"name": "林海草原",
 		"description": "愿我经历的苦难你不要经历，愿我已有的幸福你触手可及",
 		"github_username": "linhaii"
+	},
+	"89":{
+		"domain": "blog.lylelove.top",
+		"icon": "https://blog.lylelove.top/media/website/yuan.png",
+		"name": "竟何",
+		"description": "写给你的长信",
+		"github_username": "lylelove"
 	}	
 }

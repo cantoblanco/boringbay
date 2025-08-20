@@ -534,5 +534,12 @@
 		"name": "竟何",
 		"description": "写给你的长信",
 		"github_username": "lylelove"
-	}	
+	},
+	"90": {
+		"domain": "blog.131714.xyz",
+		"icon": "https://img.xiaozhangya.xin/file/Avatar/avatar20.jpg",
+		"name": "小张の小站",
+		"description": "欲买桂花同载酒",
+		"github_username": "xz131714"
+	}
 }

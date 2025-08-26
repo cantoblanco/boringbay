@@ -541,5 +541,12 @@
 		"name": "小张の小站",
 		"description": "欲买桂花同载酒",
 		"github_username": "xz131714"
+	},
+	"91": {
+		"domain": "blog.00000106.xyz",
+		"icon": "https://blog.00000106.xyz/img/favicon.ico",
+		"name": "浮日誌",
+		"description": "本是青燈不歸客,卻因濁酒留風塵.",
+		"github_username": "Elegy17"
 	}
 }

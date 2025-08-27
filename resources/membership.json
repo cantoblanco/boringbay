@@ -548,5 +548,12 @@
 		"name": "浮日誌",
 		"description": "本是青燈不歸客,卻因濁酒留風塵.",
 		"github_username": "Elegy17"
+	},
+	"92": {
+		"domain": "zoc.asia",
+		"icon": "https://zoc.asia/logo.png",
+		"name": "洋洋のBlog",
+		"description": "Who are you",
+		"github_username": "YANG1y"
 	}
 }

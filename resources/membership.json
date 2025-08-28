@@ -548,5 +548,12 @@
 		"name": "浮日誌",
 		"description": "本是青燈不歸客,卻因濁酒留風塵.",
 		"github_username": "Elegy17"
+	},
+	"92": {
+		"domain": "www.elysium-stack.cn",
+		"icon": "https://www.elysium-stack.cn/upload/ee0757e6-ebb4-46d0-a388-660f648653ea.jpg",
+		"name": "ElysiumStack",
+		"description": "不会摄影的设计师不是优秀的旅行家",
+		"github_username": "ChocoboQJJ"
 	}
 }

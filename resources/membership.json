@@ -583,5 +583,12 @@
 		"name": "辰渊尘的博客",
 		"description": "有志不在年高",
 		"github_username": "mcxiaochenn"
+	},
+	"97": {
+		"domain": "qxzhan.cn",
+		"icon": "https://qxzhan.cn/favicon.ico",
+		"name": "青序栈",
+		"description": "青序成栈·向简而生",
+		"github_username": "scfcn"
 	}
 }

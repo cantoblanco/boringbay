@@ -47,6 +47,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/imshadow" title="imshadow"><img src="https://avatars.githubusercontent.com/u/23455967?v=4" width="66;" alt="imshadow"/></a>
 <a href="https://github.com/hhhkkk520" title="Kris"><img src="https://avatars.githubusercontent.com/u/52115472?v=4" width="66;" alt="Kris"/></a>
 <a href="https://github.com/gogei-cn" title="gogei2010"><img src="https://avatars.githubusercontent.com/u/128907557?v=4" width="66;" alt="gogei2010"/></a>
+<a href="https://github.com/9527DHX" title="9527DHX"><img src="https://avatars.githubusercontent.com/u/31348749?v=4" width="66;" alt="9527DHX"/></a>
 <a href="https://github.com/wzwzx" title="wzwzx"><img src="https://avatars.githubusercontent.com/u/69845256?v=4" width="66;" alt="wzwzx"/></a>
 <a href="https://github.com/xiaoheiyo" title="嘿哟"><img src="https://avatars.githubusercontent.com/u/26519690?v=4" width="66;" alt="嘿哟"/></a>
 <a href="https://github.com/vxincode" title="xinye"><img src="https://avatars.githubusercontent.com/u/66963380?v=4" width="66;" alt="xinye"/></a>
@@ -62,7 +63,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/ysicing" title="缘生"><img src="https://avatars.githubusercontent.com/u/8605565?v=4" width="66;" alt="缘生"/></a>
 <a href="https://github.com/zaxigia" title="langpa"><img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/></a>
 <a href="https://github.com/dysf888" title="黑歌"><img src="https://avatars.githubusercontent.com/u/47450409?v=4" width="66;" alt="黑歌"/></a>
-<a href="https://github.com/9527DHX" title="9527DHX"><img src="https://avatars.githubusercontent.com/u/31348749?v=4" width="66;" alt="9527DHX"/></a>
 <a href="https://github.com/ChocoboQJJ" title="AdeleNaumann"><img src="https://avatars.githubusercontent.com/u/31750441?v=4" width="66;" alt="AdeleNaumann"/></a>
 <a href="https://github.com/linhaii" title="Amitabha"><img src="https://avatars.githubusercontent.com/u/32946306?v=4" width="66;" alt="Amitabha"/></a>
 <a href="https://github.com/Calvert97" title="Calvert Lee"><img src="https://avatars.githubusercontent.com/u/53511886?v=4" width="66;" alt="Calvert Lee"/></a>
@@ -73,6 +73,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/yjh2643408123" title="JianHao Yang"><img src="https://avatars.githubusercontent.com/u/43641046?v=4" width="66;" alt="JianHao Yang"/></a>
 <a href="https://github.com/Jochen233" title="Jochen233"><img src="https://avatars.githubusercontent.com/u/89528624?v=4" width="66;" alt="Jochen233"/></a>
 <a href="https://github.com/zhufacai" title="Joker"><img src="https://avatars.githubusercontent.com/u/14821269?v=4" width="66;" alt="Joker"/></a>
+<a href="https://github.com/Lbb886" title="LBB"><img src="https://avatars.githubusercontent.com/u/107664455?v=4" width="66;" alt="LBB"/></a>
 <a href="https://github.com/Lafcadia" title="Percival Zheng"><img src="https://avatars.githubusercontent.com/u/147896059?v=4" width="66;" alt="Percival Zheng"/></a>
 <a href="https://github.com/LixdHappy" title="LixdHappy"><img src="https://avatars.githubusercontent.com/u/54619525?v=4" width="66;" alt="LixdHappy"/></a>
 <a href="https://github.com/mcenahle" title="mcenahle"><img src="https://avatars.githubusercontent.com/u/85427807?v=4" width="66;" alt="mcenahle"/></a>

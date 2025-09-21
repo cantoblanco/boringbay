@@ -590,5 +590,12 @@
 		"name": "青序栈",
 		"description": "青序成栈·向简而生",
 		"github_username": "scfcn"
+	},
+	"98": {
+		"domain": "200536.xyz",
+		"icon": "https://200536.xyz/icon.svg",
+		"name": "ACCB",
+		"description": "破烂中寻找记忆.",
+		"github_username": "Lbb886"
 	}
 }

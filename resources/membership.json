@@ -597,5 +597,12 @@
 		"name": "ACCB",
 		"description": "破烂中寻找记忆.",
 		"github_username": "Lbb886"
+	},
+	"99": {
+		"domain": "200536.xyz",
+		"icon": "https://200536.xyz/icon.svg",
+		"name": "ACCB",
+		"description": "渗透测试，安全运维.",
+		"github_username": "2022471674"
 	}
 }

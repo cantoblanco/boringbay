@@ -611,5 +611,12 @@
 		"name": "酥米的小站",
 		"description": "终有一日，寻梦中人",
 		"github_username": "huang233893"
+	},
+	"101": {
+		"domain": "tiger.work",
+		"icon": "https://tiger.work/content/images/size/w256h256/2025/09/favicon.png",
+		"name": "虎行独语",
+		"description": "追逐感官层面各种意义上的丰满。",
+		"github_username": "akaTiger"
 	}
 }

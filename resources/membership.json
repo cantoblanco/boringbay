@@ -32,7 +32,8 @@
 		"icon": "https://cdn.jsdelivr.net/gh/ilay1678/cdn@master/favicon.png",
 		"name": "我若为王",
 		"description": "Just do it!",
-		"github_username": "ilay1678"
+		"github_username": "ilay1678",
+		"hidden": true
 	},
 	"9": {
 		"domain": "www.ifts.ml",
@@ -82,7 +83,7 @@
 		"hidden": true
 	},
 	"19": {
-		"domain": "hi.sy",
+		"domain": "sun.cm",
 		"icon": "https://telegraph-image-e2j.pages.dev/file/aace1ce621c93938d3dfb.png",
 		"name": "白歌",
 		"description": "Just for funnnnn!!",
@@ -145,7 +146,8 @@
 		"icon": "https://bigtoyscompany.com/assets/logo.e75135c1.png",
 		"name": "大玩具公司",
 		"description": "Big toys for big boys.",
-		"github_username": "naiba"
+		"github_username": "naiba",
+		"hidden": true
 	},
 	"32": {
 		"domain": "blog.qcmoe.com",
@@ -159,7 +161,8 @@
 		"icon": "https://bokebo.com/logo.png",
 		"name": "BOKEBO",
 		"description": "BO的博客。",
-		"github_username": "xiaoxing07"
+		"github_username": "xiaoxing07",
+		"hidden": true
 	},
 	"34": {
 		"domain": "imjipa.top",
@@ -187,14 +190,16 @@
 		"icon": "https://www.xxyxxvii.com/Quick_links_Vehicles.png",
 		"name": "阿衣妞妞 | 海玛塔莎洛",
 		"description": "xxYxxVii.COM 收集并分享不同的信息",
-		"github_username": "xxyxxvii"
+		"github_username": "xxyxxvii",
+		"hidden": true
 	},
 	"39": {
 		"domain": "v.hi.sy",
 		"icon": "https://telegraph-image-e2j.pages.dev/file/aace1ce621c93938d3dfb.png",
 		"name": "白歌-V",
 		"description": "Just for funnnnn!!",
-		"github_username": "cantoblanco"
+		"github_username": "cantoblanco",
+		"hidden": true
 	},
 	"40": {
 		"domain": "wuminboke.site",
@@ -279,7 +284,8 @@
 		"icon": "https://blog.btwoa.com/btwoa.jpg",
 		"name": "btwoa",
 		"description": "世界为你简单",
-		"github_username": "btwoa"
+		"github_username": "btwoa",
+		"hidden": true
 	},
 	"54": {
 		"domain": "www.heiu.top",
@@ -300,7 +306,8 @@
 		"icon": "https://www.fly6022.fun/assets/images/avatar.jpg",
 		"name": "fly6022",
 		"description": "满载一船星辉，在星辉斑斓里放歌。",
-		"github_username": "fly6022"
+		"github_username": "fly6022",
+		"hidden": true
 	},
 	"57": {
 		"domain": "hexo.dreamerhe.cn",
@@ -344,14 +351,16 @@
 		"icon": "https://kyomu.me/pfp.webp",
 		"name": "Kyomu's Blog",
 		"description": "What is mind? No matter. What is matter? Never mind.",
-		"github_username": "KyomuDesu"
+		"github_username": "KyomuDesu",
+		"hidden": true
 	},
 	"63": {
 		"domain": "lik.cc",
 		"icon": "https://www.lik.cc/upload/logo.png",
 		"name": "Handsome",
 		"description": "心若有所向往,何惧道阻且长",
-		"github_username": "acanyo"
+		"github_username": "acanyo",
+		"hidden": true
 	},
 	"64": {
 		"domain": "kokona.top",
@@ -379,21 +388,24 @@
 		"icon": "https://blog.mcenahle.cn/upload/blog.png",
 		"name": "梅之夏",
 		"description": "Explore. Dream. Discover.",
-		"github_username": "Mcenahle"
+		"github_username": "Mcenahle",
+		"hidden": true
   	}, 
 	"68": {
 		"domain": "suus.me",
 		"icon": "https://suus.me/avatar.webp",
 		"name": "蘇 SU",
 		"description": "在数字的海洋中，寻找属于自己的星辰。",
-		"github_username": "suuseer"
+		"github_username": "suuseer",
+		"hidden": true
 	},	
 	"69": {
 		"domain": "moecx.com",
 		"icon": "https://q1.qlogo.cn/g?b=qq&nk=1131596911&s=640",
 		"name": "VxiN's Blog",
 		"description": "未寄出的信，未命名的诗",
-		"github_username": "chenxin-source"
+		"github_username": "chenxin-source",
+		"hidden": true
 	},
 	"70": {
 		"domain": "blog.hanta2011.top",
@@ -463,7 +475,8 @@
 		"icon": "https://blog.study996.cn/upload/favicon.ico",
 		"name": "寻梦城",
 		"description": "欲买桂花同载酒 终不似，少年游",
-		"github_username": "it985"
+		"github_username": "it985",
+		"hidden": true
 	},
 	"80":{
 		"domain": "xingwangzhe.fun",
@@ -491,14 +504,16 @@
 		"icon": "https://i.postimg.cc/ryxGSQ7P/hellokitty-kitty-cat-aigei-com.png",
 		"name": "暗石の小站",
 		"description": "peace&love",
-		"github_username": "Qindarkstone"
+		"github_username": "Qindarkstone",
+		"hidden": true
 	},
 	"84":{
 		"domain": "kali.rf.gd",
 		"icon": "http://kali.rf.gd/wp-content/uploads/2025/07/1752018321-login_logo-1.webp",
 		"name": "Kaliの妙妙屋",
 		"description": "边走边悟",
-		"github_username": "tianhukj"
+		"github_username": "tianhukj",
+		"hidden": true
 	},
 	"85":{
 		"domain": "gogei.netlify.app",
@@ -526,7 +541,8 @@
 		"icon": "https://lhcy.org/favicon.ico",
 		"name": "林海草原",
 		"description": "愿我经历的苦难你不要经历，愿我已有的幸福你触手可及",
-		"github_username": "linhaii"
+		"github_username": "linhaii",
+		"hidden": true
 	},
 	"89":{
 		"domain": "blog.lylelove.top",

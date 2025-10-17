@@ -634,5 +634,12 @@
 		"name": "虎行独语",
 		"description": "追逐感官层面各种意义上的丰满。",
 		"github_username": "akaTiger"
+	},
+	"102": {
+		"domain": "woolyun.com",
+		"icon": "https://woolyun.com/wp-content/uploads/2025/05/yyl-e1746698677584.jpg",
+		"name": "天海博客",
+		"description": "建站经验记录，实用工具推荐，免费资源分享。",
+		"github_username": "citihu"
 	}
 }

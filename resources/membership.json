@@ -641,5 +641,12 @@
 		"name": "天海博客",
 		"description": "建站经验记录，实用工具推荐，免费资源分享。",
 		"github_username": "citihu"
+	},
+	"103": {
+		"domain": "hongshi.qzz.io",
+		"icon": "https://hongshi.qzz.io/favicon.png",
+		"name": "红石の空间站",
+		"description": "一个高中牲的小站。",
+		"github_username": "HongShi211"
 	}
 }

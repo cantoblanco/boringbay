@@ -648,5 +648,12 @@
 		"name": "红石の空间站",
 		"description": "一个高中牲的小站。",
 		"github_username": "HongShi211"
+	},
+	"104": {
+		"domain": "blog.6uu.us",
+		"icon": "https://blog.6uu.us/upload/lsyb.png",
+		"name": "bbb-lsy07",
+		"description": "科技激荡人文，洞见智慧本真。",
+		"github_username": "bbb-lsy07"
 	}
 }

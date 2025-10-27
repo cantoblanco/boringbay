@@ -48,7 +48,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/dreamerhe114514" title="dreamerhe114514"><img src="https://avatars.githubusercontent.com/u/156502065?v=4" width="66;" alt="dreamerhe114514"/></a>
 <a href="https://github.com/citihu" title="citihu"><img src="https://avatars.githubusercontent.com/u/225527544?v=4" width="66;" alt="citihu"/></a>
 <a href="https://github.com/btwoa" title="btwoa"><img src="https://avatars.githubusercontent.com/u/109867618?v=4" width="66;" alt="btwoa"/></a>
-<a href="https://github.com/awaae001" title="awaae"><img src="https://avatars.githubusercontent.com/u/108462724?v=4" width="66;" alt="awaae"/></a>
+<a href="https://github.com/bbb-lsy07" title="bbb-lsy07"><img src="https://avatars.githubusercontent.com/u/183173376?v=4" width="66;" alt="bbb-lsy07"/></a>
 <a href="https://github.com/zaxigia" title="langpa"><img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/></a>
 <a href="https://github.com/ysicing" title="缘生"><img src="https://avatars.githubusercontent.com/u/8605565?v=4" width="66;" alt="缘生"/></a>
 <a href="https://github.com/xingwangzhe" title="王兴家"><img src="https://avatars.githubusercontent.com/u/162127610?v=4" width="66;" alt="王兴家"/></a>
@@ -65,6 +65,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/tosspi" title="Masone"><img src="https://avatars.githubusercontent.com/u/91527286?v=4" width="66;" alt="Masone"/></a>
 <a href="https://github.com/tianhukj" title="tianhukj"><img src="https://avatars.githubusercontent.com/u/166341634?v=4" width="66;" alt="tianhukj"/></a>
 <a href="https://github.com/tech-fever" title="tech-fever"><img src="https://avatars.githubusercontent.com/u/105153585?v=4" width="66;" alt="tech-fever"/></a>
+<a href="https://github.com/awaae001" title="awaae"><img src="https://avatars.githubusercontent.com/u/108462724?v=4" width="66;" alt="awaae"/></a>
 <a href="https://github.com/LixdHappy" title="LixdHappy"><img src="https://avatars.githubusercontent.com/u/54619525?v=4" width="66;" alt="LixdHappy"/></a>
 <a href="https://github.com/Lafcadia" title="Percival Zheng"><img src="https://avatars.githubusercontent.com/u/147896059?v=4" width="66;" alt="Percival Zheng"/></a>
 <a href="https://github.com/Lbb886" title="LBB"><img src="https://avatars.githubusercontent.com/u/107664455?v=4" width="66;" alt="LBB"/></a>

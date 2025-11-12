@@ -662,5 +662,12 @@
 		"name": "手里有只毛毛虫",
 		"description": "礼印封缄寄意深，外盒承情胜万金",
 		"github_username": "miniwater"
+	},
+	"106": {
+		"domain": "blog.guangzhoueven.dpdns.org",
+		"icon": "https://blog.guangzhoueven.dpdns.org/img/logo.png",
+		"name": "guangzhou_even's blog",
+		"description": "一个平凡的人",
+		"github_username": "guangzhoueven"
 	}
 }

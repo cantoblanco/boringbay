@@ -697,5 +697,12 @@
 		"name": "zebin",
 		"description": "欲买桂花同载酒，终不似，少年游",
 		"github_username": "ZebinGao"
+	},
+	"111": {
+		"domain": "blog.hehouhui.cn",
+		"icon": "https://www.hehouhui.cn/images/avatar.jpeg",
+		"name": "Honesty",
+		"description": "花落知多少",
+		"github_username": "listener-He"
 	}
 }

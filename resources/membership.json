@@ -704,5 +704,12 @@
 		"name": "Honesty",
 		"description": "花落知多少",
 		"github_username": "listener-He"
+	},
+		"112": {
+		"domain": "blog.iotfen.com",
+		"icon": "https://static.iotfen.com/images/dist/favicon.png",
+		"name": "LuckyDog",
+		"description": "一个喜欢研究前沿技术及写小说的神秘人",
+		"github_username": "lucki-cn"
 	}
 }

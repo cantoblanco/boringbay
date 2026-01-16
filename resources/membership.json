@@ -711,5 +711,12 @@
 		"name": "LuckyDog",
 		"description": "一个喜欢研究前沿技术及写小说的神秘人",
 		"github_username": "lucki-cn"
+	},
+	"113": {
+		"domain": "bluelanm.github.io",
+		"icon": "https://bluelanm.github.io/my-website/img/3.ico",
+		"name": "LanM",
+		"description": "蓝莓",
+		"github_username": "BlueLanM"
 	}
 }

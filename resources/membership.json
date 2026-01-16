@@ -705,11 +705,18 @@
 		"description": "花落知多少",
 		"github_username": "listener-He"
 	},
-		"112": {
+	"112": {
 		"domain": "blog.iotfen.com",
 		"icon": "https://static.iotfen.com/images/dist/favicon.png",
 		"name": "LuckyDog",
 		"description": "一个喜欢研究前沿技术及写小说的神秘人",
 		"github_username": "lucki-cn"
+	},
+	"113": {
+		"domain": "blog.andyjin.website",
+		"icon": "https://filestorage0.oss-cn-hongkong.aliyuncs.com/avatar.png",
+		"name": "Modern Blog",
+		"description": "分享技术，记录生活",
+		"github_username": "PlayWithAndyJin"
 	}
 }

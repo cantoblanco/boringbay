@@ -718,5 +718,12 @@
 		"name": "Modern Blog",
 		"description": "分享技术，记录生活",
 		"github_username": "PlayWithAndyJin"
+	},
+	"114": {
+		"domain": "bluelanm.github.io",
+		"icon": "https://bluelanm.github.io/my-website/img/3.ico",
+		"name": "LanM",
+		"description": "蓝莓",
+		"github_username": "BlueLanM"
 	}
 }

@@ -725,5 +725,12 @@
 		"name": "LanM",
 		"description": "蓝莓",
 		"github_username": "BlueLanM"
+	},
+	"115": {
+		"domain": "xiaolaji.site",
+		"icon": "https://xiaolaji.site/img/logo.png",
+		"name": "星陨",
+		"description": "欲买桂花同载酒，终不似，少年游",
+		"github_username": "xiaolaji404"
 	}
 }

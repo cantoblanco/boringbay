@@ -8,8 +8,8 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 
 <!--GAMFC_DELIMITER--><a href="https://github.com/naiba" title="奶爸"><img src="https://avatars.githubusercontent.com/u/29243953?v=4" width="66;" alt="奶爸"/></a>
 <a href="https://github.com/cantoblanco" title="Kris"><img src="https://avatars.githubusercontent.com/u/116849421?v=4" width="66;" alt="Kris"/></a>
-<a href="https://github.com/fenychn0206" title="Frederick Chen"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="Frederick Chen"/></a>
 <a href="https://github.com/SinzMise" title="王九弦SZ·Ninty"><img src="https://avatars.githubusercontent.com/u/120767492?v=4" width="66;" alt="王九弦SZ·Ninty"/></a>
+<a href="https://github.com/fenychn0206" title="Frederick Chen"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="Frederick Chen"/></a>
 <a href="https://github.com/diaozhenda" title="JB20CM"><img src="https://avatars.githubusercontent.com/u/99374145?v=4" width="66;" alt="JB20CM"/></a>
 <a href="https://github.com/ImMello223" title="Mello"><img src="https://avatars.githubusercontent.com/u/72654383?v=4" width="66;" alt="Mello"/></a>
 <a href="https://github.com/wulintang" title="懋和道人"><img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="懋和道人"/></a>

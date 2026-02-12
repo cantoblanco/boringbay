@@ -693,7 +693,7 @@
 	},
 	"110": {
 		"domain": "zebin-yue.top",
-		"icon": "https://github.com/ZebinGao.png",
+		"icon": "https://bgithub.xyz/ZebinGao.png",
 		"name": "zebin",
 		"description": "欲买桂花同载酒，终不似，少年游",
 		"github_username": "ZebinGao"
@@ -732,5 +732,12 @@
 		"name": "星陨",
 		"description": "欲买桂花同载酒，终不似，少年游",
 		"github_username": "xiaolaji404"
+	},
+	"116": {
+		"domain": "jackie.openenet.cn",
+		"icon": "https://jackie.openenet.cn/img/favicon/image.png",
+		"name": "Jackie's Blog",
+		"description": "探索区块链、自动化与开源技术",
+		"github_username": "PyXMR2025"
 	}
 }

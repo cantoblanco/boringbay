@@ -746,5 +746,12 @@
 	"name": "Freedom2599的小破绽",
 	"description": "气味是回忆的超链接",
 	"github_username": "Freedom2599"
+	},
+	"118": {
+	"domain": "zhouyistudio.cyou",
+	"icon": "http://q.qlogo.cn/headimg_dl?dst_uin=823672854&spec=640&img_type=jpg",
+	"name": "Zhouyi's Blog",
+	"description": "用文字和代码，把平凡的日子折腾出光✨",
+	"github_username": "ZhouyiStudio"
 	}
 }

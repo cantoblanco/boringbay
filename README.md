@@ -27,6 +27,7 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/yzl3014" title="圆周率3014"><img src="https://avatars.githubusercontent.com/u/79385954?v=4" width="66;" alt="圆周率3014"/></a>
 <a href="https://github.com/yunzeok" title="yunze"><img src="https://avatars.githubusercontent.com/u/97683172?v=4" width="66;" alt="yunze"/></a>
 <a href="https://github.com/cxw521" title="taoziwei"><img src="https://avatars.githubusercontent.com/u/34087208?v=4" width="66;" alt="taoziwei"/></a>
+<a href="https://github.com/guangzhoueven" title="guangzhoueven"><img src="https://avatars.githubusercontent.com/u/193498313?v=4" width="66;" alt="guangzhoueven"/></a>
 <a href="https://github.com/gogei-cn" title="gogei2010"><img src="https://avatars.githubusercontent.com/u/128907557?v=4" width="66;" alt="gogei2010"/></a>
 <a href="https://github.com/freedom2599" title="freedom2599"><img src="https://avatars.githubusercontent.com/u/148047066?v=4" width="66;" alt="freedom2599"/></a>
 <a href="https://github.com/xuanxuan666niupi666" title="XCATX"><img src="https://avatars.githubusercontent.com/u/86157698?v=4" width="66;" alt="XCATX"/></a>
@@ -51,12 +52,12 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/it985" title="it985"><img src="https://avatars.githubusercontent.com/u/62421120?v=4" width="66;" alt="it985"/></a>
 <a href="https://github.com/imshadow" title="imshadow"><img src="https://avatars.githubusercontent.com/u/23455967?v=4" width="66;" alt="imshadow"/></a>
 <a href="https://github.com/hhhkkk520" title="Kris"><img src="https://avatars.githubusercontent.com/u/52115472?v=4" width="66;" alt="Kris"/></a>
-<a href="https://github.com/guangzhoueven" title="guangzhoueven"><img src="https://avatars.githubusercontent.com/u/193498313?v=4" width="66;" alt="guangzhoueven"/></a>
 <a href="https://github.com/dreamerhe114514" title="dreamerhe114514"><img src="https://avatars.githubusercontent.com/u/156502065?v=4" width="66;" alt="dreamerhe114514"/></a>
 <a href="https://github.com/citihu" title="citihu"><img src="https://avatars.githubusercontent.com/u/225527544?v=4" width="66;" alt="citihu"/></a>
 <a href="https://github.com/btwoa" title="btwoa"><img src="https://avatars.githubusercontent.com/u/109867618?v=4" width="66;" alt="btwoa"/></a>
 <a href="https://github.com/bbb-lsy07" title="bbb-lsy07"><img src="https://avatars.githubusercontent.com/u/183173376?v=4" width="66;" alt="bbb-lsy07"/></a>
 <a href="https://github.com/awaae001" title="awaae"><img src="https://avatars.githubusercontent.com/u/108462724?v=4" width="66;" alt="awaae"/></a>
+<a href="https://github.com/Lafcadia" title="Percival Zheng"><img src="https://avatars.githubusercontent.com/u/147896059?v=4" width="66;" alt="Percival Zheng"/></a>
 <a href="https://github.com/dysf888" title="黑歌"><img src="https://avatars.githubusercontent.com/u/47450409?v=4" width="66;" alt="黑歌"/></a>
 <a href="https://github.com/xiaoranawa" title="霄染"><img src="https://avatars.githubusercontent.com/u/112391218?v=4" width="66;" alt="霄染"/></a>
 <a href="https://github.com/zaxigia" title="langpa"><img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/></a>
@@ -76,7 +77,6 @@ NAiVe · 无聊人的中继站。图标修改自熊大的 <https://the.boring.st
 <a href="https://github.com/tosspi" title="Masone"><img src="https://avatars.githubusercontent.com/u/91527286?v=4" width="66;" alt="Masone"/></a>
 <a href="https://github.com/tianhukj" title="tianhukj"><img src="https://avatars.githubusercontent.com/u/166341634?v=4" width="66;" alt="tianhukj"/></a>
 <a href="https://github.com/tech-fever" title="tech-fever"><img src="https://avatars.githubusercontent.com/u/105153585?v=4" width="66;" alt="tech-fever"/></a>
-<a href="https://github.com/Lafcadia" title="Percival Zheng"><img src="https://avatars.githubusercontent.com/u/147896059?v=4" width="66;" alt="Percival Zheng"/></a>
 <a href="https://github.com/Lbb886" title="LBB"><img src="https://avatars.githubusercontent.com/u/107664455?v=4" width="66;" alt="LBB"/></a>
 <a href="https://github.com/zhufacai" title="Joker"><img src="https://avatars.githubusercontent.com/u/14821269?v=4" width="66;" alt="Joker"/></a>
 <a href="https://github.com/Jochen233" title="Jochen233"><img src="https://avatars.githubusercontent.com/u/89528624?v=4" width="66;" alt="Jochen233"/></a>

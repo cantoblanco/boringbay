@@ -767,5 +767,12 @@
 		"name": "如形の小站",
 		"description": "亲身体验，终生实践",
 		"github_username": "ruying-suixing"
+	},
+	"121": {
+		"domain": "blog.gankudadiz.com",
+		"icon": "https://blog.gankudadiz.com/avatar/avatar-128x128.jpg",
+		"name": "gankudadiz的个人小站",
+		"description": "<127.0.0.1 is where the heart is>",
+		"github_username": "gankudadiz"
 	}
 }

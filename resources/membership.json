@@ -774,5 +774,12 @@
 		"name": "gankudadiz的个人小站",
 		"description": "<127.0.0.1 is where the heart is>",
 		"github_username": "gankudadiz"
+	},
+	"122": {
+		"domain": "blog.zxiaolin.com",
+		"icon": "https://blog.zxiaolin.com/upload/humuziwt.png",
+		"name": "小林酱博客",
+		"description": "小林酱博客-记录生活，专注于自媒体资源分享",
+		"github_username": "zhyzy"
 	}
 }

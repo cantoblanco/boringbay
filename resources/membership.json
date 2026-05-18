@@ -781,5 +781,12 @@
 		"name": "小林酱博客",
 		"description": "小林酱博客-记录生活，专注于自媒体资源分享",
 		"github_username": "zhyzy"
+	},
+	"123": {
+		"domain": "xiangyugongzuoliu.com",
+		"icon": "https://xiangyugongzuoliu.com/content/images/2026/03/favicon.jpg",
+		"name": "翔宇工作流",
+		"description": "AI 编程与自动化工作流实战教程",
+		"github_username": "xiangyugongzuoliu"
 	}
 }

@@ -788,5 +788,13 @@
 		"name": "翔宇工作流",
 		"description": "AI 编程与自动化工作流实战教程",
 		"github_username": "xiangyugongzuoliu"
+	},
+		},
+	"124": {
+		"domain": "blog.weasel6.cn",
+		"icon": "https://blog.weasel6.cn/favicon/favicon.ico",
+		"name": "黄鼠狼的树洞",
+		"description": "小黄的博客，记录生活中的美好",
+		"github_username": "Yutong2333"
 	}
 }

@@ -787,5 +787,12 @@
 		"name": "翔宇工作流",
 		"description": "AI 编程与自动化工作流实战教程",
 		"github_username": "xiangyugongzuoliu"
+	},
+	"124": {
+		"domain": "yuluo.xyz",
+		"icon": "https://yuluo.xyz/logo.jpg",
+		"name": "辞入森川",
+		"description": "辞尽俗世纷扰，只身步入森与川。",
+		"github_username": "Senc-QWA"
 	}
 }

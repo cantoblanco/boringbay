@@ -794,5 +794,12 @@
 		"name": "辞入森川",
 		"description": "辞尽俗世纷扰，只身步入森与川。",
 		"github_username": "Senc-QWA"
+	},
+	"125": {
+		"domain": "memo.moieo.net",
+		"icon": "https://memo.moieo.net/favicon/favicon-dark-192.png",
+		"name": "晴雨笔记",
+		"description": "素白清韵，简静安然",
+		"github_username": "xmoieo"
 	}
 }

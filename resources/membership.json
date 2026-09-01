@@ -801,5 +801,12 @@
 		"name": "晴雨笔记",
 		"description": "素白清韵，简静安然",
 		"github_username": "xmoieo"
+	},
+	"126": {
+		"domain":"blog.yebaiwn.top",
+		"icon":"https://img.yebaiwn.top/yebai.jpg",
+		"name":"夜白的小空间",
+		"description":"Live Today,Love Tomorrow,Unite Forever",
+		"github_username":"Furry-yebai"
 	}
 }

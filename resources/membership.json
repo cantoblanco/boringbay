@@ -808,5 +808,12 @@
 		"name":"夜白的小空间",
 		"description":"Live Today,Love Tomorrow,Unite Forever",
 		"github_username":"Furry-yebai"
-	}
+	},
+	"127": {
+        "domain": "qiluyun.de5.net",
+         "icon": "https://qiluyun.de5.net/assets/favicon.svg",
+         "name": "气如云的博客",
+         "description": "龙潜九渊，一跃戾天",
+         "github_username": "sefvcf"
+        }
 }

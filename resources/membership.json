@@ -326,20 +326,20 @@
 		"hidden": true
 	},
 	"59": {
-	        "domain": "blog.ohdragonboi.cn",
+		"domain": "blog.ohdragonboi.cn",
 		"icon": "https://blog.ohdragonboi.cn/upload/avatar.png",
 		"name": "Frederick's Blog",
 		"description": "Sky is the limit.",
 		"github_username": "fenychn0206"
 	},
-       "60": {
-	        "domain": "987654321.org",
+	"60": {
+		"domain": "987654321.org",
 		"icon": "https://987654321.org/img/tx.png",
 		"name": "LCX",
 		"description": "这是一个博客，同时也是一个知识库。",
 		"github_username": "longchunxin"
 	},
-       "61": {
+	"61": {
 		"domain": "blog.calyee.top",
 		"icon": "https://blog.calyee.top/favicon.svg",
 		"name": "CALYEE",
@@ -389,7 +389,7 @@
 		"name": "梅之夏",
 		"description": "Explore. Dream. Discover.",
 		"github_username": "mcenahle"
-  	}, 
+	},
 	"68": {
 		"domain": "suus.me",
 		"icon": "https://suus.me/avatar.webp",
@@ -397,7 +397,7 @@
 		"description": "在数字的海洋中，寻找属于自己的星辰。",
 		"github_username": "suuseer",
 		"hidden": true
-	},	
+	},
 	"69": {
 		"domain": "moecx.com",
 		"icon": "https://q1.qlogo.cn/g?b=qq&nk=1131596911&s=640",
@@ -477,28 +477,28 @@
 		"github_username": "it985",
 		"hidden": true
 	},
-	"80":{
+	"80": {
 		"domain": "xingwangzhe.fun",
 		"icon": "https://xingwangzhe.fun/favicon.ico",
 		"name": "姓王者的博客",
 		"description": "学习，进步，创造无限可能",
 		"github_username": "xingwangzhe"
 	},
-	"81":{
+	"81": {
 		"domain": "echo.imjianhao.cn",
 		"icon": "https://echo.imjianhao.cn/images/User.webp",
 		"name": "小杨的自留地",
 		"description": "记录感悟，分享有趣",
 		"github_username": "yjh2643408123"
 	},
-	"82":{
+	"82": {
 		"domain": "blog.gbfun.cc",
 		"icon": "https://blog-image-1302787555.cos.ap-guangzhou.myqcloud.com//img%E7%88%86%E7%B1%B3%E8%8A%B1.svg",
 		"name": "GB 的记事簿",
 		"description": "热爱生活",
 		"github_username": "LixdHappy"
 	},
-	"83":{
+	"83": {
 		"domain": "www.qindarkstone.cn",
 		"icon": "https://i.postimg.cc/ryxGSQ7P/hellokitty-kitty-cat-aigei-com.png",
 		"name": "暗石の小站",
@@ -506,7 +506,7 @@
 		"github_username": "Qindarkstone",
 		"hidden": true
 	},
-	"84":{
+	"84": {
 		"domain": "kali.rf.gd",
 		"icon": "http://kali.rf.gd/wp-content/uploads/2025/07/1752018321-login_logo-1.webp",
 		"name": "Kaliの妙妙屋",
@@ -514,28 +514,28 @@
 		"github_username": "tianhukj",
 		"hidden": true
 	},
-	"85":{
+	"85": {
 		"domain": "blog.gogei.top",
 		"icon": "https://blog.gogei.top/images/favicon.ico",
 		"name": "Gogei的静默日志",
 		"description": "字如萤逝，码若流光",
 		"github_username": "gogei-cn"
 	},
-	"86":{
+	"86": {
 		"domain": "www.hansjack.com",
 		"icon": "https://www.hansjack.com/favicon.ico",
 		"name": "时光流·言",
 		"description": "个人博客，持续分享网站部署实战经验、精选书评解读和生活观察手记。 这里提供可复用的技术教程、深度阅读指南和真实生活洞察，与技术爱好者一起进步......",
 		"github_username": "TGU-HansJack"
 	},
-	"87":{
+	"87": {
 		"domain": "note.redcha.cn",
 		"icon": "https://note.redcha.cn/favicon.ico",
 		"name": "彬红茶日记",
 		"description": "我的个人生活与技术生活日记",
 		"github_username": "kuang2714"
 	},
-	"88":{
+	"88": {
 		"domain": "lhcy.org",
 		"icon": "https://lhcy.org/favicon.ico",
 		"name": "林海草原",
@@ -543,7 +543,7 @@
 		"github_username": "linhaii",
 		"hidden": true
 	},
-	"89":{
+	"89": {
 		"domain": "blog.lylelove.top",
 		"icon": "https://blog.lylelove.top/media/website/yuan.png",
 		"name": "竟何",
@@ -733,32 +733,32 @@
 		"github_username": "PyXMR2025"
 	},
 	"116": {
-	"domain": "freedom2599.cn",
-	"icon": "https://gcore.jsdelivr.net/gh/freedom2599/Pics@main/assets/tx.jpg",
-	"name": "Freedom2599的小破绽",
-	"description": "气味是回忆的超链接",
-	"github_username": "Freedom2599"
+		"domain": "freedom2599.cn",
+		"icon": "https://gcore.jsdelivr.net/gh/freedom2599/Pics@main/assets/tx.jpg",
+		"name": "Freedom2599的小破绽",
+		"description": "气味是回忆的超链接",
+		"github_username": "Freedom2599"
 	},
 	"117": {
-	"domain": "zhouyistudio.cyou",
-	"icon": "http://q.qlogo.cn/headimg_dl?dst_uin=823672854&spec=640&img_type=jpg",
-	"name": "Zhouyi's Blog",
-	"description": "用文字和代码，把平凡的日子折腾出光✨",
-	"github_username": "ZhouyiStudio"
+		"domain": "zhouyistudio.cyou",
+		"icon": "http://q.qlogo.cn/headimg_dl?dst_uin=823672854&spec=640&img_type=jpg",
+		"name": "Zhouyi's Blog",
+		"description": "用文字和代码，把平凡的日子折腾出光✨",
+		"github_username": "ZhouyiStudio"
 	},
 	"118": {
-	"domain": "blog.xiaoowo.top",
-	"icon": "https://img.xiaoowo.top/file/1773812167751_favicon.ico",
-	"name": "霄の咖啡馆",
-	"description": "摆烂类博客，写什么纯属兴趣( •̀ ω •́ )✧",
-	"github_username": "xiaoranawa"
+		"domain": "blog.xiaoowo.top",
+		"icon": "https://img.xiaoowo.top/file/1773812167751_favicon.ico",
+		"name": "霄の咖啡馆",
+		"description": "摆烂类博客，写什么纯属兴趣( •̀ ω •́ )✧",
+		"github_username": "xiaoranawa"
 	},
 	"119": {
-	"domain": "www.taoziwei.com",
-	"icon": "https://www.taoziwei.com/wp-content/uploads/2025/11/cropped-favicon-180x180.png",
-	"name": "桃子味🍑",
-	"description": "记录生活点滴，关注互联网IT技术的个人博客。",
-	"github_username": "cxw521"
+		"domain": "www.taoziwei.com",
+		"icon": "https://www.taoziwei.com/wp-content/uploads/2025/11/cropped-favicon-180x180.png",
+		"name": "桃子味🍑",
+		"description": "记录生活点滴，关注互联网IT技术的个人博客。",
+		"github_username": "cxw521"
 	},
 	"120": {
 		"domain": "blog.rusin7.com",
@@ -803,17 +803,24 @@
 		"github_username": "xmoieo"
 	},
 	"126": {
-		"domain":"blog.yebaiwn.top",
-		"icon":"https://img.yebaiwn.top/yebai.jpg",
-		"name":"夜白的小空间",
-		"description":"Live Today,Love Tomorrow,Unite Forever",
-		"github_username":"Furry-yebai"
+		"domain": "blog.yebaiwn.top",
+		"icon": "https://img.yebaiwn.top/yebai.jpg",
+		"name": "夜白的小空间",
+		"description": "Live Today,Love Tomorrow,Unite Forever",
+		"github_username": "Furry-yebai"
 	},
 	"127": {
-        "domain": "qiluyun.de5.net",
-         "icon": "https://qiluyun.de5.net/assets/favicon.svg",
-         "name": "气如云的博客",
-         "description": "龙潜九渊，一跃戾天",
-         "github_username": "sefvcf"
-        }
+		"domain": "qiluyun.de5.net",
+		"icon": "https://qiluyun.de5.net/assets/favicon.svg",
+		"name": "气如云的博客",
+		"description": "龙潜九渊，一跃戾天",
+		"github_username": "sefvcf"
+	},
+	"128": {
+		"domain": "lcrworld.xyz",
+		"icon": "https://lcrworld.xyz/apple-touch-icon.png",
+		"name": "lcrworld's Blog",
+		"description": "lcrworld 的个人博客，分享技术、项目与生活记录",
+		"github_username": "lcrworld-jtl"
+	}
 }

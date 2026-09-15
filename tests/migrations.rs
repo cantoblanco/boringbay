@@ -1,13 +1,25 @@
 mod common;
 
 use diesel::prelude::*;
-use diesel::sql_types::BigInt;
+use diesel::sql_types::{BigInt, Integer, Text};
 use naive::schema::{daily_routes, feed_items, feed_sources, product_events, site_health};
 
 #[derive(QueryableByName)]
 struct Count {
     #[diesel(sql_type = BigInt)]
     count: i64,
+}
+
+#[derive(QueryableByName)]
+struct JournalMode {
+    #[diesel(sql_type = Text)]
+    journal_mode: String,
+}
+
+#[derive(QueryableByName)]
+struct BusyTimeout {
+    #[diesel(sql_type = Integer)]
+    timeout: i32,
 }
 
 #[tokio::test]
@@ -18,6 +30,14 @@ async fn additive_migrations_create_site_health_without_touching_statistics() {
     let database_url = _tmp.path().join("test.db");
     let pool = naive::establish_connection(database_url.to_str().unwrap());
     let mut connection = pool.get().unwrap();
+    let journal = diesel::sql_query("PRAGMA journal_mode")
+        .get_result::<JournalMode>(&mut connection)
+        .unwrap();
+    assert_eq!(journal.journal_mode.to_ascii_lowercase(), "wal");
+    let busy_timeout = diesel::sql_query("PRAGMA busy_timeout")
+        .get_result::<BusyTimeout>(&mut connection)
+        .unwrap();
+    assert_eq!(busy_timeout.timeout, 5_000);
     let health_count = site_health::table
         .count()
         .get_result::<i64>(&mut connection);

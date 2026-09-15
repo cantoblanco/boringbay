@@ -9,7 +9,8 @@ use axum::{
 use chrono::{NaiveDateTime, Utc};
 use chrono_tz::Asia::Shanghai;
 use diesel::{
-    r2d2::{ConnectionManager, Pool},
+    connection::SimpleConnection,
+    r2d2::{ConnectionManager, CustomizeConnection, Error as PoolConnectionError, Pool},
     SqliteConnection,
 };
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
@@ -38,10 +39,27 @@ pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations/");
 
 pub type DbPool = Pool<ConnectionManager<SqliteConnection>>;
 
+#[derive(Debug)]
+struct SqliteConnectionCustomizer;
+
+impl CustomizeConnection<SqliteConnection, PoolConnectionError> for SqliteConnectionCustomizer {
+    fn on_acquire(&self, connection: &mut SqliteConnection) -> Result<(), PoolConnectionError> {
+        connection
+            .batch_execute(
+                "PRAGMA foreign_keys = ON; \
+                 PRAGMA journal_mode = WAL; \
+                 PRAGMA synchronous = NORMAL; \
+                 PRAGMA busy_timeout = 5000;",
+            )
+            .map_err(PoolConnectionError::QueryError)
+    }
+}
+
 pub fn establish_connection(database_url: &str) -> DbPool {
     let manager = ConnectionManager::<SqliteConnection>::new(database_url);
     Pool::builder()
         .max_size(5)
+        .connection_customizer(Box::new(SqliteConnectionCustomizer))
         .build(manager)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }

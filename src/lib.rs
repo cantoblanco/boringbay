@@ -1,7 +1,11 @@
 use std::sync::Arc;
 
 use anyhow::anyhow;
-use axum::{routing::get, AddExtensionLayer, Router};
+use axum::{
+    http::StatusCode,
+    routing::{get, get_service, post},
+    AddExtensionLayer, Router,
+};
 use chrono::{NaiveDateTime, Utc};
 use chrono_tz::Asia::Shanghai;
 use diesel::{
@@ -9,13 +13,16 @@ use diesel::{
     SqliteConnection,
 };
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+use tower_http::services::ServeDir;
 
 pub mod app_model;
 pub mod app_router;
 pub mod boring_face;
 pub mod config;
+pub mod discovery;
 pub mod membership_model;
 pub mod network_policy;
+pub mod product_events;
 pub mod ranking;
 pub mod schema;
 pub mod site_health;
@@ -45,7 +52,8 @@ pub fn run_migrations(conn: &mut SqliteConnection) -> anyhow::Result<()> {
 
 pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) -> Router {
     use app_router::{
-        home_page, join_us_page, rank_page, show_badge, show_favicon, show_icon, ws_upgrade,
+        discovery_today, home_page, join_us_page, rank_page, record_event, route_page, show_badge,
+        show_favicon, show_icon, ws_upgrade,
     };
 
     Router::new()
@@ -55,11 +63,23 @@ pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) 
                 .route("/badge/:domain", get(show_badge))
                 .route("/favicon/:domain", get(show_favicon))
                 .route("/icon/:domain", get(show_icon))
-                .route("/ws", get(ws_upgrade)),
+                .route("/ws", get(ws_upgrade))
+                .route("/events", post(record_event)),
         )
         .route("/", get(home_page))
         .route("/join-us", get(join_us_page))
         .route("/rank", get(rank_page))
+        .route("/route/:date", get(route_page))
+        .route("/api/discovery/today", get(discovery_today))
+        .nest(
+            "/static",
+            get_service(ServeDir::new("resources/static")).handle_error(|error| async move {
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("static file error: {error}"),
+                )
+            }),
+        )
         .layer(AddExtensionLayer::new(ctx))
         .layer(AddExtensionLayer::new(config))
 }

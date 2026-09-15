@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}今日航线{% endblock %}
+
+{% block content %}
+<section class="route-hero" data-route-date="{{ date }}">
+    <p class="eyebrow">DAILY ROUTE · {{ date }}</p>
+    <h1>今日航线</h1>
+    <p>五座各有脾气的小岛。同一天看到的是同一条路线，走完可以留下五枚本地邮戳。</p>
+    <div class="route-progress" aria-live="polite"><span data-route-stamps>0 / 5 枚邮戳</span></div>
+</section>
+
+<ol class="route-list">
+    {% for m in members %}
+    <li class="route-stop" data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}">
+        <span class="route-number">{{ loop.index }}</span>
+        <img src="{{ m.icon }}" alt="" width="64" height="64" loading="lazy">
+        <div>
+            <h2>{{ m.name|e }}</h2>
+            <p>{{ m.description|e }}</p>
+            <a class="btn member-outbound" target="_blank" rel="noopener" href="https://{{ m.domain }}"
+               data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}">登岛看看</a>
+        </div>
+        <span class="route-stamp" aria-label="尚未访问">○</span>
+    </li>
+    {% endfor %}
+</ol>
+
+<div class="route-actions">
+    <button class="btn" type="button" data-route-complete disabled>完成航线</button>
+    <button class="quiet-button" type="button" data-passport-reset>重置本地护照</button>
+    <a class="quiet-button" href="/">返回港口</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/static/discovery.js"></script>
+{% endblock %}

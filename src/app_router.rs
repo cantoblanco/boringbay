@@ -9,8 +9,9 @@ use axum::{
     },
     http::StatusCode,
     response::{Headers, Html, IntoResponse, Response},
+    Json,
 };
-use chrono::NaiveDateTime;
+use chrono::{NaiveDate, NaiveDateTime};
 use headers::HeaderMap;
 use serde::Deserialize;
 use tokio::select;
@@ -18,14 +19,46 @@ use tokio::select;
 use crate::{
     app_model::{Context, DynContext},
     boring_face::BoringFace,
+    config::AppConfig,
+    discovery::{DailyRoute, DiscoveryService},
     membership_model::Membership,
     now_shanghai,
+    product_events::{EventInput, ProductEventKind, ProductEventService},
     ranking::{RankingEntry, RankingService},
     site_health::{
         status_from_evidence, status_reason, HealthEvidence, MemberStatus, SiteHealthService,
     },
     GIT_HASH,
 };
+
+pub async fn record_event(
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+    Json(input): Json<EventInput>,
+) -> StatusCode {
+    if !config.v2_enabled {
+        return StatusCode::NOT_FOUND;
+    }
+    let kind = match ProductEventKind::try_from(input.kind.as_str()) {
+        Ok(kind) => kind,
+        Err(_) => return StatusCode::BAD_REQUEST,
+    };
+    if input
+        .member_id
+        .map(|id| id <= 0 || !ctx.id2member.contains_key(&id))
+        .unwrap_or(false)
+    {
+        return StatusCode::BAD_REQUEST;
+    }
+    match ProductEventService::new(ctx.db_pool.clone()).increment(
+        now_shanghai().date(),
+        kind,
+        input.member_id,
+    ) {
+        Ok(()) => StatusCode::NO_CONTENT,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
 
 pub async fn ws_upgrade(
     Extension(ctx): Extension<DynContext>,
@@ -135,10 +168,13 @@ struct HomeTemplate {
     rank: Vec<RankedMember>,
     status_attention: Vec<StatusMember>,
     level: HashMap<i64, i64>,
+    v2_enabled: bool,
+    today_route: String,
 }
 
 pub async fn home_page(
     Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
     headers: HeaderMap,
 ) -> Result<Html<String>, String> {
     let domain = get_domain_from_referrer(&headers);
@@ -211,9 +247,80 @@ pub async fn home_page(
         status_attention,
         level,
         version: GIT_HASH[0..8].to_string(),
+        v2_enabled: config.v2_enabled,
+        today_route: format!("/route/{}", now_shanghai().date().format("%Y-%m-%d")),
     };
     let html = tpl.render().map_err(|err| err.to_string())?;
     Ok(Html(html))
+}
+
+#[derive(Template)]
+#[template(path = "route.html")]
+struct RouteTemplate {
+    version: String,
+    date: String,
+    members: Vec<Membership>,
+}
+
+#[derive(serde::Serialize)]
+pub struct DailyRouteResponse {
+    date: NaiveDate,
+    members: Vec<Membership>,
+}
+
+pub async fn route_page(
+    Path(date): Path<String>,
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Result<Html<String>, StatusCode> {
+    if !config.v2_enabled {
+        return Err(StatusCode::NOT_FOUND);
+    }
+    let date = NaiveDate::parse_from_str(&date, "%Y-%m-%d").map_err(|_| StatusCode::NOT_FOUND)?;
+    let response = daily_route_response(&ctx, date).map_err(|_| StatusCode::SERVICE_UNAVAILABLE)?;
+    let template = RouteTemplate {
+        version: GIT_HASH[0..8].to_string(),
+        date: date.format("%Y-%m-%d").to_string(),
+        members: response.members,
+    };
+    template
+        .render()
+        .map(Html)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
+pub async fn discovery_today(
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Result<Json<DailyRouteResponse>, StatusCode> {
+    if !config.v2_enabled {
+        return Err(StatusCode::NOT_FOUND);
+    }
+    daily_route_response(&ctx, now_shanghai().date())
+        .map(Json)
+        .map_err(|_| StatusCode::SERVICE_UNAVAILABLE)
+}
+
+fn daily_route_response(ctx: &Context, date: NaiveDate) -> anyhow::Result<DailyRouteResponse> {
+    let eligible = status_members(ctx)
+        .into_iter()
+        .filter(|member| matches!(member.status, MemberStatus::Active | MemberStatus::Quiet))
+        .map(|entry| entry.membership)
+        .collect::<Vec<_>>();
+    let DailyRoute { member_ids, .. } =
+        DiscoveryService::new(ctx.db_pool.clone()).daily_route(date, &eligible)?;
+    let by_id = eligible
+        .into_iter()
+        .map(|member| (member.id, member))
+        .collect::<HashMap<_, _>>();
+    let members = member_ids
+        .into_iter()
+        .filter_map(|id| by_id.get(&id).cloned())
+        .collect::<Vec<_>>();
+    if members.len() != 5 {
+        return Err(anyhow!("daily route members are no longer eligible"));
+    }
+    Ok(DailyRouteResponse { date, members })
 }
 
 #[derive(Template)]

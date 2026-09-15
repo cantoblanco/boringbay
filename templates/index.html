@@ -4,10 +4,25 @@
 
 {% block content %}
 <div class="content">
+    {% if v2_enabled %}
+    <section class="harbor-panel" aria-labelledby="harbor-title">
+        <div>
+            <p class="eyebrow">BORINGBAY V2</p>
+            <h1 id="harbor-title">从港口出发，去逛一座小站</h1>
+            <p>不登录、不追踪个人身份。访问记录、收藏与邮戳只留在你的浏览器。</p>
+        </div>
+        <div class="harbor-actions">
+            <button class="btn" type="button" data-random-discovery>随便逛逛</button>
+            <a class="btn" href="{{ today_route }}">今日航线</a>
+            <a class="quiet-button" href="#drift-bottles">最新漂流瓶</a>
+        </div>
+        <p class="passport-summary js-passport" data-passport-summary hidden></p>
+    </section>
+    {% endif %}
     <h2 class="font-size-18 text-center">今日无聊</h2>
     <div class="d-flex flex-wrap member-list">
         {% for m in membership %}
-        <div class="w-md-quarter w-half p-5">
+        <div class="w-md-quarter w-half p-5" data-member-card data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}">
             <div class="d-flex p-5 border rounded shadow">
                 <div class="d-block position-relative">
                     <img class="w-50 h-50 rounded" src="{{ m.icon }}">
@@ -21,19 +36,28 @@
                     </p>
                 </div>
                 <div class="flex-grow-1 pl-10">
-                    <a target="_blank" class="text-reset font-weight-bolder" href="https://{{ m.domain }}"
+                    <a target="_blank" rel="noopener" class="text-reset font-weight-bolder member-outbound"
+                        href="https://{{ m.domain }}" data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}"
                         title="{{ m.name|e }}">
                         {{ m.name|e }}
                     </a><br>
                     <small title="{{ m.description|e }}">{{ m.description|e }}</small><br>
-                    <a target="_blank" href="https://github.com/{{ m.github_username }}"
-                        title="{{ m.github_username|e }}"><small><i class="fab fa-github"></i>
-                            {{ m.github_username|e }}</small></a>
+                    <a target="_blank" rel="noopener" href="https://github.com/{{ m.github_username }}"
+                        title="{{ m.github_username|e }}"><small>GitHub · {{ m.github_username|e }}</small></a>
+                    {% if v2_enabled %}<button class="favorite-toggle js-passport" type="button" data-favorite="{{ m.id }}" aria-label="收藏 {{ m.name|e }}" hidden>☆</button>{% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
+
+    {% if v2_enabled %}
+    <section id="drift-bottles" class="coming-section">
+        <p class="eyebrow">DRIFT BOTTLES</p>
+        <h2>最新漂流瓶</h2>
+        <p>成员可自愿提供 RSS/Atom。尚未投递时，先去今日航线捞几座岛吧。</p>
+    </section>
+    {% endif %}
 
 
     <h2 class="font-size-18 text-center">30 天排行</h2>
@@ -106,4 +130,8 @@
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% if v2_enabled %}<script type="module" src="/static/discovery.js"></script>{% endif %}
 {% endblock %}

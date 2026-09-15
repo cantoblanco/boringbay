@@ -23,4 +23,26 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(statistics, site_health);
+diesel::table! {
+    daily_routes (route_date) {
+        route_date -> Date,
+        member_ids -> Text,
+        generated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
+    product_events (event_date, event_kind, member_id) {
+        event_date -> Date,
+        event_kind -> Text,
+        member_id -> BigInt,
+        count -> BigInt,
+    }
+}
+
+diesel::allow_tables_to_appear_in_same_query!(
+    statistics,
+    site_health,
+    daily_routes,
+    product_events
+);

@@ -11,7 +11,7 @@ use chrono_tz::Asia::Shanghai;
 use diesel::{
     connection::SimpleConnection,
     r2d2::{ConnectionManager, CustomizeConnection, Error as PoolConnectionError, Pool},
-    SqliteConnection,
+    Connection, SqliteConnection,
 };
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use tower_http::services::ServeDir;
@@ -47,7 +47,6 @@ impl CustomizeConnection<SqliteConnection, PoolConnectionError> for SqliteConnec
         connection
             .batch_execute(
                 "PRAGMA foreign_keys = ON; \
-                 PRAGMA journal_mode = WAL; \
                  PRAGMA synchronous = NORMAL; \
                  PRAGMA busy_timeout = 5000;",
             )
@@ -56,6 +55,13 @@ impl CustomizeConnection<SqliteConnection, PoolConnectionError> for SqliteConnec
 }
 
 pub fn establish_connection(database_url: &str) -> DbPool {
+    let mut bootstrap = SqliteConnection::establish(database_url)
+        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+    bootstrap
+        .batch_execute("PRAGMA journal_mode = WAL;")
+        .unwrap_or_else(|_| panic!("Error enabling SQLite WAL for {}", database_url));
+    drop(bootstrap);
+
     let manager = ConnectionManager::<SqliteConnection>::new(database_url);
     Pool::builder()
         .max_size(5)

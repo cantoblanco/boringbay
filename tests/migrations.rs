@@ -38,6 +38,16 @@ async fn additive_migrations_create_site_health_without_touching_statistics() {
         .get_result::<BusyTimeout>(&mut connection)
         .unwrap();
     assert_eq!(busy_timeout.timeout, 5_000);
+    drop(connection);
+    let held_connections = (0..5)
+        .map(|_| {
+            pool.get()
+                .expect("every pooled SQLite connection initializes")
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(held_connections.len(), 5);
+    drop(held_connections);
+    let mut connection = pool.get().unwrap();
     let health_count = site_health::table
         .count()
         .get_result::<i64>(&mut connection);

@@ -47,7 +47,6 @@ impl CustomizeConnection<SqliteConnection, PoolConnectionError> for SqliteConnec
         connection
             .batch_execute(
                 "PRAGMA foreign_keys = ON; \
-                 PRAGMA synchronous = NORMAL; \
                  PRAGMA busy_timeout = 5000;",
             )
             .map_err(PoolConnectionError::QueryError)
@@ -65,6 +64,7 @@ pub fn establish_connection(database_url: &str) -> DbPool {
     let manager = ConnectionManager::<SqliteConnection>::new(database_url);
     Pool::builder()
         .max_size(5)
+        .min_idle(Some(1))
         .connection_customizer(Box::new(SqliteConnectionCustomizer))
         .build(manager)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))

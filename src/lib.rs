@@ -1,28 +1,28 @@
-use std::env;
+use std::sync::Arc;
 
+use anyhow::anyhow;
+use axum::{routing::get, AddExtensionLayer, Router};
 use chrono::{NaiveDateTime, Utc};
 use chrono_tz::Asia::Shanghai;
 use diesel::{
     r2d2::{ConnectionManager, Pool},
     SqliteConnection,
 };
-use lazy_static::lazy_static;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 
 pub mod app_model;
 pub mod app_router;
 pub mod boring_face;
+pub mod config;
 pub mod membership_model;
 pub mod schema;
 pub mod statistics_model;
+pub mod visitor;
 
 extern crate diesel;
 
 pub const GIT_HASH: &str = env!("GIT_HASH");
-
-// 系统域名，忽略 referrer 计数
-lazy_static! {
-    static ref SYSTEM_DOMAIN: String = env::var("SYSTEM_DOMAIN").unwrap();
-}
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations/");
 
 pub type DbPool = Pool<ConnectionManager<SqliteConnection>>;
 
@@ -32,6 +32,33 @@ pub fn establish_connection(database_url: &str) -> DbPool {
         .max_size(5)
         .build(manager)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+}
+
+pub fn run_migrations(conn: &mut SqliteConnection) -> anyhow::Result<()> {
+    conn.run_pending_migrations(MIGRATIONS)
+        .map(|_| ())
+        .map_err(|err| anyhow!(err.to_string()))
+}
+
+pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) -> Router {
+    use app_router::{
+        home_page, join_us_page, rank_page, show_badge, show_favicon, show_icon, ws_upgrade,
+    };
+
+    Router::new()
+        .nest(
+            "/api",
+            Router::new()
+                .route("/badge/:domain", get(show_badge))
+                .route("/favicon/:domain", get(show_favicon))
+                .route("/icon/:domain", get(show_icon))
+                .route("/ws", get(ws_upgrade)),
+        )
+        .route("/", get(home_page))
+        .route("/join-us", get(join_us_page))
+        .route("/rank", get(rank_page))
+        .layer(AddExtensionLayer::new(ctx))
+        .layer(AddExtensionLayer::new(config))
 }
 
 pub fn now_shanghai() -> NaiveDateTime {

@@ -123,9 +123,9 @@
 
         function getWelcome(data) {
             if (data.vt == 2) {
-                return "来自「" + data.country + "」的「" + data.ip + "」访问了 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a>。"
+                return "来自「" + data.country + "」的访客访问了 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a>。"
             }
-            return "来自「" + data.country + "」的「" + data.ip + "」从 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a> 访问了本站。"
+            return "来自「" + data.country + "」的访客从 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a> 访问了本站。"
         }
 
         function connect() {

@@ -4,30 +4,25 @@ use std::{collections::HashMap, sync::Arc};
 
 use crate::statistics_model::Statistics;
 use crate::{boring_face::BoringFace, DbPool};
-use crate::{now_shanghai, SYSTEM_DOMAIN};
+use crate::{
+    config::{AppConfig, TrustedProxyMode},
+    now_shanghai,
+    visitor::{VisitorHasher, VisitorIdentity},
+};
 
 use crate::membership_model::Membership;
 use anyhow::anyhow;
 use chrono::{NaiveDateTime, NaiveTime};
 use headers::HeaderMap;
-use lazy_static::lazy_static;
-use regex::Regex;
 use serde::Serialize;
 use serde_repr::*;
 use tokio::sync::watch::{self, Receiver, Sender};
 use tokio::sync::RwLock;
-use tracing::info;
 
 pub type DynContext = Arc<Context>;
 
-lazy_static! {
-    static ref IPV4_MASK: Regex = Regex::new("(\\d*\\.).*(\\.\\d*)").unwrap();
-    static ref IPV6_MASK: Regex = Regex::new("(\\w*:\\w*:).*(:\\w*:\\w*)").unwrap();
-}
-
 #[derive(Serialize)]
 struct VistEvent {
-    ip: String,
     country: String,
     member: Membership,
     vt: Option<VisitorType>,
@@ -61,6 +56,9 @@ pub struct Context {
     pub monthly_rank: RwLock<Vec<Statistics>>,
 
     pub cache: r_cache::cache::Cache<String, ()>,
+    pub system_domain: String,
+    pub trusted_proxy_mode: TrustedProxyMode,
+    pub visitor_hasher: VisitorHasher,
 }
 
 impl Context {
@@ -80,29 +78,31 @@ impl Context {
         domain: &str,
         headers: &HeaderMap,
     ) -> Result<(&str, i64, i64, i64), anyhow::Error> {
-        if v_type.is_some_and(|v| v == VisitorType::Referer) && domain.eq(&*SYSTEM_DOMAIN) {
+        if v_type.is_some_and(|v| v == VisitorType::Referer) && domain.eq(&self.system_domain) {
             return Err(anyhow!("system domain"));
         }
         if let Some(id) = self.domain2id.get(domain) {
-            let ip =
-                String::from_utf8(headers.get("CF-Connecting-IP").unwrap().as_bytes().to_vec())
-                    .unwrap();
-            info!("ip {}", ip);
-
-            let country =
-                String::from_utf8(headers.get("CF-IPCountry").unwrap().as_bytes().to_vec())
-                    .unwrap();
-            info!("country {}", country);
-
-            let visitor_key = format!("{}_{}_{:?}", ip, id, v_type);
-            let visitor_cache = self.cache.get(&visitor_key).await;
+            let identity = VisitorIdentity::from_headers(
+                headers,
+                self.trusted_proxy_mode,
+                &self.visitor_hasher,
+            );
+            let visitor_key = identity
+                .as_ref()
+                .map(|identity| format!("{}_{}_{:?}", identity.dedupe_key, id, v_type));
+            let visitor_cache = match visitor_key.as_ref() {
+                Some(key) => self.cache.get(key).await,
+                None => Some(()),
+            };
 
             if v_type.is_some_and(|v| [VisitorType::Referer, VisitorType::Badge].contains(&v))
                 && visitor_cache.is_none()
             {
-                self.cache
-                    .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
-                    .await;
+                if let Some(visitor_key) = visitor_key {
+                    self.cache
+                        .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
+                        .await;
+                }
             }
 
             let mut notification = false;
@@ -118,7 +118,7 @@ impl Context {
                     dist_r.1 = now_shanghai();
                     referrer.insert(*id, dist_r);
                 }
-                notification = true;
+                notification = identity.is_some();
             }
             drop(referrer);
 
@@ -133,7 +133,7 @@ impl Context {
                     dist_uv.1 = now_shanghai();
                     uv.insert(*id, dist_uv);
                 }
-                notification = true;
+                notification = identity.is_some();
             }
             drop(uv);
 
@@ -145,17 +145,16 @@ impl Context {
                 member.icon = "".to_string();
                 member.github_username = "".to_string();
 
-                let _ = self.visitor_tx.send(
-                    serde_json::json!(VistEvent {
-                        ip: IPV6_MASK
-                            .replace_all(&IPV4_MASK.replace_all(&ip, "$1****$2"), "$1****$2")
-                            .to_string(),
-                        country,
-                        member,
-                        vt: v_type,
-                    })
-                    .to_string(),
-                );
+                if let Some(identity) = identity {
+                    let _ = self.visitor_tx.send(
+                        serde_json::json!(VistEvent {
+                            country: identity.country,
+                            member,
+                            vt: v_type,
+                        })
+                        .to_string(),
+                    );
+                }
             }
 
             return Ok((
@@ -168,7 +167,7 @@ impl Context {
         Err(anyhow!("not a member"))
     }
 
-    pub async fn default(db_pool: DbPool) -> Context {
+    pub async fn new(db_pool: DbPool, config: &AppConfig) -> Context {
         let statistics = Statistics::today(db_pool.get().unwrap()).unwrap_or_default();
 
         let mut page_view: HashMap<i64, (i64, NaiveDateTime)> = HashMap::new();
@@ -227,6 +226,9 @@ impl Context {
             visitor_tx,
 
             cache: r_cache::cache::Cache::new(Some(Duration::from_secs(60 * 10))),
+            system_domain: config.system_domain.clone(),
+            trusted_proxy_mode: config.trusted_proxy_mode,
+            visitor_hasher: VisitorHasher::random(),
         }
     }
 

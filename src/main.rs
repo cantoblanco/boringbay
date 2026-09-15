@@ -5,6 +5,7 @@ use naive::{
     build_router,
     config::AppConfig,
     establish_connection, now_shanghai, run_migrations,
+    site_health::SiteHealthService,
     statistics_model::Statistics,
     DbPool,
 };
@@ -23,6 +24,19 @@ async fn main() {
         .expect("database migration failed");
 
     let context = Arc::new(Context::new(db_pool, &config).await) as DynContext;
+
+    if config.v2_enabled {
+        let members = context.id2member.values().cloned().collect::<Vec<_>>();
+        let health_service = SiteHealthService::new(context.db_pool.clone())
+            .expect("site health client configuration failed");
+        tokio::spawn(async move {
+            tokio::time::sleep(std::time::Duration::from_secs(60)).await;
+            loop {
+                health_service.run_once(members.clone().into_iter()).await;
+                tokio::time::sleep(std::time::Duration::from_secs(60 * 60 * 24)).await;
+            }
+        });
+    }
 
     // 定时存入数据库
     let ctx_clone = context.clone();

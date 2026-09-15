@@ -65,57 +65,41 @@
                             {{ r.membership.name|e }}
                         </a>
                     </td>
-                    <td>{{ r.rank.unique_visitor }}</td>
-                    <td>{{ r.rank.referrer }}</td>
-                    <td>{{ r.rank.latest_referrer_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.updated_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.created_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.entry.uv }}</td>
+                    <td>{{ r.entry.rv }}</td>
+                    <td colspan="2">{{ r.entry.last_activity.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.entry.joined_at.format("%Y-%m-%d %H:%M:%S") }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <h2 class="font-size-18 text-center">即将移除</h2>
+    <h2 class="font-size-18 text-center">状态观察</h2>
+    <p class="text-center"><small>这里只提示安静或需关注的成员，绝不会自动删除。</small></p>
     <div class="card table-responsive specific-w-300 mw-100 mx-auto rounded-0">
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">站点</th>
-                    <th scope="col">UV
-                        <p class="d-inline font-size-12 m-0">独立访客</p>
-                    </th>
-                    <th scope="col">RV
-                        <p class="d-inline font-size-12 m-0">来访访客</p>
-                    </th>
-                    <th scope="col">最后链入</th>
-                    <th scope="col">最后受访</th>
-                    <th scope="col">加入时间</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">依据</th>
+                    <th scope="col">最后活动</th>
+                    <th scope="col">最后检测</th>
                 </tr>
             </thead>
             <tbody>
-                {% for r in to_be_remove %}
+                {% for r in status_attention %}
                 <tr>
-                    <th scope="row">
-                        <del>
-                            {{ r.membership.id }}
-                        </del>
-                    </th>
                     <td>
-                        <del>
-                            <a target="_blank" data-toggle="tooltip" data-title="{{ r.membership.description }}"
-                                class="text-reset font-weight-bolder" href="https://{{ r.membership.domain }}"
-                                title="{{ r.membership.name|e }}">
-                                {{ r.membership.name|e }}
-                            </a>
-                        </del>
+                        <a target="_blank" data-toggle="tooltip" data-title="{{ r.membership.description }}"
+                            class="text-reset font-weight-bolder" href="https://{{ r.membership.domain }}"
+                            rel="noopener" title="{{ r.membership.name|e }}">{{ r.membership.name|e }}</a>
                     </td>
-                    <td><del>{{ r.rank.unique_visitor }}</del></td>
-                    <td><del>{{ r.rank.referrer }}</del></td>
-                    <td>{{ r.rank.latest_referrer_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.updated_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.created_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td><strong>{{ r.status_label }}</strong></td>
+                    <td>{{ r.reason }}</td>
+                    <td>{{ r.last_activity }}</td>
+                    <td>{{ r.last_check }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

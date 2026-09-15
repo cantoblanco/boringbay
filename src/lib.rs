@@ -15,7 +15,10 @@ pub mod app_router;
 pub mod boring_face;
 pub mod config;
 pub mod membership_model;
+pub mod network_policy;
+pub mod ranking;
 pub mod schema;
+pub mod site_health;
 pub mod statistics_model;
 pub mod visitor;
 

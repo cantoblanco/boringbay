@@ -24,6 +24,10 @@ pub struct Statistics {
 }
 
 impl Statistics {
+    pub fn last_activity(&self) -> NaiveDateTime {
+        self.updated_at.max(self.latest_referrer_at)
+    }
+
     pub fn insert_or_update(
         mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
         stat: &Statistics,
@@ -170,6 +174,33 @@ impl Statistics {
             Ok(all) => Ok(all),
             Err(e) => Err(anyhow!("{:?}", e)),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn last_activity_considers_inbound_and_visited_timestamps() {
+        let visited = chrono::NaiveDate::from_ymd_opt(2026, 9, 1)
+            .unwrap()
+            .and_hms_opt(0, 0, 0)
+            .unwrap();
+        let inbound = chrono::NaiveDate::from_ymd_opt(2026, 9, 12)
+            .unwrap()
+            .and_hms_opt(0, 0, 0)
+            .unwrap();
+        let statistic = Statistics {
+            id: 1,
+            created_at: visited,
+            updated_at: visited,
+            membership_id: 1,
+            unique_visitor: 1,
+            referrer: 1,
+            latest_referrer_at: inbound,
+        };
+        assert_eq!(statistic.last_activity(), inbound);
     }
 }
 

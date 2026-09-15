@@ -5,20 +5,26 @@ use askama::Template;
 use axum::{
     extract::{
         ws::{Message, WebSocket},
-        Extension, Path, WebSocketUpgrade,
+        Extension, Path, Query, WebSocketUpgrade,
     },
     http::StatusCode,
     response::{Headers, Html, IntoResponse, Response},
 };
 use chrono::NaiveDateTime;
 use headers::HeaderMap;
+use serde::Deserialize;
 use tokio::select;
 
 use crate::{
     app_model::{Context, DynContext},
     boring_face::BoringFace,
-    membership_model::{Membership, RankAndMembership},
-    now_shanghai, GIT_HASH,
+    membership_model::Membership,
+    now_shanghai,
+    ranking::{RankingEntry, RankingService},
+    site_health::{
+        status_from_evidence, status_reason, HealthEvidence, MemberStatus, SiteHealthService,
+    },
+    GIT_HASH,
 };
 
 pub async fn ws_upgrade(
@@ -126,8 +132,8 @@ struct HomeTemplate {
     membership: Vec<Membership>,
     uv: HashMap<i64, i64>,
     referrer: HashMap<i64, i64>,
-    rank: Vec<RankAndMembership>,
-    to_be_remove: Vec<RankAndMembership>,
+    rank: Vec<RankedMember>,
+    status_attention: Vec<StatusMember>,
     level: HashMap<i64, i64>,
 }
 
@@ -176,38 +182,20 @@ pub async fn home_page(
         membership.push(ctx.id2member.get(&v.0).unwrap().to_owned());
     }
 
-    let mut rank_and_membership_to_be_remove = Vec::new();
-    let mut rank_and_membership = Vec::new();
-
-    let monthly_rank = ctx.monthly_rank.read().await.to_owned();
-    monthly_rank
-        .iter()
-        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
-        .for_each(|r| {
-            if rank_and_membership.len() >= 10
-                || r.updated_at < now_shanghai() - chrono::Duration::days(30)
-            {
-                return;
-            }
-            let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-            rank_and_membership.push(RankAndMembership {
-                rank: r.to_owned(),
-                membership: m,
-            });
-        });
-
-    let rank = ctx.rank.read().await.to_owned();
-    rank.iter()
-        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
-        .for_each(|r| {
-            if r.updated_at < now_shanghai() - chrono::Duration::days(30) {
-                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-                rank_and_membership_to_be_remove.push(RankAndMembership {
-                    rank: r.to_owned(),
-                    membership: m,
-                });
-            }
-        });
+    let ranking_service = RankingService::new(ctx.db_pool.clone());
+    let rank_and_membership = ranked_members(
+        ranking_service
+            .activity_30d(now_shanghai())
+            .unwrap_or_default(),
+        &ctx,
+    )
+    .into_iter()
+    .take(10)
+    .collect();
+    let status_attention = status_members(&ctx)
+        .into_iter()
+        .filter(|entry| entry.status != MemberStatus::Active)
+        .collect();
 
     let tpl = HomeTemplate {
         membership,
@@ -220,7 +208,7 @@ pub async fn home_page(
             .map(|(k, v)| (k.to_owned(), v.0))
             .collect::<HashMap<i64, i64>>(),
         rank: rank_and_membership,
-        to_be_remove: rank_and_membership_to_be_remove,
+        status_attention,
         level,
         version: GIT_HASH[0..8].to_string(),
     };
@@ -246,13 +234,41 @@ pub async fn join_us_page() -> Result<Html<String>, String> {
 #[template(path = "rank.html")]
 struct RankTemplate {
     version: String,
-    rank: Vec<RankAndMembership>,
-    to_be_remove: Vec<RankAndMembership>,
+    view: String,
+    title: String,
+    formula: String,
+    window: String,
+    rank: Vec<RankedMember>,
+    statuses: Vec<StatusMember>,
+}
+
+#[derive(Clone)]
+struct RankedMember {
+    membership: Membership,
+    entry: RankingEntry,
+    growth_percent: String,
+}
+
+#[derive(Clone)]
+struct StatusMember {
+    membership: Membership,
+    status: MemberStatus,
+    status_label: String,
+    reason: String,
+    last_activity: String,
+    last_check: String,
+    failures: u32,
+}
+
+#[derive(Default, Deserialize)]
+pub struct RankQuery {
+    view: Option<String>,
 }
 
 pub async fn rank_page(
     Extension(ctx): Extension<DynContext>,
     headers: HeaderMap,
+    Query(query): Query<RankQuery>,
 ) -> Result<Html<String>, String> {
     let domain = get_domain_from_referrer(&headers);
     if domain.is_ok() {
@@ -265,37 +281,133 @@ pub async fn rank_page(
             .await;
     }
 
-    let rank = ctx.rank.read().await.to_owned();
-
-    let mut rank_and_membership_to_be_remove = Vec::new();
-
-    let mut rank_and_membership = Vec::new();
-
-    rank.iter()
-        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
-        .for_each(|r| {
-            if r.updated_at > now_shanghai() - chrono::Duration::days(30) {
-                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-                rank_and_membership.push(RankAndMembership {
-                    rank: r.to_owned(),
-                    membership: m,
-                });
-            } else {
-                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-                rank_and_membership_to_be_remove.push(RankAndMembership {
-                    rank: r.to_owned(),
-                    membership: m,
-                });
-            }
-        });
+    let now = now_shanghai();
+    let service = RankingService::new(ctx.db_pool.clone());
+    let view = query.view.as_deref().unwrap_or("classic");
+    let (view, title, formula, window, entries) = match view {
+        "activity" => (
+            "activity",
+            "30 天活跃榜",
+            "得分 = 近 30 天 UV + RV；同分依次比较 RV、UV、最后活动时间。",
+            format!(
+                "{} 至 {}",
+                (now - chrono::Duration::days(30)).format("%Y-%m-%d"),
+                now.format("%Y-%m-%d")
+            ),
+            service.activity_30d(now),
+        ),
+        "rising" => (
+            "rising",
+            "7 天上升榜",
+            "增长率 =（本 7 天互动 - 前 7 天互动）/ max（前 7 天互动, 5）；本期至少 5 次互动。",
+            format!(
+                "{} 至 {}，对比此前 7 天",
+                (now - chrono::Duration::days(7)).format("%Y-%m-%d"),
+                now.format("%Y-%m-%d")
+            ),
+            service.rising_7d(now),
+        ),
+        _ => (
+            "classic",
+            "经典总榜",
+            "保留原有规则：优先按累计 RV，其次累计 UV 排序。",
+            "自建站以来的历史数据".to_string(),
+            service.classic(now),
+        ),
+    };
+    let rank_and_membership = ranked_members(entries.map_err(|err| err.to_string())?, &ctx);
 
     let tpl = RankTemplate {
+        view: view.to_string(),
+        title: title.to_string(),
+        formula: formula.to_string(),
+        window,
         rank: rank_and_membership,
-        to_be_remove: rank_and_membership_to_be_remove,
+        statuses: status_members(&ctx),
         version: GIT_HASH[0..8].to_string(),
     };
     let html = tpl.render().map_err(|err| err.to_string())?;
     Ok(Html(html))
+}
+
+fn ranked_members(entries: Vec<RankingEntry>, ctx: &Context) -> Vec<RankedMember> {
+    entries
+        .into_iter()
+        .filter_map(|entry| {
+            let membership = ctx.id2member.get(&entry.membership_id)?.clone();
+            let growth_percent = entry
+                .growth_rate
+                .map(|rate| format!("{:+.0}%", rate * 100.0))
+                .unwrap_or_else(|| "—".to_string());
+            Some(RankedMember {
+                membership,
+                entry,
+                growth_percent,
+            })
+        })
+        .collect()
+}
+
+fn status_members(ctx: &Context) -> Vec<StatusMember> {
+    let now = now_shanghai();
+    let classic = RankingService::new(ctx.db_pool.clone())
+        .classic(now)
+        .unwrap_or_default();
+    let activity = classic
+        .into_iter()
+        .map(|entry| (entry.membership_id, entry.last_activity))
+        .collect::<HashMap<_, _>>();
+    let evidence = SiteHealthService::new(ctx.db_pool.clone())
+        .and_then(|service| service.evidence_by_member())
+        .unwrap_or_default();
+    let epoch = chrono::DateTime::from_timestamp(0, 0)
+        .expect("unix epoch must exist")
+        .naive_utc();
+
+    let mut rows = ctx
+        .id2member
+        .values()
+        .cloned()
+        .map(|membership| {
+            let last_activity = activity.get(&membership.id).copied().unwrap_or(epoch);
+            let member_evidence = evidence
+                .get(&membership.id)
+                .cloned()
+                .unwrap_or_else(HealthEvidence::default);
+            let status = status_from_evidence(now, last_activity, &member_evidence);
+            StatusMember {
+                membership,
+                status,
+                status_label: status.label().to_string(),
+                reason: status_reason(status, member_evidence.consecutive_failures),
+                last_activity: if last_activity == epoch {
+                    "暂无记录".to_string()
+                } else {
+                    last_activity.format("%Y-%m-%d %H:%M").to_string()
+                },
+                last_check: member_evidence
+                    .last_checked_at
+                    .map(|value| value.format("%Y-%m-%d %H:%M").to_string())
+                    .unwrap_or_else(|| "尚未检测".to_string()),
+                failures: member_evidence.consecutive_failures,
+            }
+        })
+        .collect::<Vec<_>>();
+    rows.sort_by(|a, b| {
+        status_priority(b.status)
+            .cmp(&status_priority(a.status))
+            .then_with(|| a.membership.id.cmp(&b.membership.id))
+    });
+    rows
+}
+
+fn status_priority(status: MemberStatus) -> u8 {
+    match status {
+        MemberStatus::Active => 0,
+        MemberStatus::Quiet => 1,
+        MemberStatus::Observation => 2,
+        MemberStatus::RemovalCandidate => 3,
+    }
 }
 
 fn get_domain_from_referrer(headers: &HeaderMap) -> Result<String, anyhow::Error> {

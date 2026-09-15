@@ -40,9 +40,34 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    feed_sources (member_id) {
+        member_id -> BigInt,
+        feed_url -> Text,
+        last_attempt -> Nullable<Timestamp>,
+        last_success -> Nullable<Timestamp>,
+        last_error -> Nullable<Text>,
+    }
+}
+
+diesel::table! {
+    feed_items (id) {
+        id -> Integer,
+        member_id -> BigInt,
+        item_key -> Text,
+        title -> Text,
+        url -> Text,
+        summary -> Text,
+        published_at -> Timestamp,
+        fetched_at -> Timestamp,
+    }
+}
+
 diesel::allow_tables_to_appear_in_same_query!(
     statistics,
     site_health,
     daily_routes,
-    product_events
+    product_events,
+    feed_sources,
+    feed_items
 );

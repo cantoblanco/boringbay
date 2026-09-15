@@ -58,15 +58,21 @@ impl Statistics {
     ) -> Result<Vec<Statistics>, anyhow::Error> {
         load_statistics_by_created_at(
             conn,
-            NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0)),
+            NaiveDateTime::new(
+                now_shanghai().date(),
+                NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+            ),
         )
     }
 
     pub fn prev_day_rank_avg(conn: PooledConnection<ConnectionManager<SqliteConnection>>) -> i64 {
         let res = load_statistics_by_created_at(
             conn,
-            NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0))
-                .sub(Duration::hours(24)),
+            NaiveDateTime::new(
+                now_shanghai().date(),
+                NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+            )
+            .sub(Duration::hours(24)),
         );
         if let Ok(res) = res {
             let mut sum = 0;
@@ -149,11 +155,19 @@ impl Statistics {
                         created_at: s.1,
                         updated_at: id_to_updated_at
                             .get(&s.0)
-                            .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
+                            .unwrap_or(
+                                &chrono::DateTime::from_timestamp(0, 0)
+                                    .expect("unix epoch")
+                                    .naive_utc(),
+                            )
                             .to_owned(),
                         latest_referrer_at: id_to_latest_referrer_at
                             .get(&s.0)
-                            .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
+                            .unwrap_or(
+                                &chrono::DateTime::from_timestamp(0, 0)
+                                    .expect("unix epoch")
+                                    .naive_utc(),
+                            )
                             .to_owned(),
                         membership_id: s.0,
                         unique_visitor: s.2,
@@ -174,6 +188,23 @@ impl Statistics {
             Ok(all) => Ok(all),
             Err(e) => Err(anyhow!("{:?}", e)),
         }
+    }
+}
+
+fn load_statistics_by_created_at(
+    mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
+    _created_at: NaiveDateTime,
+) -> Result<Vec<Statistics>, anyhow::Error> {
+    debug!(
+        "sql: {}",
+        debug_query::<Sqlite, _>(&statistics.filter(created_at.eq(_created_at)))
+    );
+    let res = statistics
+        .filter(created_at.eq(_created_at))
+        .load::<Statistics>(&mut conn);
+    match res {
+        Ok(all) => Ok(all),
+        Err(e) => Err(anyhow!("{:?}", e)),
     }
 }
 
@@ -201,22 +232,5 @@ mod tests {
             latest_referrer_at: inbound,
         };
         assert_eq!(statistic.last_activity(), inbound);
-    }
-}
-
-fn load_statistics_by_created_at(
-    mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
-    _created_at: NaiveDateTime,
-) -> Result<Vec<Statistics>, anyhow::Error> {
-    debug!(
-        "sql: {}",
-        debug_query::<Sqlite, _>(&statistics.filter(created_at.eq(_created_at)))
-    );
-    let res = statistics
-        .filter(created_at.eq(_created_at))
-        .load::<Statistics>(&mut conn);
-    match res {
-        Ok(all) => Ok(all),
-        Err(e) => Err(anyhow!("{:?}", e)),
     }
 }

@@ -55,7 +55,20 @@
     <section id="drift-bottles" class="coming-section">
         <p class="eyebrow">DRIFT BOTTLES</p>
         <h2>最新漂流瓶</h2>
+        {% if feeds.is_empty() %}
         <p>成员可自愿提供 RSS/Atom。尚未投递时，先去今日航线捞几座岛吧。</p>
+        {% else %}
+        <div class="feed-grid">
+            {% for feed in feeds %}
+            <article class="feed-card">
+                <p class="feed-meta">{{ feed.membership.name|e }} · {{ feed.published }}</p>
+                <h3><a class="feed-outbound" href="{{ feed.item.url|e }}" target="_blank" rel="noopener noreferrer"
+                    data-member-id="{{ feed.membership.id }}">{{ feed.item.title|e }}</a></h3>
+                {% if !feed.item.summary.is_empty() %}<p>{{ feed.item.summary|e }}</p>{% endif %}
+            </article>
+            {% endfor %}
+        </div>
+        {% endif %}
     </section>
     {% endif %}
 

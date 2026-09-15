@@ -24,7 +24,7 @@ pub struct DailyRoute {
 struct DailyRouteRecord {
     route_date: NaiveDate,
     member_ids: String,
-    generated_at: NaiveDateTime,
+    _generated_at: NaiveDateTime,
 }
 
 #[derive(Insertable)]

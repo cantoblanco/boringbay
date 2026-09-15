@@ -20,11 +20,13 @@ pub mod app_router;
 pub mod boring_face;
 pub mod config;
 pub mod discovery;
+pub mod feed;
 pub mod membership_model;
 pub mod network_policy;
 pub mod product_events;
 pub mod ranking;
 pub mod schema;
+pub mod share;
 pub mod site_health;
 pub mod statistics_model;
 pub mod visitor;
@@ -52,8 +54,8 @@ pub fn run_migrations(conn: &mut SqliteConnection) -> anyhow::Result<()> {
 
 pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) -> Router {
     use app_router::{
-        discovery_today, home_page, join_us_page, rank_page, record_event, route_page, show_badge,
-        show_favicon, show_icon, ws_upgrade,
+        discovery_today, home_page, join_us_page, rank_page, record_event, route_page,
+        route_share_image, show_badge, show_badge_v2, show_favicon, show_icon, ws_upgrade,
     };
 
     Router::new()
@@ -61,6 +63,7 @@ pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) 
             "/api",
             Router::new()
                 .route("/badge/:domain", get(show_badge))
+                .route("/badge-v2/:domain", get(show_badge_v2))
                 .route("/favicon/:domain", get(show_favicon))
                 .route("/icon/:domain", get(show_icon))
                 .route("/ws", get(ws_upgrade))
@@ -71,6 +74,7 @@ pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) 
         .route("/rank", get(rank_page))
         .route("/route/:date", get(route_page))
         .route("/api/discovery/today", get(discovery_today))
+        .route("/api/share/route/:date.svg", get(route_share_image))
         .nest(
             "/static",
             get_service(ServeDir::new("resources/static")).handle_error(|error| async move {

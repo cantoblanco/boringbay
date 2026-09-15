@@ -87,12 +87,18 @@ footer { font-size: .78rem; color: var(--bay-muted); }
 .route-stop.is-visited .route-stamp { transform: rotate(-9deg); }
 .route-actions { margin-top: 1rem; }
 .route-progress { font-weight: 900; color: var(--bay-red); }
+.feed-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.feed-card { min-width: 0; padding: 1rem; border: 1px solid var(--bay-border); border-radius: 16px; background: var(--bay-surface); }
+.feed-card h3, .feed-card p { margin: .25rem 0; }
+.feed-card h3 { font-size: 1rem; line-height: 1.35; }
+.feed-card > p:last-child { color: var(--bay-muted); font-size: .88rem; }
+.feed-meta { color: var(--bay-red) !important; font-size: .72rem !important; font-weight: 900; }
 @media (max-width: 900px) { .member-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 620px) {
   .navbar-inner { align-items: flex-start; padding-block: .7rem; }
   .navbar-content { flex-wrap: wrap; justify-content: end; }
   .btn { font-size: .8rem; min-height: 2.2rem; padding: .4rem .65rem; }
-  .member-list, .activity-list { grid-template-columns: 1fr; }
+  .member-list, .activity-list, .feed-grid { grid-template-columns: 1fr; }
   .container { width: min(100% - 1rem, 88rem); }
   .harbor-panel { grid-template-columns: 1fr; }
   .route-stop { grid-template-columns: auto 1fr auto; }

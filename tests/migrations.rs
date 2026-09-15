@@ -2,7 +2,7 @@ mod common;
 
 use diesel::prelude::*;
 use diesel::sql_types::BigInt;
-use naive::schema::{daily_routes, product_events, site_health};
+use naive::schema::{daily_routes, feed_items, feed_sources, product_events, site_health};
 
 #[derive(QueryableByName)]
 struct Count {
@@ -31,6 +31,20 @@ async fn additive_migrations_create_site_health_without_touching_statistics() {
     );
     assert_eq!(
         product_events::table
+            .count()
+            .get_result::<i64>(&mut connection)
+            .unwrap(),
+        0
+    );
+    assert_eq!(
+        feed_sources::table
+            .count()
+            .get_result::<i64>(&mut connection)
+            .unwrap(),
+        0
+    );
+    assert_eq!(
+        feed_items::table
             .count()
             .get_result::<i64>(&mut connection)
             .unwrap(),

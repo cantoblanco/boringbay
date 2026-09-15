@@ -1,5 +1,6 @@
 use std::fmt;
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
+use std::time::Duration;
 
 use tokio::net::lookup_host;
 use url::{Host, Url};
@@ -51,7 +52,7 @@ impl PublicHttpsUrl {
         &self.0
     }
 
-    pub async fn validate_resolution(&self) -> Result<(), NetworkPolicyError> {
+    pub async fn resolve_public_addresses(&self) -> Result<Vec<SocketAddr>, NetworkPolicyError> {
         let host = self
             .0
             .host_str()
@@ -64,7 +65,30 @@ impl PublicHttpsUrl {
         if resolved.is_empty() || resolved.iter().any(|addr| !is_public_ip(addr.ip())) {
             return Err(error("host resolved to a non-public address"));
         }
-        Ok(())
+        Ok(resolved)
+    }
+
+    pub async fn pinned_client(
+        &self,
+        user_agent: &str,
+    ) -> Result<reqwest::Client, NetworkPolicyError> {
+        let addresses = self.resolve_public_addresses().await?;
+        let host = self
+            .0
+            .host_str()
+            .ok_or_else(|| error("URL must contain a host"))?;
+        reqwest::Client::builder()
+            .connect_timeout(Duration::from_secs(3))
+            .timeout(Duration::from_secs(8))
+            .redirect(reqwest::redirect::Policy::none())
+            .user_agent(user_agent)
+            .resolve(host.trim_matches(['[', ']']), addresses[0])
+            .build()
+            .map_err(|_| error("safe HTTP client could not be created"))
+    }
+
+    pub async fn validate_resolution(&self) -> Result<(), NetworkPolicyError> {
+        self.resolve_public_addresses().await.map(|_| ())
     }
 }
 

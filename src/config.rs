@@ -75,8 +75,8 @@ mod tests {
 
     #[test]
     fn booleans_are_strict_but_human_friendly() {
-        assert_eq!(parse_bool("yes").unwrap(), true);
-        assert_eq!(parse_bool("OFF").unwrap(), false);
+        assert!(parse_bool("yes").unwrap());
+        assert!(!parse_bool("OFF").unwrap());
         assert!(parse_bool("maybe").is_err());
     }
 }

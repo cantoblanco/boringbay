@@ -2,6 +2,16 @@
 
 {% block title %}今日航线{% endblock %}
 
+{% block head %}
+<link rel="canonical" href="{{ canonical_url|e }}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="无聊湾今日航线 · {{ date }}">
+<meta property="og:description" content="五座独立博客组成的今日探索路线。我走完了，你来试试？">
+<meta property="og:url" content="{{ canonical_url|e }}">
+<meta property="og:image" content="{{ share_image_url|e }}">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
 {% block content %}
 <section class="route-hero" data-route-date="{{ date }}">
     <p class="eyebrow">DAILY ROUTE · {{ date }}</p>
@@ -28,6 +38,8 @@
 
 <div class="route-actions">
     <button class="btn" type="button" data-route-complete disabled>完成航线</button>
+    <button class="btn" type="button" data-share-route data-share-url="{{ canonical_url|e }}">分享挑战</button>
+    <a class="quiet-button" href="/api/share/route/{{ date }}.svg" download="boringbay-route-{{ date }}.svg">下载分享卡</a>
     <button class="quiet-button" type="button" data-passport-reset>重置本地护照</button>
     <a class="quiet-button" href="/">返回港口</a>
 </div>

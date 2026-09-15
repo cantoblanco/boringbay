@@ -4,6 +4,8 @@ use axum::{
     body::Body,
     http::{Request, StatusCode},
 };
+use diesel::prelude::*;
+use diesel::sql_types::{BigInt, Text, Timestamp};
 use http_body::Body as _;
 use tower::ServiceExt;
 
@@ -89,4 +91,105 @@ async fn status_observation_is_transparent_and_never_promises_auto_deletion() {
     assert!(html.contains("不会自动删除成员"));
     assert!(html.contains("尚未检测"));
     assert!(!html.contains("<del>"));
+}
+
+#[tokio::test]
+async fn cached_feed_items_appear_as_safe_outbound_drift_bottles() {
+    let (tmp, app) = common::temporary_app().await;
+    let pool = naive::establish_connection(tmp.path().join("test.db").to_str().unwrap());
+    let now = naive::now_shanghai();
+    diesel::sql_query(
+        "INSERT INTO feed_items (member_id, item_key, title, url, summary, published_at, fetched_at) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+    )
+    .bind::<BigInt, _>(1_i64)
+    .bind::<Text, _>("test-item")
+    .bind::<Text, _>("A cached post")
+    .bind::<Text, _>("https://example.com/post")
+    .bind::<Text, _>("Short safe summary")
+    .bind::<Timestamp, _>(now)
+    .bind::<Timestamp, _>(now)
+    .execute(&mut pool.get().unwrap())
+    .unwrap();
+
+    let response = app
+        .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    let mut body = response.into_body();
+    let mut bytes = Vec::new();
+    while let Some(chunk) = body.data().await {
+        bytes.extend_from_slice(&chunk.unwrap());
+    }
+    let html = String::from_utf8(bytes).unwrap();
+    assert!(html.contains("A cached post"));
+    assert!(html.contains("Short safe summary"));
+    assert!(html.contains("class=\"feed-outbound\""));
+    assert!(html.contains("rel=\"noopener noreferrer\""));
+}
+
+#[tokio::test]
+async fn route_has_share_metadata_and_safe_svg_card() {
+    let (_tmp, app) = common::temporary_app().await;
+    let route = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri("/route/2026-09-16")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(route.status(), StatusCode::OK);
+    let mut body = route.into_body();
+    let mut bytes = Vec::new();
+    while let Some(chunk) = body.data().await {
+        bytes.extend_from_slice(&chunk.unwrap());
+    }
+    let html = String::from_utf8(bytes).unwrap();
+    assert!(html.contains("property=\"og:image\""));
+    assert!(html.contains("data-share-route"));
+
+    let image = app
+        .oneshot(
+            Request::builder()
+                .uri("/api/share/route/2026-09-16.svg")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(image.status(), StatusCode::OK);
+    assert_eq!(
+        image.headers().get("content-type").unwrap(),
+        "image/svg+xml; charset=utf-8"
+    );
+}
+
+#[tokio::test]
+async fn old_badge_stays_available_and_v2_endpoints_follow_feature_flag() {
+    let (_tmp, app) = common::temporary_app().await;
+    for uri in ["/api/badge/boringbay.com", "/api/badge-v2/boringbay.com"] {
+        let response = app
+            .clone()
+            .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK, "{uri}");
+    }
+
+    let (_tmp, v1) = common::temporary_app_with_v2(false).await;
+    for uri in [
+        "/api/badge-v2/boringbay.com",
+        "/api/share/route/2026-09-16.svg",
+    ] {
+        let response = v1
+            .clone()
+            .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::NOT_FOUND, "{uri}");
+    }
 }

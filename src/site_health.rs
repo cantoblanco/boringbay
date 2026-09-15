@@ -1,10 +1,9 @@
 use std::collections::HashMap;
-use std::time::Duration as StdDuration;
 
 use anyhow::Result;
 use chrono::{Duration, NaiveDateTime};
 use diesel::prelude::*;
-use reqwest::{header::LOCATION, Client};
+use reqwest::header::LOCATION;
 
 use crate::membership_model::Membership;
 use crate::network_policy::PublicHttpsUrl;
@@ -93,18 +92,11 @@ pub struct HealthEvidence {
 #[derive(Clone)]
 pub struct SiteHealthService {
     db_pool: DbPool,
-    client: Client,
 }
 
 impl SiteHealthService {
     pub fn new(db_pool: DbPool) -> Result<Self> {
-        let client = Client::builder()
-            .connect_timeout(StdDuration::from_secs(3))
-            .timeout(StdDuration::from_secs(8))
-            .redirect(reqwest::redirect::Policy::none())
-            .user_agent("BoringBay-SiteHealth/2.0 (+https://boringbay.com)")
-            .build()?;
-        Ok(Self { db_pool, client })
+        Ok(Self { db_pool })
     }
 
     pub async fn probe_member(&self, member: &Membership) -> SiteHealthResult {
@@ -117,10 +109,14 @@ impl SiteHealthService {
                 Ok(url) => url,
                 Err(_) => break,
             };
-            if policy_url.validate_resolution().await.is_err() {
-                break;
-            }
-            let response = match self.client.get(policy_url.as_url().clone()).send().await {
+            let client = match policy_url
+                .pinned_client("BoringBay-SiteHealth/2.0 (+https://boringbay.com)")
+                .await
+            {
+                Ok(client) => client,
+                Err(_) => break,
+            };
+            let response = match client.get(policy_url.as_url().clone()).send().await {
                 Ok(response) => response,
                 Err(_) => break,
             };
@@ -225,7 +221,7 @@ pub fn status_from_evidence(
     last_activity: NaiveDateTime,
     evidence: &HealthEvidence,
 ) -> MemberStatus {
-    let age = if last_activity.timestamp() <= 0 {
+    let age = if last_activity.and_utc().timestamp() <= 0 {
         Duration::days(10_000)
     } else {
         now.signed_duration_since(last_activity)

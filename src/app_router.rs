@@ -21,10 +21,12 @@ use crate::{
     boring_face::BoringFace,
     config::AppConfig,
     discovery::{DailyRoute, DiscoveryService},
+    feed::{FeedItem, FeedRepository},
     membership_model::Membership,
     now_shanghai,
     product_events::{EventInput, ProductEventKind, ProductEventService},
     ranking::{RankingEntry, RankingService},
+    share::{render_member_badge_svg, render_route_svg},
     site_health::{
         status_from_evidence, status_reason, HealthEvidence, MemberStatus, SiteHealthService,
     },
@@ -119,6 +121,43 @@ pub async fn show_badge(
     render_svg(tend.unwrap(), &ctx.badge).await
 }
 
+pub async fn show_badge_v2(
+    Path(mut domain): Path<String>,
+    headers: HeaderMap,
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Response {
+    if !config.v2_enabled {
+        return StatusCode::NOT_FOUND.into_response();
+    }
+    let mut visitor_type = Some(crate::app_model::VisitorType::Badge);
+    let referrer = get_domain_from_referrer(&headers).unwrap_or_default();
+    if referrer != domain {
+        if domain == "[domain]" {
+            domain = referrer;
+        } else {
+            visitor_type = None;
+        }
+    }
+    match ctx.boring_visitor(visitor_type, &domain, &headers).await {
+        Ok((name, uv, rv, level)) => (
+            StatusCode::OK,
+            Headers([
+                ("content-type", "image/svg+xml; charset=utf-8"),
+                ("cache-control", "public, max-age=300"),
+            ]),
+            render_member_badge_svg(name, uv, rv, level),
+        )
+            .into_response(),
+        Err(error) => (
+            StatusCode::NOT_FOUND,
+            Headers([("content-type", "text/plain")]),
+            error.to_string(),
+        )
+            .into_response(),
+    }
+}
+
 pub async fn show_favicon(
     Path(domain): Path<String>,
     headers: HeaderMap,
@@ -170,6 +209,14 @@ struct HomeTemplate {
     level: HashMap<i64, i64>,
     v2_enabled: bool,
     today_route: String,
+    feeds: Vec<FeedView>,
+}
+
+#[derive(Clone)]
+struct FeedView {
+    item: FeedItem,
+    membership: Membership,
+    published: String,
 }
 
 pub async fn home_page(
@@ -177,12 +224,11 @@ pub async fn home_page(
     Extension(config): Extension<Arc<AppConfig>>,
     headers: HeaderMap,
 ) -> Result<Html<String>, String> {
-    let domain = get_domain_from_referrer(&headers);
-    if domain.is_ok() {
+    if let Ok(domain) = get_domain_from_referrer(&headers) {
         let _ = ctx
             .boring_visitor(
                 Some(crate::app_model::VisitorType::Referer),
-                &domain.unwrap(),
+                &domain,
                 &headers,
             )
             .await;
@@ -196,11 +242,21 @@ pub async fn home_page(
     for k in ctx.id2member.keys() {
         let uv = uv_read
             .get(k)
-            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+            .unwrap_or(&(
+                0,
+                chrono::DateTime::from_timestamp(0, 0)
+                    .expect("unix epoch")
+                    .naive_utc(),
+            ))
             .to_owned();
         let rv = referrer_read
             .get(k)
-            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+            .unwrap_or(&(
+                0,
+                chrono::DateTime::from_timestamp(0, 0)
+                    .expect("unix epoch")
+                    .naive_utc(),
+            ))
             .to_owned();
         if uv.0 > 0 || rv.0 > 0 {
             rank_vec.push((k.to_owned(), rv.1, uv.0));
@@ -233,6 +289,29 @@ pub async fn home_page(
         .filter(|entry| entry.status != MemberStatus::Active)
         .collect();
 
+    let feeds = if config.v2_enabled {
+        FeedRepository::new(ctx.db_pool.clone())
+            .latest(12)
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|item| {
+                ctx.id2member
+                    .get(&item.member_id)
+                    .cloned()
+                    .map(|membership| {
+                        let published = item.published_at.format("%Y-%m-%d").to_string();
+                        FeedView {
+                            item,
+                            membership,
+                            published,
+                        }
+                    })
+            })
+            .collect()
+    } else {
+        Vec::new()
+    };
+
     let tpl = HomeTemplate {
         membership,
         uv: uv_read
@@ -249,6 +328,7 @@ pub async fn home_page(
         version: GIT_HASH[0..8].to_string(),
         v2_enabled: config.v2_enabled,
         today_route: format!("/route/{}", now_shanghai().date().format("%Y-%m-%d")),
+        feeds,
     };
     let html = tpl.render().map_err(|err| err.to_string())?;
     Ok(Html(html))
@@ -260,6 +340,8 @@ struct RouteTemplate {
     version: String,
     date: String,
     members: Vec<Membership>,
+    canonical_url: String,
+    share_image_url: String,
 }
 
 #[derive(serde::Serialize)]
@@ -282,11 +364,42 @@ pub async fn route_page(
         version: GIT_HASH[0..8].to_string(),
         date: date.format("%Y-%m-%d").to_string(),
         members: response.members,
+        canonical_url: format!("https://{}/route/{}", config.system_domain, date),
+        share_image_url: format!(
+            "https://{}/api/share/route/{}.svg",
+            config.system_domain, date
+        ),
     };
     template
         .render()
         .map(Html)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
+pub async fn route_share_image(
+    Path(date): Path<String>,
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Response {
+    if !config.v2_enabled {
+        return StatusCode::NOT_FOUND.into_response();
+    }
+    let date = match NaiveDate::parse_from_str(date.trim_end_matches(".svg"), "%Y-%m-%d") {
+        Ok(date) => date,
+        Err(_) => return StatusCode::NOT_FOUND.into_response(),
+    };
+    match daily_route_response(&ctx, date) {
+        Ok(route) => (
+            StatusCode::OK,
+            Headers([
+                ("content-type", "image/svg+xml; charset=utf-8"),
+                ("cache-control", "public, max-age=86400, immutable"),
+            ]),
+            render_route_svg(date, &route.members),
+        )
+            .into_response(),
+        Err(_) => StatusCode::SERVICE_UNAVAILABLE.into_response(),
+    }
 }
 
 pub async fn discovery_today(
@@ -377,12 +490,11 @@ pub async fn rank_page(
     headers: HeaderMap,
     Query(query): Query<RankQuery>,
 ) -> Result<Html<String>, String> {
-    let domain = get_domain_from_referrer(&headers);
-    if domain.is_ok() {
+    if let Ok(domain) = get_domain_from_referrer(&headers) {
         let _ = ctx
             .boring_visitor(
                 Some(crate::app_model::VisitorType::Referer),
-                &domain.unwrap(),
+                &domain,
                 &headers,
             )
             .await;
@@ -518,27 +630,17 @@ fn status_priority(status: MemberStatus) -> u8 {
 }
 
 fn get_domain_from_referrer(headers: &HeaderMap) -> Result<String, anyhow::Error> {
-    let referrer_header = headers.get("Referer");
-    if referrer_header.is_none() {
-        return Err(anyhow!("no referrer header"));
-    }
-
-    let referrer_str = String::from_utf8(referrer_header.unwrap().as_bytes().to_vec());
-    if referrer_str.is_err() {
-        return Err(anyhow!("referrer header is not valid utf-8 string"));
-    }
-
-    let referrer_url = url::Url::parse(&referrer_str.unwrap());
-    if referrer_url.is_err() {
-        return Err(anyhow!("referrer header is not valid URL"));
-    }
-
-    let referrer_url = referrer_url.unwrap();
-    if referrer_url.domain().is_none() {
-        return Err(anyhow!("referrer header doesn't contains a valid domain"));
-    }
-
-    return Ok(referrer_url.domain().unwrap().to_string());
+    let referrer = headers
+        .get("Referer")
+        .ok_or_else(|| anyhow!("no referrer header"))?
+        .to_str()
+        .map_err(|_| anyhow!("referrer header is not valid utf-8 string"))?;
+    let referrer_url =
+        url::Url::parse(referrer).map_err(|_| anyhow!("referrer header is not valid URL"))?;
+    referrer_url
+        .domain()
+        .map(str::to_string)
+        .ok_or_else(|| anyhow!("referrer header doesn't contain a valid domain"))
 }
 
 async fn render_svg(tend: (&str, i64, i64, i64), render: &BoringFace) -> Response {

@@ -110,7 +110,12 @@ impl Context {
             let mut referrer = self.referrer.write().await;
             let mut dist_r = referrer
                 .get(id)
-                .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+                .unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ))
                 .to_owned();
             if v_type.is_some_and(|v| v == VisitorType::Referer) {
                 if visitor_cache.is_none() {
@@ -125,7 +130,12 @@ impl Context {
             let mut uv = self.unique_visitor.write().await;
             let mut dist_uv = uv
                 .get(id)
-                .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+                .unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ))
                 .to_owned();
             if v_type.is_some_and(|v| v == VisitorType::Badge) {
                 if visitor_cache.is_none() {
@@ -191,7 +201,9 @@ impl Context {
 
         let rank = Statistics::rank_between(
             db_pool.get().unwrap(),
-            NaiveDateTime::from_timestamp(0, 0),
+            chrono::DateTime::from_timestamp(0, 0)
+                .expect("unix epoch")
+                .naive_utc(),
             now_shanghai(),
         )
         .unwrap();
@@ -237,7 +249,10 @@ impl Context {
         let mut uv_cache: HashMap<i64, (i64, NaiveDateTime)> = HashMap::new();
         let mut referrer_cache: HashMap<i64, (i64, NaiveDateTime)> = HashMap::new();
         let mut changed_list: Vec<i64> = Vec::new();
-        let mut _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
+        let mut _today = NaiveDateTime::new(
+            now_shanghai().date(),
+            NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+        );
         let id_list = Vec::from_iter(self.id2member.keys());
         loop {
             tokio::time::sleep(Duration::from_secs(60 * 5)).await;
@@ -246,22 +261,34 @@ impl Context {
             let mut uv_write = self.unique_visitor.write().await;
             let mut referrer_write = self.referrer.write().await;
             id_list.iter().for_each(|id| {
-                let uv = *uv_cache
-                    .get(id)
-                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
-                let new_uv = *uv_write
-                    .get(id)
-                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+                let uv = *uv_cache.get(id).unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ));
+                let new_uv = *uv_write.get(id).unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ));
                 if uv.0.ne(&new_uv.0) {
                     uv_cache.insert(**id, new_uv);
                     changed_list.push(**id);
                 }
-                let referrer = *referrer_cache
-                    .get(id)
-                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
-                let new_referrer = *referrer_write
-                    .get(id)
-                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+                let referrer = *referrer_cache.get(id).unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ));
+                let new_referrer = *referrer_write.get(id).unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ));
                 if referrer.0.ne(&new_referrer.0) {
                     referrer_cache.insert(**id, new_referrer);
                     if !changed_list.contains(id) {
@@ -271,12 +298,18 @@ impl Context {
             });
             // 更新到数据库
             changed_list.iter().for_each(|id| {
-                let id_uv = *uv_cache
-                    .get(id)
-                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
-                let id_referrer = *referrer_cache
-                    .get(id)
-                    .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+                let id_uv = *uv_cache.get(id).unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ));
+                let id_referrer = *referrer_cache.get(id).unwrap_or(&(
+                    0,
+                    chrono::DateTime::from_timestamp(0, 0)
+                        .expect("unix epoch")
+                        .naive_utc(),
+                ));
                 Statistics::insert_or_update(
                     self.db_pool.get().unwrap(),
                     &Statistics {
@@ -291,7 +324,10 @@ impl Context {
                 )
                 .unwrap();
             });
-            let new_day = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
+            let new_day = NaiveDateTime::new(
+                now_shanghai().date(),
+                NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+            );
             if new_day.ne(&_today) {
                 _today = new_day;
                 // 如果是跨天重置数据
@@ -311,7 +347,9 @@ impl Context {
             let mut rank = self.rank.write().await;
             *rank = Statistics::rank_between(
                 self.db_pool.get().unwrap(),
-                NaiveDateTime::from_timestamp(0, 0),
+                chrono::DateTime::from_timestamp(0, 0)
+                    .expect("unix epoch")
+                    .naive_utc(),
                 now_shanghai(),
             )
             .unwrap();

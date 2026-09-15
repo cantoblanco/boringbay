@@ -9,6 +9,8 @@
         在 <a href="https://github.com/cantoblanco/boringbay/blob/main/resources/membership.json"><b>这里</b></a> 修改
         <code>resources/membership.json</code>，将你的站点添加进去，然后将 Badge
         添加至您站点的底部（记得修改 <code>[domain]</code> 为你添加的域名）。牙齿颜色的进度代表当日访问量的多少，图标及站点配色采用了人民币配色。
+        <p>V2 可选资料：用 <code>tags</code> 填写主题标签；用 <code>feed_url</code> 提供公开的 HTTPS RSS/Atom 地址。
+            漂流瓶只缓存标题、短摘要、时间和原文链接，正文和阅读流量仍回到你的博客。两项留空不影响成员资格。</p>
         <br>
         <p>
             <b>
@@ -17,6 +19,12 @@
                 <code>&lt;a title="无聊湾 🥱 The Boring Bay" href="https://boringbay.com"&gt;&lt;img height="18px" src="https://boringbay.com/api/badge/[domain]"&gt;&lt;/img&gt;&lt;/a&gt;</code></b>
             <br>
             <img referrerpolicy="no-referrer" height="18px" src="/api/badge/boringbay.com">
+        </p>
+        <p>
+            <b>V2 Badge（可选，旧 Badge 继续兼容）:<br>
+                <code>&lt;a title="无聊湾" href="https://boringbay.com"&gt;&lt;img height="36" src="https://boringbay.com/api/badge-v2/[domain]" alt="无聊湾徽章"&gt;&lt;/a&gt;</code>
+            </b><br>
+            <img referrerpolicy="no-referrer" height="36" src="/api/badge-v2/boringbay.com" alt="无聊湾 V2 徽章">
         </p>
         <p>
             <b>

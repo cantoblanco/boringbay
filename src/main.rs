@@ -4,7 +4,9 @@ use naive::{
     app_model::{Context, DynContext},
     build_router,
     config::AppConfig,
-    establish_connection, now_shanghai, run_migrations,
+    establish_connection,
+    feed::FeedFetcher,
+    now_shanghai, run_migrations,
     site_health::SiteHealthService,
     statistics_model::Statistics,
     DbPool,
@@ -34,6 +36,25 @@ async fn main() {
             loop {
                 health_service.run_once(members.clone().into_iter()).await;
                 tokio::time::sleep(std::time::Duration::from_secs(60 * 60 * 24)).await;
+            }
+        });
+
+        let feed_members = context
+            .id2member
+            .values()
+            .filter(|member| member.feed_url.is_some())
+            .cloned()
+            .collect::<Vec<_>>();
+        let feed_fetcher = FeedFetcher::new(context.db_pool.clone());
+        tokio::spawn(async move {
+            tokio::time::sleep(std::time::Duration::from_secs(90)).await;
+            loop {
+                for member in &feed_members {
+                    if let Err(error) = feed_fetcher.refresh_member(member).await {
+                        tracing::warn!(member_id = member.id, %error, "feed refresh failed");
+                    }
+                }
+                tokio::time::sleep(std::time::Duration::from_secs(60 * 30)).await;
             }
         });
     }
@@ -82,16 +103,25 @@ async fn shutdown_signal(ctx: Arc<Context>) {
 
     println!("signal received, running cleanup tasks..");
 
-    let _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
+    let _today = NaiveDateTime::new(
+        now_shanghai().date(),
+        NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+    );
     let page_view_read = ctx.unique_visitor.read().await;
     let referrer_read = ctx.referrer.read().await;
     ctx.id2member.keys().for_each(|id| {
-        let uv = *page_view_read
-            .get(id)
-            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
-        let referrer = *referrer_read
-            .get(id)
-            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+        let uv = *page_view_read.get(id).unwrap_or(&(
+            0,
+            chrono::DateTime::from_timestamp(0, 0)
+                .expect("unix epoch")
+                .naive_utc(),
+        ));
+        let referrer = *referrer_read.get(id).unwrap_or(&(
+            0,
+            chrono::DateTime::from_timestamp(0, 0)
+                .expect("unix epoch")
+                .naive_utc(),
+        ));
         Statistics::insert_or_update(
             ctx.db_pool.get().unwrap(),
             &Statistics {

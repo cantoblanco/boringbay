@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Blog</title>
+  <id>https://example.com/</id>
+  <updated>2026-09-15T12:00:00Z</updated>
+  <entry>
+    <title>First post</title>
+    <id>first-post</id>
+    <link rel="alternate" href="https://example.com/posts/first" />
+    <summary type="html">&lt;p&gt;Safe &lt;strong&gt;summary&lt;/strong&gt;&lt;/p&gt;</summary>
+    <updated>2026-09-15T12:00:00Z</updated>
+  </entry>
+</feed>

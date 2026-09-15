@@ -47,6 +47,9 @@ if (passport) {
     track('member_outbound', Number(link.dataset.memberId));
     update();
   }));
+  document.querySelectorAll('.feed-outbound').forEach(link => link.addEventListener('click', () => {
+    track('feed_outbound', Number(link.dataset.memberId));
+  }));
   document.querySelectorAll('[data-favorite]').forEach(button => button.addEventListener('click', () => {
     passport.toggleFavorite(button.dataset.favorite);
     update();
@@ -63,6 +66,15 @@ if (passport) {
     if (route) passport.completeRoute(route.dataset.routeDate);
     track('route_complete');
     update();
+  });
+  document.querySelector('[data-share-route]')?.addEventListener('click', async event => {
+    const button = event.currentTarget;
+    const url = button.dataset.shareUrl || window.location.href;
+    track('share_click');
+    try {
+      if (navigator.share) await navigator.share({ title: '无聊湾今日航线', text: '我走完了，你来试试？', url });
+      else { await navigator.clipboard.writeText(url); button.textContent = '链接已复制'; }
+    } catch (_) { /* user cancellation is not an application error */ }
   });
   document.querySelector('[data-passport-reset]')?.addEventListener('click', () => {
     if (window.confirm('确定清除这台浏览器中的护照、收藏和成就吗？')) { passport.reset(); update(); }

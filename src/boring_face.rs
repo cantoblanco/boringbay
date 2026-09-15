@@ -91,7 +91,7 @@ impl BoringFace {
             content = content.replace(
                 "#svg_border#",
                 &SVG_BORDER
-                    .replace("#site_name#", name)
+                    .replace("#site_name#", &crate::share::escape_xml(name))
                     .replace("#site_uv#", &uv.to_string())
                     .replace("#site_referrer#", &rv.to_string())
                     .replace("#site_rank#", &rank.to_string()),

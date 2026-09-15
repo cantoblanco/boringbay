@@ -33,6 +33,8 @@ async fn home_preserves_brand_member_metrics_and_join_paths() {
     assert!(html.contains("/static/app.css"));
     assert!(html.contains("/static/app.js"));
     assert!(html.contains("/static/discovery.js"));
+    assert!(html.matches("data-member-card").count() > 50);
+    assert!(html.contains("当前没有需要处理的成员站点"));
 }
 
 #[tokio::test]

@@ -11,6 +11,13 @@
     try { localStorage.setItem(storageKey, root.dataset.theme); } catch (_) {}
   });
 
+  document.querySelectorAll('img[data-fallback]').forEach(image => {
+    image.addEventListener('error', () => {
+      const fallback = image.dataset.fallback;
+      if (fallback && image.src !== new URL(fallback, window.location.href).href) image.src = fallback;
+    }, { once: true });
+  });
+
   const list = document.querySelector('[data-activity-list]');
   const pause = document.querySelector('[data-activity-pause]');
   if (!list || !pause || !('WebSocket' in window)) return;

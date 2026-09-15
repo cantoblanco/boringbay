@@ -24,7 +24,7 @@
     {% for m in members %}
     <li class="route-stop" data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}">
         <span class="route-number">{{ loop.index }}</span>
-        <img src="{{ m.icon }}" alt="" width="64" height="64" loading="lazy">
+        <img src="{{ m.icon }}" alt="" width="64" height="64" loading="lazy" data-fallback="/api/icon/{{ m.domain|e }}">
         <div>
             <h2>{{ m.name|e }}</h2>
             <p>{{ m.description|e }}</p>

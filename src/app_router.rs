@@ -1,25 +1,69 @@
-use std::{collections::HashMap, sync::Arc, time::Duration};
+use std::{
+    collections::{HashMap, HashSet},
+    sync::Arc,
+    time::Duration,
+};
 
 use anyhow::anyhow;
 use askama::Template;
 use axum::{
     extract::{
         ws::{Message, WebSocket},
-        Extension, Path, WebSocketUpgrade,
+        Extension, Path, Query, WebSocketUpgrade,
     },
-    http::StatusCode,
-    response::{Headers, Html, IntoResponse, Response},
+    http::{header, HeaderMap, StatusCode},
+    response::{Html, IntoResponse, Response},
+    Json,
 };
-use chrono::NaiveDateTime;
-use headers::HeaderMap;
+use chrono::{NaiveDate, NaiveDateTime};
+use serde::Deserialize;
 use tokio::select;
 
 use crate::{
     app_model::{Context, DynContext},
     boring_face::BoringFace,
-    membership_model::{Membership, RankAndMembership},
-    now_shanghai, GIT_HASH,
+    config::AppConfig,
+    discovery::{DailyRoute, DiscoveryService},
+    feed::{FeedItem, FeedRepository},
+    membership_model::Membership,
+    now_shanghai,
+    product_events::{EventInput, ProductEventKind, ProductEventService},
+    ranking::{RankingEntry, RankingService},
+    share::{render_member_badge_svg, render_route_svg},
+    site_health::{
+        status_from_evidence, status_reason, HealthEvidence, MemberStatus, SiteHealthService,
+    },
+    GIT_HASH,
 };
+
+pub async fn record_event(
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+    Json(input): Json<EventInput>,
+) -> StatusCode {
+    if !config.v2_enabled {
+        return StatusCode::NOT_FOUND;
+    }
+    let kind = match ProductEventKind::try_from(input.kind.as_str()) {
+        Ok(kind) => kind,
+        Err(_) => return StatusCode::BAD_REQUEST,
+    };
+    if input
+        .member_id
+        .map(|id| id <= 0 || !ctx.id2member.contains_key(&id))
+        .unwrap_or(false)
+    {
+        return StatusCode::BAD_REQUEST;
+    }
+    match ProductEventService::new(ctx.db_pool.clone()).increment(
+        now_shanghai().date(),
+        kind,
+        input.member_id,
+    ) {
+        Ok(()) => StatusCode::NO_CONTENT,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
 
 pub async fn ws_upgrade(
     Extension(ctx): Extension<DynContext>,
@@ -36,13 +80,13 @@ async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
         select! {
             Ok(()) = rx.changed() => {
                 let msg = rx.borrow().to_string();
-                let res = socket.send(Message::Text(msg.clone())).await;
+                let res = socket.send(Message::Text(msg.clone().into())).await;
                 if res.is_err() {
                     break;
                 }
             }
             _ = interval.tick() => {
-                let res = socket.send(Message::Ping(vec![])).await;
+                let res = socket.send(Message::Ping(Vec::new().into())).await;
                 if res.is_err() {
                     break;
                 }
@@ -71,13 +115,50 @@ pub async fn show_badge(
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
-            Headers([("content-type", "text/plain")]),
+            [(header::CONTENT_TYPE, "text/plain")],
             tend.err().unwrap().to_string(),
         )
             .into_response();
     }
 
     render_svg(tend.unwrap(), &ctx.badge).await
+}
+
+pub async fn show_badge_v2(
+    Path(mut domain): Path<String>,
+    headers: HeaderMap,
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Response {
+    if !config.v2_enabled {
+        return StatusCode::NOT_FOUND.into_response();
+    }
+    let mut visitor_type = Some(crate::app_model::VisitorType::Badge);
+    let referrer = get_domain_from_referrer(&headers).unwrap_or_default();
+    if referrer != domain {
+        if domain == "[domain]" {
+            domain = referrer;
+        } else {
+            visitor_type = None;
+        }
+    }
+    match ctx.boring_visitor(visitor_type, &domain, &headers).await {
+        Ok((name, uv, rv, level)) => (
+            StatusCode::OK,
+            [
+                (header::CONTENT_TYPE, "image/svg+xml; charset=utf-8"),
+                (header::CACHE_CONTROL, "public, max-age=300"),
+            ],
+            render_member_badge_svg(name, uv, rv, level),
+        )
+            .into_response(),
+        Err(error) => (
+            StatusCode::NOT_FOUND,
+            [(header::CONTENT_TYPE, "text/plain")],
+            error.to_string(),
+        )
+            .into_response(),
+    }
 }
 
 pub async fn show_favicon(
@@ -91,7 +172,7 @@ pub async fn show_favicon(
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
-            Headers([("content-type", "text/plain")]),
+            [(header::CONTENT_TYPE, "text/plain")],
             tend.err().unwrap().to_string(),
         )
             .into_response();
@@ -110,7 +191,7 @@ pub async fn show_icon(
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
-            Headers([("content-type", "text/plain")]),
+            [(header::CONTENT_TYPE, "text/plain")],
             tend.err().unwrap().to_string(),
         )
             .into_response();
@@ -126,21 +207,31 @@ struct HomeTemplate {
     membership: Vec<Membership>,
     uv: HashMap<i64, i64>,
     referrer: HashMap<i64, i64>,
-    rank: Vec<RankAndMembership>,
-    to_be_remove: Vec<RankAndMembership>,
+    rank: Vec<RankedMember>,
+    status_attention: Vec<StatusMember>,
     level: HashMap<i64, i64>,
+    v2_enabled: bool,
+    today_route: String,
+    feeds: Vec<FeedView>,
+}
+
+#[derive(Clone)]
+struct FeedView {
+    item: FeedItem,
+    membership: Membership,
+    published: String,
 }
 
 pub async fn home_page(
     Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
     headers: HeaderMap,
 ) -> Result<Html<String>, String> {
-    let domain = get_domain_from_referrer(&headers);
-    if domain.is_ok() {
+    if let Ok(domain) = get_domain_from_referrer(&headers) {
         let _ = ctx
             .boring_visitor(
                 Some(crate::app_model::VisitorType::Referer),
-                &domain.unwrap(),
+                &domain,
                 &headers,
             )
             .await;
@@ -154,11 +245,21 @@ pub async fn home_page(
     for k in ctx.id2member.keys() {
         let uv = uv_read
             .get(k)
-            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+            .unwrap_or(&(
+                0,
+                chrono::DateTime::from_timestamp(0, 0)
+                    .expect("unix epoch")
+                    .naive_utc(),
+            ))
             .to_owned();
         let rv = referrer_read
             .get(k)
-            .unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)))
+            .unwrap_or(&(
+                0,
+                chrono::DateTime::from_timestamp(0, 0)
+                    .expect("unix epoch")
+                    .naive_utc(),
+            ))
             .to_owned();
         if uv.0 > 0 || rv.0 > 0 {
             rank_vec.push((k.to_owned(), rv.1, uv.0));
@@ -172,42 +273,65 @@ pub async fn home_page(
     });
 
     let mut membership = Vec::new();
+    let mut seen = HashSet::new();
     for v in rank_vec {
-        membership.push(ctx.id2member.get(&v.0).unwrap().to_owned());
+        if let Some(member) = ctx.id2member.get(&v.0) {
+            membership.push(member.to_owned());
+            seen.insert(v.0);
+        }
     }
-
-    let mut rank_and_membership_to_be_remove = Vec::new();
-    let mut rank_and_membership = Vec::new();
-
-    let monthly_rank = ctx.monthly_rank.read().await.to_owned();
-    monthly_rank
+    let mut not_yet_ranked = ctx
+        .id2member
         .iter()
-        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
-        .for_each(|r| {
-            if rank_and_membership.len() >= 10
-                || r.updated_at < now_shanghai() - chrono::Duration::days(30)
-            {
-                return;
-            }
-            let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-            rank_and_membership.push(RankAndMembership {
-                rank: r.to_owned(),
-                membership: m,
-            });
-        });
+        .filter(|(id, _)| !seen.contains(id))
+        .map(|(_, member)| member.to_owned())
+        .collect::<Vec<_>>();
+    not_yet_ranked.sort_by_key(|member| member.id);
+    membership.extend(not_yet_ranked);
 
-    let rank = ctx.rank.read().await.to_owned();
-    rank.iter()
-        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
-        .for_each(|r| {
-            if r.updated_at < now_shanghai() - chrono::Duration::days(30) {
-                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-                rank_and_membership_to_be_remove.push(RankAndMembership {
-                    rank: r.to_owned(),
-                    membership: m,
-                });
-            }
-        });
+    let ranking_service = RankingService::new(ctx.db_pool.clone());
+    let rank_and_membership = ranked_members(
+        ranking_service
+            .activity_30d(now_shanghai())
+            .unwrap_or_default(),
+        &ctx,
+    )
+    .into_iter()
+    .take(10)
+    .collect();
+    let status_attention = status_members(&ctx)
+        .into_iter()
+        .filter(|entry| {
+            matches!(
+                entry.status,
+                MemberStatus::Observation | MemberStatus::RemovalCandidate
+            )
+        })
+        .take(10)
+        .collect();
+
+    let feeds = if config.v2_enabled {
+        FeedRepository::new(ctx.db_pool.clone())
+            .latest(12)
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|item| {
+                ctx.id2member
+                    .get(&item.member_id)
+                    .cloned()
+                    .map(|membership| {
+                        let published = item.published_at.format("%Y-%m-%d").to_string();
+                        FeedView {
+                            item,
+                            membership,
+                            published,
+                        }
+                    })
+            })
+            .collect()
+    } else {
+        Vec::new()
+    };
 
     let tpl = HomeTemplate {
         membership,
@@ -220,12 +344,117 @@ pub async fn home_page(
             .map(|(k, v)| (k.to_owned(), v.0))
             .collect::<HashMap<i64, i64>>(),
         rank: rank_and_membership,
-        to_be_remove: rank_and_membership_to_be_remove,
+        status_attention,
         level,
         version: GIT_HASH[0..8].to_string(),
+        v2_enabled: config.v2_enabled,
+        today_route: format!("/route/{}", now_shanghai().date().format("%Y-%m-%d")),
+        feeds,
     };
     let html = tpl.render().map_err(|err| err.to_string())?;
     Ok(Html(html))
+}
+
+#[derive(Template)]
+#[template(path = "route.html")]
+struct RouteTemplate {
+    version: String,
+    date: String,
+    members: Vec<Membership>,
+    canonical_url: String,
+    share_image_url: String,
+}
+
+#[derive(serde::Serialize)]
+pub struct DailyRouteResponse {
+    date: NaiveDate,
+    members: Vec<Membership>,
+}
+
+pub async fn route_page(
+    Path(date): Path<String>,
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Result<Html<String>, StatusCode> {
+    if !config.v2_enabled {
+        return Err(StatusCode::NOT_FOUND);
+    }
+    let date = NaiveDate::parse_from_str(&date, "%Y-%m-%d").map_err(|_| StatusCode::NOT_FOUND)?;
+    let response = daily_route_response(&ctx, date).map_err(|_| StatusCode::SERVICE_UNAVAILABLE)?;
+    let template = RouteTemplate {
+        version: GIT_HASH[0..8].to_string(),
+        date: date.format("%Y-%m-%d").to_string(),
+        members: response.members,
+        canonical_url: format!("https://{}/route/{}", config.system_domain, date),
+        share_image_url: format!(
+            "https://{}/api/share/route/{}.svg",
+            config.system_domain, date
+        ),
+    };
+    template
+        .render()
+        .map(Html)
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
+pub async fn route_share_image(
+    Path(date): Path<String>,
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Response {
+    if !config.v2_enabled {
+        return StatusCode::NOT_FOUND.into_response();
+    }
+    let date = match NaiveDate::parse_from_str(date.trim_end_matches(".svg"), "%Y-%m-%d") {
+        Ok(date) => date,
+        Err(_) => return StatusCode::NOT_FOUND.into_response(),
+    };
+    match daily_route_response(&ctx, date) {
+        Ok(route) => (
+            StatusCode::OK,
+            [
+                (header::CONTENT_TYPE, "image/svg+xml; charset=utf-8"),
+                (header::CACHE_CONTROL, "public, max-age=86400, immutable"),
+            ],
+            render_route_svg(date, &route.members),
+        )
+            .into_response(),
+        Err(_) => StatusCode::SERVICE_UNAVAILABLE.into_response(),
+    }
+}
+
+pub async fn discovery_today(
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+) -> Result<Json<DailyRouteResponse>, StatusCode> {
+    if !config.v2_enabled {
+        return Err(StatusCode::NOT_FOUND);
+    }
+    daily_route_response(&ctx, now_shanghai().date())
+        .map(Json)
+        .map_err(|_| StatusCode::SERVICE_UNAVAILABLE)
+}
+
+fn daily_route_response(ctx: &Context, date: NaiveDate) -> anyhow::Result<DailyRouteResponse> {
+    let eligible = status_members(ctx)
+        .into_iter()
+        .filter(|member| matches!(member.status, MemberStatus::Active | MemberStatus::Quiet))
+        .map(|entry| entry.membership)
+        .collect::<Vec<_>>();
+    let DailyRoute { member_ids, .. } =
+        DiscoveryService::new(ctx.db_pool.clone()).daily_route(date, &eligible)?;
+    let by_id = eligible
+        .into_iter()
+        .map(|member| (member.id, member))
+        .collect::<HashMap<_, _>>();
+    let members = member_ids
+        .into_iter()
+        .filter_map(|id| by_id.get(&id).cloned())
+        .collect::<Vec<_>>();
+    if members.len() != 5 {
+        return Err(anyhow!("daily route members are no longer eligible"));
+    }
+    Ok(DailyRouteResponse { date, members })
 }
 
 #[derive(Template)]
@@ -246,84 +475,197 @@ pub async fn join_us_page() -> Result<Html<String>, String> {
 #[template(path = "rank.html")]
 struct RankTemplate {
     version: String,
-    rank: Vec<RankAndMembership>,
-    to_be_remove: Vec<RankAndMembership>,
+    view: String,
+    title: String,
+    formula: String,
+    window: String,
+    rank: Vec<RankedMember>,
+    statuses: Vec<StatusMember>,
+}
+
+#[derive(Clone)]
+struct RankedMember {
+    membership: Membership,
+    entry: RankingEntry,
+    growth_percent: String,
+}
+
+#[derive(Clone)]
+struct StatusMember {
+    membership: Membership,
+    status: MemberStatus,
+    status_label: String,
+    reason: String,
+    last_activity: String,
+    last_check: String,
+    failures: u32,
+}
+
+#[derive(Default, Deserialize)]
+pub struct RankQuery {
+    view: Option<String>,
 }
 
 pub async fn rank_page(
     Extension(ctx): Extension<DynContext>,
     headers: HeaderMap,
+    Query(query): Query<RankQuery>,
 ) -> Result<Html<String>, String> {
-    let domain = get_domain_from_referrer(&headers);
-    if domain.is_ok() {
+    if let Ok(domain) = get_domain_from_referrer(&headers) {
         let _ = ctx
             .boring_visitor(
                 Some(crate::app_model::VisitorType::Referer),
-                &domain.unwrap(),
+                &domain,
                 &headers,
             )
             .await;
     }
 
-    let rank = ctx.rank.read().await.to_owned();
-
-    let mut rank_and_membership_to_be_remove = Vec::new();
-
-    let mut rank_and_membership = Vec::new();
-
-    rank.iter()
-        .filter(|r| ctx.id2member.contains_key(&r.membership_id))
-        .for_each(|r| {
-            if r.updated_at > now_shanghai() - chrono::Duration::days(30) {
-                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-                rank_and_membership.push(RankAndMembership {
-                    rank: r.to_owned(),
-                    membership: m,
-                });
-            } else {
-                let m = ctx.id2member.get(&r.membership_id).unwrap().to_owned();
-                rank_and_membership_to_be_remove.push(RankAndMembership {
-                    rank: r.to_owned(),
-                    membership: m,
-                });
-            }
-        });
+    let now = now_shanghai();
+    let service = RankingService::new(ctx.db_pool.clone());
+    let view = query.view.as_deref().unwrap_or("classic");
+    let (view, title, formula, window, entries) = match view {
+        "activity" => (
+            "activity",
+            "30 天活跃榜",
+            "得分 = 近 30 天 UV + RV；同分依次比较 RV、UV、最后活动时间。",
+            format!(
+                "{} 至 {}",
+                (now - chrono::Duration::days(30)).format("%Y-%m-%d"),
+                now.format("%Y-%m-%d")
+            ),
+            service.activity_30d(now),
+        ),
+        "rising" => (
+            "rising",
+            "7 天上升榜",
+            "增长率 =（本 7 天互动 - 前 7 天互动）/ max（前 7 天互动, 5）；本期至少 5 次互动。",
+            format!(
+                "{} 至 {}，对比此前 7 天",
+                (now - chrono::Duration::days(7)).format("%Y-%m-%d"),
+                now.format("%Y-%m-%d")
+            ),
+            service.rising_7d(now),
+        ),
+        _ => (
+            "classic",
+            "经典总榜",
+            "保留原有规则：优先按累计 RV，其次累计 UV 排序。",
+            "自建站以来的历史数据".to_string(),
+            service.classic(now),
+        ),
+    };
+    let rank_and_membership = ranked_members(entries.map_err(|err| err.to_string())?, &ctx);
 
     let tpl = RankTemplate {
+        view: view.to_string(),
+        title: title.to_string(),
+        formula: formula.to_string(),
+        window,
         rank: rank_and_membership,
-        to_be_remove: rank_and_membership_to_be_remove,
+        statuses: status_members(&ctx),
         version: GIT_HASH[0..8].to_string(),
     };
     let html = tpl.render().map_err(|err| err.to_string())?;
     Ok(Html(html))
 }
 
+fn ranked_members(entries: Vec<RankingEntry>, ctx: &Context) -> Vec<RankedMember> {
+    entries
+        .into_iter()
+        .filter_map(|entry| {
+            let membership = ctx.id2member.get(&entry.membership_id)?.clone();
+            let growth_percent = entry
+                .growth_rate
+                .map(|rate| format!("{:+.0}%", rate * 100.0))
+                .unwrap_or_else(|| "—".to_string());
+            Some(RankedMember {
+                membership,
+                entry,
+                growth_percent,
+            })
+        })
+        .collect()
+}
+
+fn status_members(ctx: &Context) -> Vec<StatusMember> {
+    let now = now_shanghai();
+    let classic = RankingService::new(ctx.db_pool.clone())
+        .classic(now)
+        .unwrap_or_default();
+    let activity = classic
+        .into_iter()
+        .map(|entry| (entry.membership_id, entry.last_activity))
+        .collect::<HashMap<_, _>>();
+    let evidence = SiteHealthService::new(ctx.db_pool.clone())
+        .and_then(|service| service.evidence_by_member())
+        .unwrap_or_default();
+    let epoch = chrono::DateTime::from_timestamp(0, 0)
+        .expect("unix epoch must exist")
+        .naive_utc();
+
+    let mut rows = ctx
+        .id2member
+        .values()
+        .cloned()
+        .map(|membership| {
+            let last_activity = activity.get(&membership.id).copied().unwrap_or(epoch);
+            let member_evidence = evidence
+                .get(&membership.id)
+                .cloned()
+                .unwrap_or_else(HealthEvidence::default);
+            let status = status_from_evidence(now, last_activity, &member_evidence);
+            StatusMember {
+                membership,
+                status,
+                status_label: status.label().to_string(),
+                reason: status_reason(status, member_evidence.consecutive_failures),
+                last_activity: if last_activity == epoch {
+                    "暂无记录".to_string()
+                } else {
+                    last_activity.format("%Y-%m-%d %H:%M").to_string()
+                },
+                last_check: member_evidence
+                    .last_checked_at
+                    .map(|value| value.format("%Y-%m-%d %H:%M").to_string())
+                    .unwrap_or_else(|| "尚未检测".to_string()),
+                failures: member_evidence.consecutive_failures,
+            }
+        })
+        .collect::<Vec<_>>();
+    rows.sort_by(|a, b| {
+        status_priority(b.status)
+            .cmp(&status_priority(a.status))
+            .then_with(|| a.membership.id.cmp(&b.membership.id))
+    });
+    rows
+}
+
+fn status_priority(status: MemberStatus) -> u8 {
+    match status {
+        MemberStatus::Active => 0,
+        MemberStatus::Quiet => 1,
+        MemberStatus::Observation => 2,
+        MemberStatus::RemovalCandidate => 3,
+    }
+}
+
 fn get_domain_from_referrer(headers: &HeaderMap) -> Result<String, anyhow::Error> {
-    let referrer_header = headers.get("Referer");
-    if referrer_header.is_none() {
-        return Err(anyhow!("no referrer header"));
-    }
-
-    let referrer_str = String::from_utf8(referrer_header.unwrap().as_bytes().to_vec());
-    if referrer_str.is_err() {
-        return Err(anyhow!("referrer header is not valid utf-8 string"));
-    }
-
-    let referrer_url = url::Url::parse(&referrer_str.unwrap());
-    if referrer_url.is_err() {
-        return Err(anyhow!("referrer header is not valid URL"));
-    }
-
-    let referrer_url = referrer_url.unwrap();
-    if referrer_url.domain().is_none() {
-        return Err(anyhow!("referrer header doesn't contains a valid domain"));
-    }
-
-    return Ok(referrer_url.domain().unwrap().to_string());
+    let referrer = headers
+        .get("Referer")
+        .ok_or_else(|| anyhow!("no referrer header"))?
+        .to_str()
+        .map_err(|_| anyhow!("referrer header is not valid utf-8 string"))?;
+    let referrer_url =
+        url::Url::parse(referrer).map_err(|_| anyhow!("referrer header is not valid URL"))?;
+    referrer_url
+        .domain()
+        .map(str::to_string)
+        .ok_or_else(|| anyhow!("referrer header doesn't contain a valid domain"))
 }
 
 async fn render_svg(tend: (&str, i64, i64, i64), render: &BoringFace) -> Response {
-    let headers = Headers([("content-type", "image/svg+xml")]);
+    let headers = [(header::CONTENT_TYPE, "image/svg+xml")];
     (
         StatusCode::OK,
         headers,

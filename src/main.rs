@@ -1,38 +1,63 @@
-use axum::{routing::get, AddExtensionLayer, Router};
 use chrono::{NaiveDateTime, NaiveTime};
-use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use naive::{
     app_model::{Context, DynContext},
-    app_router::{
-        home_page, join_us_page, rank_page, show_badge, show_favicon, show_icon, ws_upgrade,
-    },
-    establish_connection, now_shanghai,
+    build_router,
+    config::AppConfig,
+    establish_connection,
+    feed::FeedFetcher,
+    now_shanghai, run_migrations,
+    site_health::SiteHealthService,
     statistics_model::Statistics,
     DbPool,
 };
-use std::{env, net::SocketAddr, sync::Arc};
+use std::{net::SocketAddr, sync::Arc};
 use tokio::signal;
-
-pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations/");
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
     tracing_subscriber::fmt::init();
 
-    let db_pool: DbPool = establish_connection(&env::var("DATABASE_URL").unwrap());
+    let config = Arc::new(AppConfig::from_env().expect("invalid application configuration"));
+    let db_pool: DbPool = establish_connection(&config.database_url);
 
-    tracing::info!(
-        "migration {:?}",
-        db_pool
-            .get()
-            .unwrap()
-            .run_pending_migrations(MIGRATIONS)
-            .unwrap()
-    );
+    run_migrations(&mut db_pool.get().expect("database pool unavailable"))
+        .expect("database migration failed");
 
-    let context = Arc::new(Context::default(db_pool).await) as DynContext;
+    let context = Arc::new(Context::new(db_pool, &config).await) as DynContext;
+
+    if config.v2_enabled {
+        let members = context.id2member.values().cloned().collect::<Vec<_>>();
+        let health_service = SiteHealthService::new(context.db_pool.clone())
+            .expect("site health client configuration failed");
+        tokio::spawn(async move {
+            tokio::time::sleep(std::time::Duration::from_secs(60)).await;
+            loop {
+                health_service.run_once(members.clone().into_iter()).await;
+                tokio::time::sleep(std::time::Duration::from_secs(60 * 60 * 24)).await;
+            }
+        });
+
+        let feed_members = context
+            .id2member
+            .values()
+            .filter(|member| member.feed_url.is_some())
+            .cloned()
+            .collect::<Vec<_>>();
+        let feed_fetcher = FeedFetcher::new(context.db_pool.clone());
+        tokio::spawn(async move {
+            tokio::time::sleep(std::time::Duration::from_secs(90)).await;
+            loop {
+                for member in &feed_members {
+                    if let Err(error) = feed_fetcher.refresh_member(member).await {
+                        tracing::warn!(member_id = member.id, %error, "feed refresh failed");
+                    }
+                }
+                tokio::time::sleep(std::time::Duration::from_secs(60 * 30)).await;
+            }
+        });
+    }
 
     // 定时存入数据库
     let ctx_clone = context.clone();
@@ -42,24 +67,14 @@ async fn main() {
 
     let ctx_clone_for_shutdown = context.clone();
 
-    let app = Router::new()
-        .nest(
-            "/api",
-            Router::new()
-                .route("/badge/:domain", get(show_badge))
-                .route("/favicon/:domain", get(show_favicon))
-                .route("/icon/:domain", get(show_icon))
-                .route("/ws", get(ws_upgrade)),
-        )
-        .route("/", get(home_page))
-        .route("/join-us", get(join_us_page))
-        .route("/rank", get(rank_page))
-        .layer(AddExtensionLayer::new(context));
+    let app = build_router(context, config);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     tracing::debug!("listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .expect("failed to bind HTTP listener");
+    axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal(ctx_clone_for_shutdown))
         .await
         .unwrap();
@@ -90,12 +105,25 @@ async fn shutdown_signal(ctx: Arc<Context>) {
 
     println!("signal received, running cleanup tasks..");
 
-    let _today = NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0));
+    let _today = NaiveDateTime::new(
+        now_shanghai().date(),
+        NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+    );
     let page_view_read = ctx.unique_visitor.read().await;
     let referrer_read = ctx.referrer.read().await;
     ctx.id2member.keys().for_each(|id| {
-        let uv = *page_view_read.get(id).unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
-        let referrer = *referrer_read.get(id).unwrap_or(&(0, NaiveDateTime::from_timestamp(0, 0)));
+        let uv = *page_view_read.get(id).unwrap_or(&(
+            0,
+            chrono::DateTime::from_timestamp(0, 0)
+                .expect("unix epoch")
+                .naive_utc(),
+        ));
+        let referrer = *referrer_read.get(id).unwrap_or(&(
+            0,
+            chrono::DateTime::from_timestamp(0, 0)
+                .expect("unix epoch")
+                .naive_utc(),
+        ));
         Statistics::insert_or_update(
             ctx.db_pool.get().unwrap(),
             &Statistics {

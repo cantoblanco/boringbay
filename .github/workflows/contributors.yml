@@ -3,13 +3,21 @@ name: contributors
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: contributors-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   contributors:
     runs-on: ubuntu-latest
     steps:
       - name: Generate Contributors Images
-        uses: jaywcjlove/github-action-contributors@main
+        uses: jaywcjlove/github-action-contributors@86707f6d4c2469ce6b46bc3367253ebd41ee242c
         id: contributors
         with:
           filter-author: (renovate\[bot\]|renovate-bot|dependabot\[bot\])
@@ -18,9 +26,9 @@ jobs:
           truncate: 6
 
       - name: Modify htmlTable README.md
-        uses: jaywcjlove/github-action-modify-file-content@main
+        uses: jaywcjlove/github-action-modify-file-content@0e3b8d492a44de3769f2f24af63a5dca7eb39559
         with:
-          message: update contributors[no ci]
+          message: update contributors [skip ci]
           openDelimiter: '<!--GAMFC_DELIMITER-->'
           closeDelimiter: '<!--GAMFC_DELIMITER_END-->'
           path: README.md

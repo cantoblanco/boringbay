@@ -1,180 +1,64 @@
 <!DOCTYPE html>
-<html lang="zh">
-
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>{% block title %}{% endblock %} | 无聊湾 🥱 The Boring Bay</title>
-    <link rel="shortcut icon" href="https://boringbay.com/api/favicon/boringbay.com" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity=" sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Halfmoon/1.1.1/css/halfmoon.min.css"
-        integrity="sha512-Kaju/JzlErKhC47smofkXAdSkvILovmvh2nnok6rgN79oB3Co/T7Pm7Ns8dcpNEN3VTVZDw2ilrUDByzInEabg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3632738952115558"
-     crossorigin="anonymous"></script>
-    <style>
-        .container {
-            max-width: 88rem;
-        }
-
-        .btn {
-            background-color: #d0273e !important;
-            border-color: #f5acb9 !important;
-            color: white;
-            font-weight: 900;
-        }
-
-        .navbar-brand {
-            color: #d0273e;
-            font-weight: 900;
-        }
-
-        .member-list>div {
-            line-height: 1.8rem;
-        }
-
-        .member-list .flex-grow-1 {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .member-list .flex-grow-1 small,
-        a {
-            white-space: nowrap;
-        }
-
-        .member-list>div>div:hover {
-            border-color: #d0273e !important;
-            border-width: .25rem !important;
-        }
-
-        .member-list>div a {
-            color: unset;
-        }
-
-        footer {
-            margin-bottom: 2rem;
-        }
-    </style>
+    <link rel="shortcut icon" href="/api/favicon/boringbay.com" type="image/svg+xml">
+    <link rel="stylesheet" href="/static/app.css">
+    <script defer src="/static/app.js"></script>
+    {% block head %}{% endblock %}
 </head>
-
 <body>
-    <div class="sticky-alerts"></div>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
     <div class="page-wrapper with-navbar">
-        <nav class="navbar">
-            <div class="container">
+        <nav class="navbar" aria-label="主要导航">
+            <div class="container navbar-inner">
                 <a href="/" class="navbar-brand" rel="noreferrer">
-                    <img src="https://boringbay.com/api/icon/boringbay.com" alt="The Boring Bay"> 无聊湾
+                    <img src="/api/icon/boringbay.com" alt="" width="40" height="40"> 无聊湾
                 </a>
-                <div class="navbar-content ml-auto">
-                    <button class="btn btn-action mr-5 px-5" onclick="toggleThemeMode()">
-                        <i id="dayNightIcon" class="fa fa-moon"></i>
-                    </button>
-                    <a class="btn btn-block mr-5" href="/rank">排行榜</a>
-                    <a class="btn btn-block" href="/join-us">一起无聊？</a>
+                <div class="navbar-content">
+                    <button class="btn btn-action" type="button" data-theme-toggle aria-label="切换昼夜模式">◐</button>
+                    <a class="btn" href="/rank">排行榜</a>
+                    <a class="btn" href="/join-us">一起无聊？</a>
                 </div>
             </div>
         </nav>
 
-        <div class="content-wrapper">
+        <main id="main-content" class="content-wrapper">
             <div class="container">
                 {% block content %}{% endblock %}
             </div>
 
-            <div class="text-center font-size-14 mt-10">
-                QQ交流群：136231667（仅限会员加入）
-                <br>
-                <img class="mt-5" height="30rem" src="/api/badge/boringbay.com">
+            <aside class="activity-rail container" aria-labelledby="activity-title" data-activity-rail>
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">LIVE</p>
+                        <h2 id="activity-title">湾内动态</h2>
+                    </div>
+                    <button type="button" class="quiet-button" data-activity-pause aria-pressed="false">暂停</button>
+                </div>
+                <ol class="activity-list" data-activity-list aria-live="polite">
+                    <li class="activity-empty">正在等一阵海风……</li>
+                </ol>
+            </aside>
+
+            <div class="text-center community-note">
+                QQ 交流群：136231667（仅限会员加入）<br>
+                <img class="mt-5" height="30" src="/api/badge/boringbay.com" alt="无聊湾动态徽章">
             </div>
 
-            <div class="text-center font-weight-bolder font-size-14 mt-10 mb-5">
+            <blockquote class="brand-quote">
                 生命的终极就是无聊，一般的流行文化很容易过时，但是无聊的终极文化永远伴随人类。—— @wdctll
-            </div>
+            </blockquote>
 
-            <footer class="font-size-12 text-center">
-                build · <a class="text-reset" target="_blank"
-                    href="https://github.com/cantoblanco/boringbay/commit/{{version}}">{{version}}</a>
-                &copy; <a class="text-reset" rel="noreferrer" href="https://boringbay.com">无聊湾 boringbay.com</a>
+            <footer>
+                build · <a target="_blank" rel="noopener" href="https://github.com/cantoblanco/boringbay/commit/{{version}}">{{version}}</a>
+                &copy; <a rel="noreferrer" href="https://boringbay.com">无聊湾 boringbay.com</a>
             </footer>
-        </div>
-
+        </main>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Halfmoon/1.1.1/js/halfmoon.min.js"
-        integrity="sha512-8fN/MQrHBCMmkx2t4QwGODGHwQf8VxCeNwNkJz0gjt5JrlUfJ5zNlMr9lrzhnl7DSN+5E16YmMHnfomnQmvSoA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script>
-        function updateDayNightIcon() {
-            const el = document.getElementById('dayNightIcon')
-            el.classList = halfmoon.darkModeOn ? 'fa fa-sun' : 'fa fa-moon'
-        }
-
-        function toggleThemeMode() {
-            halfmoon.toggleDarkMode()
-            updateDayNightIcon()
-        }
-
-        const styles = ['', "alert-success", "alert-primary", "alert-secondary", "alert-danger"]
-        var styleIndex = 0
-
-        function getWelcome(data) {
-            if (data.vt == 2) {
-                return "来自「" + data.country + "」的「" + data.ip + "」访问了 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a>。"
-            }
-            return "来自「" + data.country + "」的「" + data.ip + "」从 <a style=\"color: #d0273e;border-bottom: solid #d0273e;\" target=\"_blank\" href=\"https://" + data.member.domain + "\"" + (data.member.domain == "boringbay.com" ? ' rel=\"noreferrer\"' : '') + "><b>" + data.member.name + "</b></a> 访问了本站。"
-        }
-
-        function connect() {
-            const protocol = 'https:' == document.location.protocol ? 'wss' : 'ws'
-            var ws = new WebSocket(protocol + '://' + document.location.host + '/api/ws');
-            ws.onmessage = function (e) {
-                if (e.data) {
-                    const data = JSON.parse(e.data)
-                    const styleIndexInner = styleIndex++
-                    if (styleIndex >= styles.length) {
-                        styleIndex = 0
-                    }
-                    const isViewportWidthLessThan1234px = window.innerWidth < 1234
-                    const alerts = document.querySelectorAll(".sticky-alerts .alert");
-                    if (alerts) {
-                        for (let i = alerts.length - 1; i > (isViewportWidthLessThan1234px ? 1 : 10); i--) {
-                            alerts[i].remove();
-                        }
-                    }
-                    halfmoon.initStickyAlert({
-                        content: getWelcome(data),
-                        title: "无聊的沙雕 +1",
-                        alertType: styles[styleIndexInner],
-                        fillType: "filled-lm",
-                        timeShown: 10000
-                    });
-                }
-            };
-            ws.onclose = function (e) {
-                console.log('Socket is closed. Reconnect will be attempted in 3 second.', e);
-                setTimeout(function () {
-                    connect()
-                }, 3000);
-            };
-            ws.onerror = function (err) {
-                console.error('Socket encountered error: ', err, 'Closing socket');
-                ws.close()
-            };
-        }
-
-        (function () {
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches != halfmoon.darkModeOn) {
-                toggleThemeMode()
-            } else {
-                updateDayNightIcon()
-            }
-            connect()
-        })();
-    </script>
+    {% block scripts %}{% endblock %}
 </body>
-
 </html>

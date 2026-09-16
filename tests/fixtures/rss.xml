@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Blog</title>
+    <link>https://example.com/</link>
+    <description>Example feed</description>
+    <item>
+      <guid>first-post</guid>
+      <title>First post</title>
+      <link>https://example.com/posts/first</link>
+      <description><![CDATA[<p>Safe <strong>summary</strong></p>]]></description>
+      <pubDate>Tue, 15 Sep 2026 12:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

@@ -4,13 +4,28 @@
 
 {% block content %}
 <div class="content">
+    {% if v2_enabled %}
+    <section class="harbor-panel" aria-labelledby="harbor-title">
+        <div>
+            <p class="eyebrow">BORINGBAY V2</p>
+            <h1 id="harbor-title">从港口出发，去逛一座小站</h1>
+            <p>不登录、不追踪个人身份。访问记录、收藏与邮戳只留在你的浏览器。</p>
+        </div>
+        <div class="harbor-actions">
+            <button class="btn" type="button" data-random-discovery>随便逛逛</button>
+            <a class="btn" href="{{ today_route }}">今日航线</a>
+            <a class="quiet-button" href="#drift-bottles">最新漂流瓶</a>
+        </div>
+        <p class="passport-summary js-passport" data-passport-summary hidden></p>
+    </section>
+    {% endif %}
     <h2 class="font-size-18 text-center">今日无聊</h2>
     <div class="d-flex flex-wrap member-list">
         {% for m in membership %}
-        <div class="w-md-quarter w-half p-5">
+        <div class="w-md-quarter w-half p-5" data-member-card data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}">
             <div class="d-flex p-5 border rounded shadow">
                 <div class="d-block position-relative">
-                    <img class="w-50 h-50 rounded" src="{{ m.icon }}">
+                    <img class="w-50 h-50 rounded" src="{{ m.icon }}" alt="" loading="lazy" data-fallback="/api/icon/{{ m.domain|e }}">
                     <p class="position-absolute top-0 right-0 m-0 text-right font-weight-bolder"
                         style="font-size: 0.6rem;line-height: 0.7rem;">
                         UV{{uv.get(m.id).cloned().unwrap_or_default()}}
@@ -21,19 +36,41 @@
                     </p>
                 </div>
                 <div class="flex-grow-1 pl-10">
-                    <a target="_blank" class="text-reset font-weight-bolder" href="https://{{ m.domain }}"
+                    <a target="_blank" rel="noopener" class="text-reset font-weight-bolder member-outbound"
+                        href="https://{{ m.domain }}" data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}"
                         title="{{ m.name|e }}">
                         {{ m.name|e }}
                     </a><br>
                     <small title="{{ m.description|e }}">{{ m.description|e }}</small><br>
-                    <a target="_blank" href="https://github.com/{{ m.github_username }}"
-                        title="{{ m.github_username|e }}"><small><i class="fab fa-github"></i>
-                            {{ m.github_username|e }}</small></a>
+                    <a target="_blank" rel="noopener" href="https://github.com/{{ m.github_username }}"
+                        title="{{ m.github_username|e }}"><small>GitHub · {{ m.github_username|e }}</small></a>
+                    {% if v2_enabled %}<button class="favorite-toggle js-passport" type="button" data-favorite="{{ m.id }}" aria-label="收藏 {{ m.name|e }}" hidden>☆</button>{% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
+
+    {% if v2_enabled %}
+    <section id="drift-bottles" class="coming-section">
+        <p class="eyebrow">DRIFT BOTTLES</p>
+        <h2>最新漂流瓶</h2>
+        {% if feeds.is_empty() %}
+        <p>成员可自愿提供 RSS/Atom。尚未投递时，先去今日航线捞几座岛吧。</p>
+        {% else %}
+        <div class="feed-grid">
+            {% for feed in feeds %}
+            <article class="feed-card">
+                <p class="feed-meta">{{ feed.membership.name|e }} · {{ feed.published }}</p>
+                <h3><a class="feed-outbound" href="{{ feed.item.url|e }}" target="_blank" rel="noopener noreferrer"
+                    data-member-id="{{ feed.membership.id }}">{{ feed.item.title|e }}</a></h3>
+                {% if !feed.item.summary.is_empty() %}<p>{{ feed.item.summary|e }}</p>{% endif %}
+            </article>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+    {% endif %}
 
 
     <h2 class="font-size-18 text-center">30 天排行</h2>
@@ -65,61 +102,53 @@
                             {{ r.membership.name|e }}
                         </a>
                     </td>
-                    <td>{{ r.rank.unique_visitor }}</td>
-                    <td>{{ r.rank.referrer }}</td>
-                    <td>{{ r.rank.latest_referrer_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.updated_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.created_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.entry.uv }}</td>
+                    <td>{{ r.entry.rv }}</td>
+                    <td colspan="2">{{ r.entry.last_activity.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td>{{ r.entry.joined_at.format("%Y-%m-%d %H:%M:%S") }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <h2 class="font-size-18 text-center">即将移除</h2>
+    <h2 class="font-size-18 text-center">状态观察</h2>
+    <p class="text-center"><small>首页只提示进入观察或可移除候选的成员，绝不会自动删除。<a href="/rank#member-status">查看全部状态与规则</a></small></p>
+    {% if status_attention.is_empty() %}
+    <div class="card empty-state text-center">当前没有需要处理的成员站点。</div>
+    {% else %}
     <div class="card table-responsive specific-w-300 mw-100 mx-auto rounded-0">
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">站点</th>
-                    <th scope="col">UV
-                        <p class="d-inline font-size-12 m-0">独立访客</p>
-                    </th>
-                    <th scope="col">RV
-                        <p class="d-inline font-size-12 m-0">来访访客</p>
-                    </th>
-                    <th scope="col">最后链入</th>
-                    <th scope="col">最后受访</th>
-                    <th scope="col">加入时间</th>
+                    <th scope="col">状态</th>
+                    <th scope="col">依据</th>
+                    <th scope="col">最后活动</th>
+                    <th scope="col">最后检测</th>
                 </tr>
             </thead>
             <tbody>
-                {% for r in to_be_remove %}
+                {% for r in status_attention %}
                 <tr>
-                    <th scope="row">
-                        <del>
-                            {{ r.membership.id }}
-                        </del>
-                    </th>
                     <td>
-                        <del>
-                            <a target="_blank" data-toggle="tooltip" data-title="{{ r.membership.description }}"
-                                class="text-reset font-weight-bolder" href="https://{{ r.membership.domain }}"
-                                title="{{ r.membership.name|e }}">
-                                {{ r.membership.name|e }}
-                            </a>
-                        </del>
+                        <a target="_blank" data-toggle="tooltip" data-title="{{ r.membership.description }}"
+                            class="text-reset font-weight-bolder" href="https://{{ r.membership.domain }}"
+                            rel="noopener" title="{{ r.membership.name|e }}">{{ r.membership.name|e }}</a>
                     </td>
-                    <td><del>{{ r.rank.unique_visitor }}</del></td>
-                    <td><del>{{ r.rank.referrer }}</del></td>
-                    <td>{{ r.rank.latest_referrer_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.updated_at.format("%Y-%m-%d %H:%M:%S") }}</td>
-                    <td>{{ r.rank.created_at.format("%Y-%m-%d %H:%M:%S") }}</td>
+                    <td><strong>{{ r.status_label }}</strong></td>
+                    <td>{{ r.reason }}</td>
+                    <td>{{ r.last_activity }}</td>
+                    <td>{{ r.last_check }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% if v2_enabled %}<script type="module" src="/static/discovery.js"></script>{% endif %}
 {% endblock %}

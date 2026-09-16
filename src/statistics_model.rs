@@ -24,6 +24,10 @@ pub struct Statistics {
 }
 
 impl Statistics {
+    pub fn last_activity(&self) -> NaiveDateTime {
+        self.updated_at.max(self.latest_referrer_at)
+    }
+
     pub fn insert_or_update(
         mut conn: PooledConnection<ConnectionManager<SqliteConnection>>,
         stat: &Statistics,
@@ -54,15 +58,21 @@ impl Statistics {
     ) -> Result<Vec<Statistics>, anyhow::Error> {
         load_statistics_by_created_at(
             conn,
-            NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0)),
+            NaiveDateTime::new(
+                now_shanghai().date(),
+                NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+            ),
         )
     }
 
     pub fn prev_day_rank_avg(conn: PooledConnection<ConnectionManager<SqliteConnection>>) -> i64 {
         let res = load_statistics_by_created_at(
             conn,
-            NaiveDateTime::new(now_shanghai().date(), NaiveTime::from_hms(0, 0, 0))
-                .sub(Duration::hours(24)),
+            NaiveDateTime::new(
+                now_shanghai().date(),
+                NaiveTime::from_hms_opt(0, 0, 0).expect("midnight"),
+            )
+            .sub(Duration::hours(24)),
         );
         if let Ok(res) = res {
             let mut sum = 0;
@@ -145,11 +155,19 @@ impl Statistics {
                         created_at: s.1,
                         updated_at: id_to_updated_at
                             .get(&s.0)
-                            .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
+                            .unwrap_or(
+                                &chrono::DateTime::from_timestamp(0, 0)
+                                    .expect("unix epoch")
+                                    .naive_utc(),
+                            )
                             .to_owned(),
                         latest_referrer_at: id_to_latest_referrer_at
                             .get(&s.0)
-                            .unwrap_or(&NaiveDateTime::from_timestamp(0, 0))
+                            .unwrap_or(
+                                &chrono::DateTime::from_timestamp(0, 0)
+                                    .expect("unix epoch")
+                                    .naive_utc(),
+                            )
                             .to_owned(),
                         membership_id: s.0,
                         unique_visitor: s.2,
@@ -187,5 +205,32 @@ fn load_statistics_by_created_at(
     match res {
         Ok(all) => Ok(all),
         Err(e) => Err(anyhow!("{:?}", e)),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn last_activity_considers_inbound_and_visited_timestamps() {
+        let visited = chrono::NaiveDate::from_ymd_opt(2026, 9, 1)
+            .unwrap()
+            .and_hms_opt(0, 0, 0)
+            .unwrap();
+        let inbound = chrono::NaiveDate::from_ymd_opt(2026, 9, 12)
+            .unwrap()
+            .and_hms_opt(0, 0, 0)
+            .unwrap();
+        let statistic = Statistics {
+            id: 1,
+            created_at: visited,
+            updated_at: visited,
+            membership_id: 1,
+            unique_visitor: 1,
+            referrer: 1,
+            latest_referrer_at: inbound,
+        };
+        assert_eq!(statistic.last_activity(), inbound);
     }
 }

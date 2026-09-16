@@ -64,8 +64,8 @@ assert.doesNotMatch(flattenText(toast), /203\.0\.113\.9/);
 ### Task 2: Aggregate Storage and Privacy Queries
 
 **Files:**
-- Create: `migrations/20260916040000_create_traffic_analytics/up.sql`
-- Create: `migrations/20260916040000_create_traffic_analytics/down.sql`
+- Create: `migrations/20260916050000_create_traffic_analytics/up.sql`
+- Create: `migrations/20260916050000_create_traffic_analytics/down.sql`
 - Create: `src/analytics.rs`
 - Modify: `src/schema.rs`
 - Modify: `src/lib.rs`

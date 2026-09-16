@@ -18,6 +18,7 @@ use tower_http::services::ServeDir;
 
 pub mod app_model;
 pub mod app_router;
+pub mod analytics;
 pub mod boring_face;
 pub mod config;
 pub mod discovery;

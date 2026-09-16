@@ -63,11 +63,35 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    traffic_hourly (bucket_start, member_id, event_kind, dimension_kind, dimension_value) {
+        bucket_start -> Timestamp,
+        member_id -> BigInt,
+        event_kind -> Text,
+        dimension_kind -> Text,
+        dimension_value -> Text,
+        count -> BigInt,
+    }
+}
+
+diesel::table! {
+    traffic_daily (bucket_date, member_id, event_kind, dimension_kind, dimension_value) {
+        bucket_date -> Date,
+        member_id -> BigInt,
+        event_kind -> Text,
+        dimension_kind -> Text,
+        dimension_value -> Text,
+        count -> BigInt,
+    }
+}
+
 diesel::allow_tables_to_appear_in_same_query!(
     statistics,
     site_health,
     daily_routes,
     product_events,
     feed_sources,
-    feed_items
+    feed_items,
+    traffic_hourly,
+    traffic_daily
 );

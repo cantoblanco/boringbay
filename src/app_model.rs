@@ -24,6 +24,7 @@ pub type DynContext = Arc<Context>;
 #[derive(Serialize)]
 struct VistEvent {
     country: String,
+    ip: String,
     member: Membership,
     vt: Option<VisitorType>,
 }
@@ -158,6 +159,7 @@ impl Context {
                     let _ = self.visitor_tx.send(
                         serde_json::json!(VistEvent {
                             country: identity.country,
+                            ip: identity.masked_ip,
                             member,
                             vt: v_type,
                         })

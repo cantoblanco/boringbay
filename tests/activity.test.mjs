@@ -42,7 +42,7 @@ test('a websocket visit updates the rail and creates an expiring privacy-safe po
     country: 'ES',
     member: { name: '测试博客', domain: 'example.com' },
     vt: 2,
-    ip: '203.0.113.9'
+    ip: '203.****.9'
   });
 
   assert.equal(rendered, true);
@@ -50,6 +50,7 @@ test('a websocket visit updates the rail and creates an expiring privacy-safe po
   assert.equal(toasts.children.length, 1);
   assert.match(flattenText(toasts.children[0]), /无聊的沙雕 \+1/);
   assert.match(flattenText(toasts.children[0]), /ES/);
+  assert.match(flattenText(toasts.children[0]), /203\.\*\*\*\*\.9/);
   assert.match(flattenText(toasts.children[0]), /测试博客/);
   assert.doesNotMatch(flattenText(toasts.children[0]), /203\.0\.113\.9/);
   assert.equal(timers[0].delay, 10_000);

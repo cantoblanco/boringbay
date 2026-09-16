@@ -1,9 +1,10 @@
 function activityCopy(data) {
   if (!data?.member?.name || !data?.member?.domain) return null;
   const country = data.country || '未知地区';
+  const location = data.ip ? `${country} · ${data.ip}` : country;
   return data.vt === 2
-    ? { before: `来自「${country}」的访客访问了 `, after: '。' }
-    : { before: `来自「${country}」的访客从 `, after: ' 来到了无聊湾。' };
+    ? { before: `来自「${location}」的访客访问了 `, after: '。' }
+    : { before: `来自「${location}」的访客从 `, after: ' 来到了无聊湾。' };
 }
 
 function appendActivity(document, parent, data, copy) {

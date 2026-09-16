@@ -66,6 +66,14 @@
         </tbody></table>{% endif %}
     </section>
 
+    <section class="analytics-panel card table-responsive">
+        <h2>增长成员</h2>
+        {% if analytics.growth_members.is_empty() %}<p class="empty-state">暂时还没有足够的对比数据。</p>{% else %}
+        <table class="table"><thead><tr><th>成员</th><th>本期互动</th><th>较上期</th><th>详情</th></tr></thead><tbody>
+        {% for row in analytics.growth_members %}<tr><td>{{ row.membership.name|e }}</td><td>{{ row.total }}</td><td>{{ row.growth }}</td><td><a href="/analytics/{{ row.membership.domain|e }}">查看</a></td></tr>{% endfor %}
+        </tbody></table>{% endif %}
+    </section>
+
     <p class="analytics-note">国家、来源和入口单项不足 3 次时合并为“其他”。历史详细维度从本版本启用后开始；UV/RV 历史总量来自原统计表。</p>
 </div>
 {% endblock %}

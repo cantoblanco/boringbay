@@ -108,6 +108,7 @@ pub async fn ws_upgrade(
 
 async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
     let mut rx = ctx.visitor_rx.clone();
+    rx.borrow_and_update();
     let mut interval = tokio::time::interval(Duration::from_secs(8));
 
     loop {
@@ -629,7 +630,9 @@ struct HourView {
 struct AnalyticsMemberView {
     membership: Membership,
     metrics: MetricSet,
+    total: i64,
     growth: String,
+    growth_percent: i64,
 }
 
 #[derive(Clone)]
@@ -642,6 +645,7 @@ struct AnalyticsView {
     referrers: Vec<DimensionCount>,
     channels: Vec<DimensionCount>,
     members: Vec<AnalyticsMemberView>,
+    growth_members: Vec<AnalyticsMemberView>,
 }
 
 #[derive(Template)]
@@ -816,13 +820,23 @@ fn report_view(
         .members
         .into_iter()
         .filter_map(|row| {
+            let growth_percent = row.growth_percent();
             Some(AnalyticsMemberView {
                 membership: ctx.id2member.get(&row.member_id)?.clone(),
                 metrics: row.metrics,
-                growth: format!("{:+}%", row.growth_percent()),
+                total: row.metrics.total(),
+                growth: format!("{growth_percent:+}%"),
+                growth_percent,
             })
         })
-        .collect();
+        .collect::<Vec<_>>();
+    let mut growth_members = members.clone();
+    growth_members.sort_by(|a, b| {
+        b.growth_percent
+            .cmp(&a.growth_percent)
+            .then_with(|| b.metrics.total().cmp(&a.metrics.total()))
+    });
+    growth_members.truncate(10);
     AnalyticsView {
         days: report.days,
         summaries,
@@ -832,6 +846,7 @@ fn report_view(
         referrers: report.referrers,
         channels: report.channels,
         members,
+        growth_members,
     }
 }
 

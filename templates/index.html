@@ -36,12 +36,13 @@
                     </p>
                 </div>
                 <div class="flex-grow-1 pl-10">
-                    <a target="_blank" rel="noopener" class="text-reset font-weight-bolder member-outbound"
+                    <a target="_blank" rel="noopener" class="text-reset font-weight-bolder member-outbound" data-channel="home"
                         href="https://{{ m.domain }}" data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}"
                         title="{{ m.name|e }}">
                         {{ m.name|e }}
                     </a><br>
                     <small title="{{ m.description|e }}">{{ m.description|e }}</small><br>
+                    <a href="/analytics/{{ m.domain|e }}"><small>公开流量分析</small></a><br>
                     <a target="_blank" rel="noopener" href="https://github.com/{{ m.github_username }}"
                         title="{{ m.github_username|e }}"><small>GitHub · {{ m.github_username|e }}</small></a>
                     {% if v2_enabled %}<button class="favorite-toggle js-passport" type="button" data-favorite="{{ m.id }}" aria-label="收藏 {{ m.name|e }}" hidden>☆</button>{% endif %}
@@ -62,7 +63,7 @@
             {% for feed in feeds %}
             <article class="feed-card">
                 <p class="feed-meta">{{ feed.membership.name|e }} · {{ feed.published }}</p>
-                <h3><a class="feed-outbound" href="{{ feed.item.url|e }}" target="_blank" rel="noopener noreferrer"
+                <h3><a class="feed-outbound" data-channel="feed" href="{{ feed.item.url|e }}" target="_blank" rel="noopener noreferrer"
                     data-member-id="{{ feed.membership.id }}">{{ feed.item.title|e }}</a></h3>
                 {% if !feed.item.summary.is_empty() %}<p>{{ feed.item.summary|e }}</p>{% endif %}
             </article>
@@ -101,6 +102,7 @@
                             title="{{ r.membership.name|e }}">
                             {{ r.membership.name|e }}
                         </a>
+                        <br><a href="/analytics/{{ r.membership.domain|e }}"><small>流量分析</small></a>
                     </td>
                     <td>{{ r.entry.uv }}</td>
                     <td>{{ r.entry.rv }}</td>

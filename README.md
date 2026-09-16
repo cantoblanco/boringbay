@@ -2,7 +2,7 @@
 
 > 无聊人的中继站。发现独立博客，也让独立博客彼此发现。
 
-[线上站点](https://boringbay.com) · [加入无聊湾](https://boringbay.com/join-us) · [排行榜](https://boringbay.com/rank)
+[线上站点](https://boringbay.com) · [公开流量分析](https://boringbay.com/analytics) · [加入无聊湾](https://boringbay.com/join-us) · [排行榜](https://boringbay.com/rank)
 
 无聊湾是一个基于成员互链和匿名访问统计的独立博客联盟。它保留原有的成员列表、UV/RV、等级、排行榜、实时动态与 Badge，同时加入每日航线、公平随机探索、本地护照、漂流瓶文章和分享卡等轻量玩法。
 
@@ -26,6 +26,19 @@ V2 采用渐进增强：关闭功能开关时仍提供原有体验；开启后�
 - **可分享路线**：固定日期链接、Open Graph 信息和 SVG 分享卡
 - **三类榜单**：30 天活跃榜、7 天上升榜、保留历史意义的经典总榜
 - **状态观察**：按最后活动和连续健康检测分为活跃、安静、观察、可移除候选；永不自动删除成员
+- **公开流量分析**：任何人可查看全站或单个成员的 UV、RV、导出点击、趋势、时段、国家与来源
+
+## 公开流量分析
+
+`/analytics` 提供全站总览，`/analytics/:domain` 提供公开成员页。数据只来自无聊湾现有可验证链路：
+
+- 成员页面加载 Badge 产生的去重 UV；
+- 访客从成员域名进入无聊湾产生的去重 RV；
+- 访客从首页、排行榜、路线、随机探索和漂流瓶跳向成员的导出点击。
+
+这些数字不代表成员博客的全部访问量，也不要求成员安装新的统计脚本。UV/RV 保持原有四小时去重语义，导出点击不会影响排行榜。
+
+最近 90 天保留小时级聚合，日级总量长期保留。国家、来源域名和内部入口的单项计数小于 3 时只显示在“其他”中；总 UV、RV 和导出点击仍精确展示。系统不保存原始访问事件或可回溯的访客轨迹。
 
 ## 技术栈
 
@@ -64,9 +77,9 @@ cargo run --release
 | `SYSTEM_DOMAIN` | 是 | 无 | 对外域名；本地可用 `localhost:3000` |
 | `DATABASE_URL` | 是 | 无 | SQLite 文件路径 |
 | `BORINGBAY_V2_ENABLED` | 否 | `true` | V2 默认开启；`false/no/off/0` 可临时回退到旧界面 |
-| `TRUSTED_PROXY_MODE` | 否 | `disabled` | 可选 `disabled` 或 `cloudflare` |
+| `TRUSTED_PROXY_MODE` | 否 | 正式域名为 `boringbay.com` 时是 `cloudflare`，其他域名为 `disabled` | 可选 `disabled` 或 `cloudflare` |
 
-只有服务确实位于 Cloudflare 后方时才应设置 `TRUSTED_PROXY_MODE=cloudflare`。直连部署必须保持 `disabled`，避免信任客户端伪造的 Cloudflare 请求头。
+正式站为兼容原有 UV/RV 统计与实时访问事件，在没有显式配置时继续信任 Cloudflare 请求头。其他域名默认保持 `disabled`；只有服务确实位于 Cloudflare 后方时才应设置 `TRUSTED_PROXY_MODE=cloudflare`，直连部署必须显式保持 `disabled`，避免信任客户端伪造的请求头。
 
 ## 加入无聊湾
 
@@ -137,7 +150,9 @@ https://boringbay.com/api/favicon/example.com
 - 最多跟随 2 次重定向；单次响应上限 1 MiB；只接受 XML/RSS/Atom 类型。
 - 拒绝 DTD/外部实体，摘要转为纯文本并统一转义。
 - Feed、健康检查失败只降级对应模块，不影响首页、排行或 Badge。
-- 不记录或通过 WebSocket 广播完整 IP；访客去重使用进程内短期 HMAC 标识，实时动态最多展示国家/地区。
+- 不记录或通过 WebSocket 广播完整 IP；访客去重使用进程内短期 HMAC 标识。
+- 实时动态由服务端先脱敏 IP：IPv4 仅保留首尾段，IPv6 仅保留前后各两段。脱敏值只进入当次 WebSocket 弹窗，不写数据库、日志或历史分析。
+- 公开分析只存小时/日聚合；国家、来源和入口小于 3 次时合并为“其他”。
 
 ## 测试
 
@@ -145,14 +160,14 @@ https://boringbay.com/api/favicon/example.com
 cargo fmt -- --check
 cargo clippy --all-targets --all-features -- -D warnings
 cargo test --locked --all-targets
-node --test tests/passport.test.mjs
+node --test tests/*.test.mjs
 node --check resources/static/app.js
 node --check resources/static/discovery.js
 node --check resources/static/passport.js
 cargo build --release --locked
 ```
 
-测试覆盖旧 API 兼容、数据库迁移、三类排行、30/60/90 天状态边界、确定性每日航线、公平随机、Feed 解析与安全清洗、V1/V2 页面和本地护照。
+测试覆盖旧 API 兼容、数据库迁移、三类排行、30/60/90 天状态边界、确定性每日航线、公平随机、Feed 解析与安全清洗、V1/V2 页面、本地护照、脱敏 IP 与公开聚合分析。
 
 ## 部署与升级
 
@@ -181,6 +196,8 @@ SQLite 在建池前由单连接切换到 WAL；池连接启用外键和 5 秒 bu
 | --- | --- |
 | `/` | 首页和成员列表 |
 | `/rank` | 排行榜和成员状态 |
+| `/analytics` | 全站公开流量分析 |
+| `/analytics/:domain` | 单个成员公开流量分析 |
 | `/route/:date` | 指定日期的五站航线 |
 | `/join-us` | 加入说明与 Badge 示例 |
 | `/api/discovery/today` | 今日航线 JSON |
@@ -191,7 +208,7 @@ SQLite 在建池前由单连接切换到 WAL；池连接启用外键和 5 秒 bu
 ## 项目结构
 
 ```text
-src/                  Rust 应用、排行、探索、Feed、健康与分享逻辑
+src/                  Rust 应用、排行、分析、探索、Feed、健康与分享逻辑
 templates/            Askama 服务端模板
 resources/static/     CSS 与原生 JavaScript
 resources/membership.json
@@ -204,6 +221,8 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 
 - [V2 设计与风险登记](docs/superpowers/specs/2026-09-16-boringbay-v2-design.md)
 - [V2 实施计划](docs/superpowers/plans/2026-09-16-boringbay-v2-implementation.md)
+- [公开流量分析设计](docs/superpowers/specs/2026-09-16-boringbay-public-analytics-design.md)
+- [公开流量分析实施计划](docs/superpowers/plans/2026-09-16-boringbay-public-analytics.md)
 
 ## 贡献者
 

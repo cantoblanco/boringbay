@@ -1,9 +1,9 @@
 import { createPassport } from './passport.js';
 
-function track(kind, memberId = null) {
+function track(kind, memberId = null, channel = null) {
   fetch('/api/events', {
     method: 'POST', headers: { 'content-type': 'application/json' }, keepalive: true,
-    body: JSON.stringify({ kind, member_id: memberId })
+    body: JSON.stringify({ kind, member_id: memberId, channel })
   }).catch(() => {});
 }
 
@@ -44,11 +44,11 @@ if (passport) {
   };
   document.querySelectorAll('.member-outbound').forEach(link => link.addEventListener('click', () => {
     passport.visit(Number(link.dataset.memberId), (link.dataset.tags || '').split(',').filter(Boolean));
-    track('member_outbound', Number(link.dataset.memberId));
+    track('member_outbound', Number(link.dataset.memberId), link.dataset.overrideChannel || link.dataset.channel || 'unknown');
     update();
   }));
   document.querySelectorAll('.feed-outbound').forEach(link => link.addEventListener('click', () => {
-    track('feed_outbound', Number(link.dataset.memberId));
+    track('feed_outbound', Number(link.dataset.memberId), 'feed');
   }));
   document.querySelectorAll('[data-favorite]').forEach(button => button.addEventListener('click', () => {
     passport.toggleFavorite(button.dataset.favorite);
@@ -59,7 +59,11 @@ if (passport) {
     const state = passport.state();
     const candidates = [...document.querySelectorAll('[data-member-card] .member-outbound')];
     const target = candidates.find(link => !state.visitedMemberIds.includes(Number(link.dataset.memberId))) || candidates[0];
-    target?.click();
+    if (target) {
+      target.dataset.overrideChannel = 'random';
+      target.click();
+      delete target.dataset.overrideChannel;
+    }
   });
   document.querySelector('[data-route-complete]')?.addEventListener('click', () => {
     const route = document.querySelector('[data-route-date]');

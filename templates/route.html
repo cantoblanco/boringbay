@@ -28,7 +28,7 @@
         <div>
             <h2>{{ m.name|e }}</h2>
             <p>{{ m.description|e }}</p>
-            <a class="btn member-outbound" target="_blank" rel="noopener" href="https://{{ m.domain }}"
+            <a class="btn member-outbound" data-channel="route" target="_blank" rel="noopener" href="https://{{ m.domain }}"
                data-member-id="{{ m.id }}" data-tags="{{ m.tag_csv() }}">登岛看看</a>
         </div>
         <span class="route-stamp" aria-label="尚未访问">○</span>

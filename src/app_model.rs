@@ -2,6 +2,7 @@ use std::fs;
 use std::time::Duration;
 use std::{collections::HashMap, sync::Arc};
 
+use crate::analytics::{AnalyticsEvent, AnalyticsEventKind, AnalyticsService};
 use crate::statistics_model::Statistics;
 use crate::{boring_face::BoringFace, DbPool};
 use crate::{
@@ -24,6 +25,7 @@ pub type DynContext = Arc<Context>;
 #[derive(Serialize)]
 struct VistEvent {
     country: String,
+    ip: String,
     member: Membership,
     vt: Option<VisitorType>,
 }
@@ -105,6 +107,7 @@ impl Context {
             }
 
             let mut notification = false;
+            let mut analytics_kind = None;
 
             let mut referrer = self.referrer.write().await;
             let mut dist_r = referrer
@@ -121,6 +124,7 @@ impl Context {
                     dist_r.0 += 1;
                     dist_r.1 = now_shanghai();
                     referrer.insert(*id, dist_r);
+                    analytics_kind = Some(AnalyticsEventKind::InboundReferral);
                 }
                 notification = identity.is_some();
             }
@@ -141,12 +145,28 @@ impl Context {
                     dist_uv.0 += 1;
                     dist_uv.1 = now_shanghai();
                     uv.insert(*id, dist_uv);
+                    analytics_kind = Some(AnalyticsEventKind::BadgeView);
                 }
                 notification = identity.is_some();
             }
             drop(uv);
 
             let tend = self.get_tend_from_uv_and_rv(dist_uv.0, dist_r.0).await;
+
+            if let (Some(kind), Some(identity)) = (analytics_kind, identity.as_ref()) {
+                let event = AnalyticsEvent {
+                    at: now_shanghai(),
+                    member_id: *id,
+                    kind,
+                    country: Some(identity.country.clone()),
+                    referrer_domain: (kind == AnalyticsEventKind::InboundReferral)
+                        .then(|| domain.to_string()),
+                    channel: None,
+                };
+                if let Err(error) = AnalyticsService::new(self.db_pool.clone()).record(event) {
+                    tracing::warn!(member_id = *id, event_kind = kind.as_str(), %error, "traffic aggregate write failed");
+                }
+            }
 
             if notification {
                 let mut member = self.id2member.get(id).unwrap().to_owned();
@@ -158,6 +178,7 @@ impl Context {
                     let _ = self.visitor_tx.send(
                         serde_json::json!(VistEvent {
                             country: identity.country,
+                            ip: identity.masked_ip,
                             member,
                             vt: v_type,
                         })
@@ -184,7 +205,17 @@ impl Context {
 
         statistics.iter().for_each(|s| {
             page_view.insert(s.membership_id, (s.unique_visitor, s.updated_at));
-            referrer.insert(s.membership_id, (s.referrer, s.latest_referrer_at));
+            referrer.insert(
+                s.membership_id,
+                (
+                    s.referrer,
+                    s.latest_referrer_at.unwrap_or_else(|| {
+                        chrono::DateTime::from_timestamp(0, 0)
+                            .expect("unix epoch")
+                            .naive_utc()
+                    }),
+                ),
+            );
         });
 
         let mut membership: HashMap<i64, Membership> =
@@ -317,7 +348,7 @@ impl Context {
                         unique_visitor: id_uv.0,
                         updated_at: id_uv.1,
                         referrer: id_referrer.0,
-                        latest_referrer_at: id_referrer.1,
+                        latest_referrer_at: Some(id_referrer.1),
                         id: 0,
                     },
                 )

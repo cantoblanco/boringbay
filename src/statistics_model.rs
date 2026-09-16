@@ -20,12 +20,14 @@ pub struct Statistics {
     pub membership_id: i64,
     pub unique_visitor: i64,
     pub referrer: i64,
-    pub latest_referrer_at: NaiveDateTime,
+    pub latest_referrer_at: Option<NaiveDateTime>,
 }
 
 impl Statistics {
     pub fn last_activity(&self) -> NaiveDateTime {
-        self.updated_at.max(self.latest_referrer_at)
+        self.latest_referrer_at
+            .map(|value| self.updated_at.max(value))
+            .unwrap_or(self.updated_at)
     }
 
     pub fn insert_or_update(
@@ -161,14 +163,7 @@ impl Statistics {
                                     .naive_utc(),
                             )
                             .to_owned(),
-                        latest_referrer_at: id_to_latest_referrer_at
-                            .get(&s.0)
-                            .unwrap_or(
-                                &chrono::DateTime::from_timestamp(0, 0)
-                                    .expect("unix epoch")
-                                    .naive_utc(),
-                            )
-                            .to_owned(),
+                        latest_referrer_at: id_to_latest_referrer_at.get(&s.0).copied(),
                         membership_id: s.0,
                         unique_visitor: s.2,
                         referrer: s.3,
@@ -229,7 +224,7 @@ mod tests {
             membership_id: 1,
             unique_visitor: 1,
             referrer: 1,
-            latest_referrer_at: inbound,
+            latest_referrer_at: Some(inbound),
         };
         assert_eq!(statistic.last_activity(), inbound);
     }

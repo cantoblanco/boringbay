@@ -1,60 +1,171 @@
-name: Cross compile
+name: CI and release
 
 on:
+  pull_request:
   push:
     branches: [main]
-    paths-ignore:
-      - "docker-compose.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  test:
+    name: Test, lint and format
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the exact revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache Cargo files
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-test-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-test-
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --locked --all-targets --all-features -- -D warnings
+
+      - name: Run Rust tests
+        run: cargo test --locked --all-targets
+
+      - name: Run browser-state tests
+        run: |
+          node --test tests/passport.test.mjs
+          node --check resources/static/app.js
+          node --check resources/static/discovery.js
+          node --check resources/static/passport.js
+
   compile:
-    runs-on: ubuntu-latest
+    name: Build ${{ matrix.target }}
+    needs: test
+    runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         include:
           - target: x86_64-unknown-linux-gnu
-            docker: linux/amd64
+            artifact: linux-amd64-artifact
+            artifact_path: artifact/linux/amd64
             cross: false
-            binary: naive
           - target: aarch64-unknown-linux-gnu
-            docker: linux/arm64
+            artifact: linux-arm64-artifact
+            artifact_path: artifact/linux/arm64
             cross: true
-            binary: naive
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out the exact revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup cargo cache
-        uses: actions/cache@v3
+      - name: Cache Cargo files and cross
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            ~/.cargo/bin/cross
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-${{ matrix.target }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.target }}-cargo-
+            ${{ runner.os }}-${{ matrix.target }}-
 
-      - name: install toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: ${{ matrix.target }}
-          override: true
+      - name: Install target
+        run: rustup target add ${{ matrix.target }}
 
-      - name: compile
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: ${{ matrix.cross }}
-          command: build
-          args: --release --target=${{ matrix.target }}
-
-      - name: Move target
+      - name: Install cross
+        if: matrix.cross
         run: |
-          mkdir -p artifact/${{ matrix.docker }}/
-          mv target/${{ matrix.target }}/release/${{ matrix.binary }} artifact/${{ matrix.docker }}/
+          if ! command -v cross >/dev/null 2>&1; then
+            cargo install cross --version 0.2.5 --locked
+          fi
+
+      - name: Build release binary
+        run: |
+          if [ "${{ matrix.cross }}" = "true" ]; then
+            cross build --release --locked --target "${{ matrix.target }}"
+          else
+            cargo build --release --locked --target "${{ matrix.target }}"
+          fi
+
+      - name: Stage release binary
+        run: |
+          mkdir -p "${{ matrix.artifact_path }}"
+          cp "target/${{ matrix.target }}/release/naive" "${{ matrix.artifact_path }}/naive"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: ${{ matrix.docker == 'linux/amd64' && 'linux-amd64-artifact' || 'linux-arm64-artifact' }}
-          path: artifact/
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact_path }}/naive
+          if-no-files-found: error
+          retention-days: 3
 
+  package-image:
+    name: Build and optionally publish multi-architecture image
+    needs: [test, compile]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Check out the exact revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download amd64 binary
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: linux-amd64-artifact
+          path: artifact/linux/amd64
+
+      - name: Download arm64 binary
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: linux-arm64-artifact
+          path: artifact/linux/arm64
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build and push the exact tested revision
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: |
+            ghcr.io/cantoblanco/boringbay:latest
+            ghcr.io/cantoblanco/boringbay:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: true
+          sbom: true

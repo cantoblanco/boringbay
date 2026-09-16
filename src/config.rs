@@ -33,8 +33,7 @@ impl AppConfig {
     pub fn from_env() -> anyhow::Result<Self> {
         let system_domain = env::var("SYSTEM_DOMAIN").context("SYSTEM_DOMAIN is required")?;
         let database_url = env::var("DATABASE_URL").context("DATABASE_URL is required")?;
-        let v2_enabled =
-            parse_bool(&env::var("BORINGBAY_V2_ENABLED").unwrap_or_else(|_| "false".to_string()))?;
+        let v2_enabled = parse_v2_enabled(env::var("BORINGBAY_V2_ENABLED").ok())?;
         let trusted_proxy_mode = TrustedProxyMode::parse(
             &env::var("TRUSTED_PROXY_MODE").unwrap_or_else(|_| "disabled".to_string()),
         )?;
@@ -64,6 +63,10 @@ fn parse_bool(value: &str) -> anyhow::Result<bool> {
     }
 }
 
+fn parse_v2_enabled(value: Option<String>) -> anyhow::Result<bool> {
+    value.as_deref().map(parse_bool).unwrap_or(Ok(true))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -78,5 +81,11 @@ mod tests {
         assert!(parse_bool("yes").unwrap());
         assert!(!parse_bool("OFF").unwrap());
         assert!(parse_bool("maybe").is_err());
+    }
+
+    #[test]
+    fn v2_is_enabled_by_default_but_can_be_disabled() {
+        assert!(parse_v2_enabled(None).unwrap());
+        assert!(!parse_v2_enabled(Some("false".to_string())).unwrap());
     }
 }

@@ -6,8 +6,13 @@ use axum::{
 };
 use diesel::prelude::*;
 use diesel::sql_types::{BigInt, Text, Timestamp};
-use http_body::Body as _;
+use http_body_util::BodyExt as _;
 use tower::ServiceExt;
+
+async fn body_text(body: Body) -> String {
+    let bytes = body.collect().await.unwrap().to_bytes();
+    String::from_utf8(bytes.to_vec()).unwrap()
+}
 
 async fn page(uri: &str) -> String {
     let (_tmp, app) = common::temporary_app().await;
@@ -16,12 +21,7 @@ async fn page(uri: &str) -> String {
         .await
         .unwrap();
     assert_eq!(response.status(), StatusCode::OK);
-    let mut body = response.into_body();
-    let mut bytes = Vec::new();
-    while let Some(chunk) = body.data().await {
-        bytes.extend_from_slice(&chunk.unwrap());
-    }
-    String::from_utf8(bytes).unwrap()
+    body_text(response.into_body()).await
 }
 
 #[tokio::test]
@@ -53,12 +53,7 @@ async fn v1_home_has_no_v2_controls_and_route_is_hidden() {
         .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
         .await
         .unwrap();
-    let mut body = home.into_body();
-    let mut bytes = Vec::new();
-    while let Some(chunk) = body.data().await {
-        bytes.extend_from_slice(&chunk.unwrap());
-    }
-    let html = String::from_utf8(bytes).unwrap();
+    let html = body_text(home.into_body()).await;
     assert!(!html.contains("data-random-discovery"));
 
     let route = app
@@ -119,12 +114,7 @@ async fn cached_feed_items_appear_as_safe_outbound_drift_bottles() {
         .await
         .unwrap();
     assert_eq!(response.status(), StatusCode::OK);
-    let mut body = response.into_body();
-    let mut bytes = Vec::new();
-    while let Some(chunk) = body.data().await {
-        bytes.extend_from_slice(&chunk.unwrap());
-    }
-    let html = String::from_utf8(bytes).unwrap();
+    let html = body_text(response.into_body()).await;
     assert!(html.contains("A cached post"));
     assert!(html.contains("Short safe summary"));
     assert!(html.contains("class=\"feed-outbound\""));
@@ -145,12 +135,7 @@ async fn route_has_share_metadata_and_safe_svg_card() {
         .await
         .unwrap();
     assert_eq!(route.status(), StatusCode::OK);
-    let mut body = route.into_body();
-    let mut bytes = Vec::new();
-    while let Some(chunk) = body.data().await {
-        bytes.extend_from_slice(&chunk.unwrap());
-    }
-    let html = String::from_utf8(bytes).unwrap();
+    let html = body_text(route.into_body()).await;
     assert!(html.contains("property=\"og:image\""));
     assert!(html.contains("data-share-route"));
 

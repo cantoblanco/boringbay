@@ -1,5 +1,5 @@
 use chrono::{NaiveDateTime, NaiveTime};
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use naive::{
     app_model::{Context, DynContext},
     build_router,
@@ -71,8 +71,10 @@ async fn main() {
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     tracing::debug!("listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .expect("failed to bind HTTP listener");
+    axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal(ctx_clone_for_shutdown))
         .await
         .unwrap();

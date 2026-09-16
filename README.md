@@ -29,9 +29,9 @@ V2 采用渐进增强：关闭功能开关时仍提供原有体验；开启后�
 
 ## 技术栈
 
-- Rust 2021
-- Axum + Askama
-- Diesel + SQLite
+- Rust 2021（工具链固定为 1.98.1）
+- Axum 0.8 + Askama 0.16
+- Diesel 2.3 + SQLite
 - 服务端渲染，少量原生 ES Modules
 - 加法数据库迁移；启动时自动执行待处理迁移
 
@@ -50,7 +50,6 @@ V2 采用渐进增强：关闭功能开关时仍提供原有体验；开启后�
 ```bash
 export SYSTEM_DOMAIN=localhost:3000
 export DATABASE_URL=/tmp/boringbay.db
-export BORINGBAY_V2_ENABLED=true
 export TRUSTED_PROXY_MODE=disabled
 
 cargo run --release
@@ -64,7 +63,7 @@ cargo run --release
 | --- | --- | --- | --- |
 | `SYSTEM_DOMAIN` | 是 | 无 | 对外域名；本地可用 `localhost:3000` |
 | `DATABASE_URL` | 是 | 无 | SQLite 文件路径 |
-| `BORINGBAY_V2_ENABLED` | 否 | `false` | `true/yes/on/1` 开启 V2，`false/no/off/0` 关闭 |
+| `BORINGBAY_V2_ENABLED` | 否 | `true` | V2 默认开启；`false/no/off/0` 可临时回退到旧界面 |
 | `TRUSTED_PROXY_MODE` | 否 | `disabled` | 可选 `disabled` 或 `cloudflare` |
 
 只有服务确实位于 Cloudflare 后方时才应设置 `TRUSTED_PROXY_MODE=cloudflare`。直连部署必须保持 `disabled`，避免信任客户端伪造的 Cloudflare 请求头。
@@ -161,13 +160,20 @@ cargo build --release --locked
 
 1. 备份 `DATABASE_URL` 指向的 SQLite 文件。
 2. 使用同一份 `migrations/`、`resources/`、`templates/` 与新二进制启动。
-3. 先设置 `BORINGBAY_V2_ENABLED=false` 完成旧页面和 API 冒烟测试。
-4. 再启用 V2，检查首页、三类排行、今日航线、Badge、Feed 和 WebSocket。
+3. 不设置 `BORINGBAY_V2_ENABLED`，按默认开启的 V2 检查首页、三类排行、今日航线、Badge、Feed 和 WebSocket。
+4. 如果需要快速回退界面，可临时设置 `BORINGBAY_V2_ENABLED=false`；旧页面和原有 API 仍可继续使用。
 5. 保留上一版二进制与数据库备份，以便快速回滚。
 
 SQLite 在建池前由单连接切换到 WAL；池连接启用外键和 5 秒 busy timeout，降低统计、Feed 与健康任务并发时的锁竞争。
 
 `Dockerfile` 面向 CI 生成的 `artifact/$TARGETPLATFORM/naive`，并把 `migrations/`、`resources/`、`templates/` 复制到 `/webapp`。运行容器时应持久化 `/webapp/data`，并设置上述环境变量。
+
+## 自动构建与发布
+
+- Pull Request 会运行格式检查、严格 Clippy、Rust/Node 测试，分别构建 amd64 与 arm64 发布二进制，并实际组装多架构容器但不推送。
+- 合并到 `main` 后，同一工作流使用同一提交产生的两个二进制构建多架构镜像，不再从另一个工作流猜测或重新检出提交。
+- 镜像发布到 `ghcr.io/cantoblanco/boringbay:latest`，同时保留 `sha-<完整提交 SHA>` 标签便于追溯和回滚。
+- 第三方 Actions 均固定到完整提交 SHA；发布镜像包含 provenance 与 SBOM。
 
 ## 主要路由
 

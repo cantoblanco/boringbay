@@ -11,12 +11,11 @@ use axum::{
         ws::{Message, WebSocket},
         Extension, Path, Query, WebSocketUpgrade,
     },
-    http::StatusCode,
-    response::{Headers, Html, IntoResponse, Response},
+    http::{header, HeaderMap, StatusCode},
+    response::{Html, IntoResponse, Response},
     Json,
 };
 use chrono::{NaiveDate, NaiveDateTime};
-use headers::HeaderMap;
 use serde::Deserialize;
 use tokio::select;
 
@@ -81,13 +80,13 @@ async fn handle_socket(ctx: Arc<Context>, mut socket: WebSocket) {
         select! {
             Ok(()) = rx.changed() => {
                 let msg = rx.borrow().to_string();
-                let res = socket.send(Message::Text(msg.clone())).await;
+                let res = socket.send(Message::Text(msg.clone().into())).await;
                 if res.is_err() {
                     break;
                 }
             }
             _ = interval.tick() => {
-                let res = socket.send(Message::Ping(vec![])).await;
+                let res = socket.send(Message::Ping(Vec::new().into())).await;
                 if res.is_err() {
                     break;
                 }
@@ -116,7 +115,7 @@ pub async fn show_badge(
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
-            Headers([("content-type", "text/plain")]),
+            [(header::CONTENT_TYPE, "text/plain")],
             tend.err().unwrap().to_string(),
         )
             .into_response();
@@ -146,16 +145,16 @@ pub async fn show_badge_v2(
     match ctx.boring_visitor(visitor_type, &domain, &headers).await {
         Ok((name, uv, rv, level)) => (
             StatusCode::OK,
-            Headers([
-                ("content-type", "image/svg+xml; charset=utf-8"),
-                ("cache-control", "public, max-age=300"),
-            ]),
+            [
+                (header::CONTENT_TYPE, "image/svg+xml; charset=utf-8"),
+                (header::CACHE_CONTROL, "public, max-age=300"),
+            ],
             render_member_badge_svg(name, uv, rv, level),
         )
             .into_response(),
         Err(error) => (
             StatusCode::NOT_FOUND,
-            Headers([("content-type", "text/plain")]),
+            [(header::CONTENT_TYPE, "text/plain")],
             error.to_string(),
         )
             .into_response(),
@@ -173,7 +172,7 @@ pub async fn show_favicon(
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
-            Headers([("content-type", "text/plain")]),
+            [(header::CONTENT_TYPE, "text/plain")],
             tend.err().unwrap().to_string(),
         )
             .into_response();
@@ -192,7 +191,7 @@ pub async fn show_icon(
     if tend.is_err() {
         return (
             StatusCode::NOT_FOUND,
-            Headers([("content-type", "text/plain")]),
+            [(header::CONTENT_TYPE, "text/plain")],
             tend.err().unwrap().to_string(),
         )
             .into_response();
@@ -413,10 +412,10 @@ pub async fn route_share_image(
     match daily_route_response(&ctx, date) {
         Ok(route) => (
             StatusCode::OK,
-            Headers([
-                ("content-type", "image/svg+xml; charset=utf-8"),
-                ("cache-control", "public, max-age=86400, immutable"),
-            ]),
+            [
+                (header::CONTENT_TYPE, "image/svg+xml; charset=utf-8"),
+                (header::CACHE_CONTROL, "public, max-age=86400, immutable"),
+            ],
             render_route_svg(date, &route.members),
         )
             .into_response(),
@@ -666,7 +665,7 @@ fn get_domain_from_referrer(headers: &HeaderMap) -> Result<String, anyhow::Error
 }
 
 async fn render_svg(tend: (&str, i64, i64, i64), render: &BoringFace) -> Response {
-    let headers = Headers([("content-type", "image/svg+xml")]);
+    let headers = [(header::CONTENT_TYPE, "image/svg+xml")];
     (
         StatusCode::OK,
         headers,

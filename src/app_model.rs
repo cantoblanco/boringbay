@@ -12,8 +12,8 @@ use crate::{
 
 use crate::membership_model::Membership;
 use anyhow::anyhow;
+use axum::http::HeaderMap;
 use chrono::{NaiveDateTime, NaiveTime};
-use headers::HeaderMap;
 use serde::Serialize;
 use serde_repr::*;
 use tokio::sync::watch::{self, Receiver, Sender};
@@ -91,7 +91,7 @@ impl Context {
                 .as_ref()
                 .map(|identity| format!("{}_{}_{:?}", identity.dedupe_key, id, v_type));
             let visitor_cache = match visitor_key.as_ref() {
-                Some(key) => self.cache.get(key).await,
+                Some(key) => self.cache.get(key),
                 None => Some(()),
             };
 
@@ -100,8 +100,7 @@ impl Context {
             {
                 if let Some(visitor_key) = visitor_key {
                     self.cache
-                        .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)))
-                        .await;
+                        .set(visitor_key, (), Some(Duration::from_secs(60 * 60 * 4)));
                 }
             }
 
@@ -336,7 +335,7 @@ impl Context {
                 uv_cache.clear();
                 referrer_cache.clear();
                 // 重置访问打点
-                self.cache.clear().await;
+                self.cache.clear();
                 // 更新上日访问量均值
                 let mut rank_svg = self.rank_svg.write().await;
                 *rank_svg = Statistics::prev_day_rank_avg(self.db_pool.get().unwrap());

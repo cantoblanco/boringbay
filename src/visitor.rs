@@ -1,6 +1,5 @@
-use headers::HeaderMap;
-use hmac::{Hmac, Mac};
-use rand::{rngs::OsRng, RngCore};
+use axum::http::HeaderMap;
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 
 use crate::config::TrustedProxyMode;
@@ -14,9 +13,9 @@ pub struct VisitorHasher {
 
 impl VisitorHasher {
     pub fn random() -> Self {
-        let mut key = [0_u8; 32];
-        OsRng.fill_bytes(&mut key);
-        Self { key }
+        Self {
+            key: rand::random(),
+        }
     }
 
     pub fn from_key(key: [u8; 32]) -> Self {
@@ -24,7 +23,8 @@ impl VisitorHasher {
     }
 
     fn digest(&self, value: &[u8]) -> String {
-        let mut mac = HmacSha256::new_from_slice(&self.key).expect("HMAC accepts a 32-byte key");
+        let mut mac =
+            <HmacSha256 as KeyInit>::new_from_slice(&self.key).expect("HMAC accepts a 32-byte key");
         mac.update(value);
         hex::encode(mac.finalize().into_bytes())
     }

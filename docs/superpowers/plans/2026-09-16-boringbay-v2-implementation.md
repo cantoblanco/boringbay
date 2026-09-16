@@ -137,7 +137,7 @@ pub struct AppConfig {
 pub enum TrustedProxyMode { Disabled, Cloudflare }
 ```
 
-`BORINGBAY_V2_ENABLED` defaults to `false`; `TRUSTED_PROXY_MODE` defaults to `disabled` and accepts only `disabled` or `cloudflare`.
+`BORINGBAY_V2_ENABLED` initially defaulted to `false` during local rollout; after acceptance it defaults to `true` while still allowing an explicit `false` rollback. `TRUSTED_PROXY_MODE` defaults to `disabled` and accepts only `disabled` or `cloudflare`.
 
 - [ ] **Step 4: Write failing old-route compatibility tests**
 
@@ -351,7 +351,7 @@ git commit -m "feat: add transparent ranking views"
 - [ ] **Step 1: Add the shared HTTP client dependency**
 
 ```toml
-reqwest = { version = "0.11", default-features = false, features = ["rustls-tls", "gzip"] }
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "gzip"] }
 ```
 
 - [ ] **Step 2: Create additive migration SQL**

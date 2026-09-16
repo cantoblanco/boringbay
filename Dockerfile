@@ -1,12 +1,13 @@
-FROM ubuntu:latest
+FROM ubuntu:24.04
 ARG TARGETPLATFORM
 ENV TZ="Asia/Shanghai"
 
-RUN export DEBIAN_FRONTEND="noninteractive" && apt update && apt install -y ca-certificates tzdata \
-    libsqlite3-dev && \
+RUN export DEBIAN_FRONTEND="noninteractive" && apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates tzdata && \
     update-ca-certificates && \
     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
-    dpkg-reconfigure tzdata
+    dpkg-reconfigure --frontend noninteractive tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /webapp
 COPY ./artifact/$TARGETPLATFORM/naive ./naive

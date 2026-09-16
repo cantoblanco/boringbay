@@ -5,7 +5,7 @@ use anyhow::{anyhow, Result};
 use chrono::{NaiveDate, NaiveDateTime};
 use diesel::prelude::*;
 use rand::rngs::StdRng;
-use rand::{Rng, SeedableRng};
+use rand::{RngExt, SeedableRng};
 use serde::Serialize;
 
 use crate::membership_model::Membership;
@@ -134,7 +134,7 @@ pub fn ordered_candidates(
         .map(|member| {
             let count = exposure.get(&member.id).copied().unwrap_or(0).max(0) as f64;
             let weight = 1.0 / (1.0 + count);
-            let key = rng.gen::<f64>().powf(1.0 / weight);
+            let key = rng.random::<f64>().powf(1.0 / weight);
             (member.id, key)
         })
         .collect::<Vec<_>>();

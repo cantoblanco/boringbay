@@ -2,9 +2,9 @@ use std::sync::Arc;
 
 use anyhow::anyhow;
 use axum::{
-    http::StatusCode,
-    routing::{get, get_service, post},
-    AddExtensionLayer, Router,
+    extract::Extension,
+    routing::{get, post},
+    Router,
 };
 use chrono::{NaiveDateTime, Utc};
 use chrono_tz::Asia::Shanghai;
@@ -86,30 +86,22 @@ pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) 
         .nest(
             "/api",
             Router::new()
-                .route("/badge/:domain", get(show_badge))
-                .route("/badge-v2/:domain", get(show_badge_v2))
-                .route("/favicon/:domain", get(show_favicon))
-                .route("/icon/:domain", get(show_icon))
+                .route("/badge/{domain}", get(show_badge))
+                .route("/badge-v2/{domain}", get(show_badge_v2))
+                .route("/favicon/{domain}", get(show_favicon))
+                .route("/icon/{domain}", get(show_icon))
                 .route("/ws", get(ws_upgrade))
                 .route("/events", post(record_event)),
         )
         .route("/", get(home_page))
         .route("/join-us", get(join_us_page))
         .route("/rank", get(rank_page))
-        .route("/route/:date", get(route_page))
+        .route("/route/{date}", get(route_page))
         .route("/api/discovery/today", get(discovery_today))
-        .route("/api/share/route/:date.svg", get(route_share_image))
-        .nest(
-            "/static",
-            get_service(ServeDir::new("resources/static")).handle_error(|error| async move {
-                (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("static file error: {error}"),
-                )
-            }),
-        )
-        .layer(AddExtensionLayer::new(ctx))
-        .layer(AddExtensionLayer::new(config))
+        .route("/api/share/route/{date}", get(route_share_image))
+        .nest_service("/static", ServeDir::new("resources/static"))
+        .layer(Extension(ctx))
+        .layer(Extension(config))
 }
 
 pub fn now_shanghai() -> NaiveDateTime {

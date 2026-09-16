@@ -16,9 +16,9 @@ use diesel::{
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use tower_http::services::ServeDir;
 
+pub mod analytics;
 pub mod app_model;
 pub mod app_router;
-pub mod analytics;
 pub mod boring_face;
 pub mod config;
 pub mod discovery;
@@ -79,9 +79,9 @@ pub fn run_migrations(conn: &mut SqliteConnection) -> anyhow::Result<()> {
 
 pub fn build_router(ctx: app_model::DynContext, config: Arc<config::AppConfig>) -> Router {
     use app_router::{
-        analytics_overview_page, discovery_today, home_page, join_us_page,
-        member_analytics_page, rank_page, record_event, route_page, route_share_image,
-        show_badge, show_badge_v2, show_favicon, show_icon, ws_upgrade,
+        analytics_overview_page, discovery_today, home_page, join_us_page, member_analytics_page,
+        rank_page, record_event, route_page, route_share_image, show_badge, show_badge_v2,
+        show_favicon, show_icon, ws_upgrade,
     };
 
     Router::new()

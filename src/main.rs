@@ -1,6 +1,7 @@
 use chrono::{NaiveDateTime, NaiveTime};
 use dotenvy::dotenv;
 use naive::{
+    analytics::AnalyticsService,
     app_model::{Context, DynContext},
     build_router,
     config::AppConfig,
@@ -55,6 +56,17 @@ async fn main() {
                     }
                 }
                 tokio::time::sleep(std::time::Duration::from_secs(60 * 30)).await;
+            }
+        });
+
+        let analytics_service = AnalyticsService::new(context.db_pool.clone());
+        tokio::spawn(async move {
+            tokio::time::sleep(std::time::Duration::from_secs(60 * 5)).await;
+            loop {
+                if let Err(error) = analytics_service.prune_hourly(now_shanghai()) {
+                    tracing::warn!(%error, "analytics retention cleanup failed");
+                }
+                tokio::time::sleep(std::time::Duration::from_secs(60 * 60 * 24)).await;
             }
         });
     }

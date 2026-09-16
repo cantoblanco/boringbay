@@ -128,10 +128,7 @@ mod tests {
             mask_ip("2001:db8:1:2:3:4:5:6").as_deref(),
             Some("2001:db8:****:5:6")
         );
-        assert_eq!(
-            mask_ip("2001:db8::7").as_deref(),
-            Some("2001:db8:****:0:7")
-        );
+        assert_eq!(mask_ip("2001:db8::7").as_deref(), Some("2001:db8:****:0:7"));
         assert_eq!(mask_ip("not-an-ip"), None);
     }
 }

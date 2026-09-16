@@ -7,8 +7,8 @@ use axum::{
 use diesel::prelude::*;
 use diesel::sql_types::{BigInt, Text, Timestamp};
 use http_body_util::BodyExt as _;
-use tower::ServiceExt;
 use naive::analytics::{AnalyticsEvent, AnalyticsEventKind, AnalyticsService};
+use tower::ServiceExt;
 
 async fn body_text(body: Body) -> String {
     let bytes = body.collect().await.unwrap().to_bytes();

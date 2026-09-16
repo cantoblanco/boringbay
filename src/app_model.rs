@@ -2,8 +2,8 @@ use std::fs;
 use std::time::Duration;
 use std::{collections::HashMap, sync::Arc};
 
-use crate::statistics_model::Statistics;
 use crate::analytics::{AnalyticsEvent, AnalyticsEventKind, AnalyticsService};
+use crate::statistics_model::Statistics;
 use crate::{boring_face::BoringFace, DbPool};
 use crate::{
     config::{AppConfig, TrustedProxyMode},

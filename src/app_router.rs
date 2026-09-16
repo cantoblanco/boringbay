@@ -70,7 +70,10 @@ pub async fn record_event(
         input.member_id,
     ) {
         Ok(()) => {
-            if matches!(kind, ProductEventKind::MemberOutbound | ProductEventKind::FeedOutbound) {
+            if matches!(
+                kind,
+                ProductEventKind::MemberOutbound | ProductEventKind::FeedOutbound
+            ) {
                 if let Some(member_id) = input.member_id {
                     let identity = crate::visitor::VisitorIdentity::from_headers(
                         &headers,
@@ -726,7 +729,11 @@ fn analytics_range(value: Option<&str>) -> i64 {
     }
 }
 
-fn analytics_view(ctx: &Context, member_id: Option<i64>, days: i64) -> anyhow::Result<AnalyticsView> {
+fn analytics_view(
+    ctx: &Context,
+    member_id: Option<i64>,
+    days: i64,
+) -> anyhow::Result<AnalyticsView> {
     let now = now_shanghai();
     let service = AnalyticsService::new(ctx.db_pool.clone());
     let report = match member_id {

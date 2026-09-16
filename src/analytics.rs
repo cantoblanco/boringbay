@@ -178,11 +178,7 @@ impl AnalyticsService {
         if let Some(country) = event.country.as_deref().and_then(normalize_country) {
             dimensions.push((COUNTRY.to_string(), country));
         }
-        if let Some(domain) = event
-            .referrer_domain
-            .as_deref()
-            .and_then(normalize_domain)
-        {
+        if let Some(domain) = event.referrer_domain.as_deref().and_then(normalize_domain) {
             dimensions.push((REFERRER_DOMAIN.to_string(), domain));
         }
         if let Some(channel) = event.channel {
@@ -236,9 +232,11 @@ impl AnalyticsService {
 
     pub fn prune_hourly(&self, now: NaiveDateTime) -> Result<usize> {
         let cutoff = now - Duration::days(90);
-        Ok(diesel::sql_query("DELETE FROM traffic_hourly WHERE bucket_start < ?1")
-            .bind::<Timestamp, _>(cutoff)
-            .execute(&mut self.db_pool.get()?)?)
+        Ok(
+            diesel::sql_query("DELETE FROM traffic_hourly WHERE bucket_start < ?1")
+                .bind::<Timestamp, _>(cutoff)
+                .execute(&mut self.db_pool.get()?)?,
+        )
     }
 
     fn report(
@@ -261,8 +259,7 @@ impl AnalyticsService {
         let hourly_start = now - Duration::days(days.min(90));
         let hourly = load_hourly(&mut connection, hourly_start, now, member_id)?;
         let countries = load_dimension(&mut connection, start, end, member_id, COUNTRY)?;
-        let referrers =
-            load_dimension(&mut connection, start, end, member_id, REFERRER_DOMAIN)?;
+        let referrers = load_dimension(&mut connection, start, end, member_id, REFERRER_DOMAIN)?;
         let channels = load_dimension(&mut connection, start, end, member_id, CHANNEL)?;
         let members = if member_id.is_none() {
             load_members(&mut connection, start, end, previous_start)?
@@ -506,8 +503,11 @@ fn public_dimensions(rows: Vec<DimensionCount>) -> Vec<DimensionCount> {
 
 fn normalize_country(value: &str) -> Option<String> {
     let value = value.trim().to_ascii_uppercase();
-    (value.len() == 2 && value.chars().all(|character| character.is_ascii_alphanumeric()))
-        .then_some(value)
+    (value.len() == 2
+        && value
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric()))
+    .then_some(value)
 }
 
 fn normalize_domain(value: &str) -> Option<String> {
@@ -559,7 +559,13 @@ mod tests {
         }
         let report = service.member(1, 7, now).unwrap();
         assert_eq!(report.current.badge_views, 3);
-        assert_eq!(report.countries[0], DimensionCount { label: "ES".into(), count: 3 });
+        assert_eq!(
+            report.countries[0],
+            DimensionCount {
+                label: "ES".into(),
+                count: 3
+            }
+        );
         assert_eq!(report.referrers[0].label, "example.com");
         assert_eq!(report.channels[0].label, "home");
     }
@@ -575,7 +581,13 @@ mod tests {
         service.record(event(now)).unwrap();
         let report = service.member(1, 7, now).unwrap();
         assert_eq!(report.current.badge_views, 2);
-        assert_eq!(report.countries, vec![DimensionCount { label: "其他".into(), count: 2 }]);
+        assert_eq!(
+            report.countries,
+            vec![DimensionCount {
+                label: "其他".into(),
+                count: 2
+            }]
+        );
     }
 
     #[test]
@@ -591,14 +603,20 @@ mod tests {
             .unwrap();
         assert_eq!(service.prune_hourly(now).unwrap(), 4);
         let report = service.member(1, 90, now).unwrap();
-        assert_eq!(report.hourly.iter().map(|point| point.count).sum::<i64>(), 1);
+        assert_eq!(
+            report.hourly.iter().map(|point| point.count).sum::<i64>(),
+            1
+        );
     }
 
     #[test]
     fn normalizers_reject_unbounded_values() {
         assert_eq!(normalize_country("es").as_deref(), Some("ES"));
         assert_eq!(normalize_country("Europe"), None);
-        assert_eq!(normalize_domain("WWW.Example.COM.").as_deref(), Some("example.com"));
+        assert_eq!(
+            normalize_domain("WWW.Example.COM.").as_deref(),
+            Some("example.com")
+        );
         assert_eq!(normalize_domain("https://example.com/path"), None);
     }
 }

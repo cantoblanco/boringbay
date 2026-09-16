@@ -248,7 +248,7 @@ impl AnalyticsService {
         now: NaiveDateTime,
     ) -> Result<AnalyticsReport> {
         let days = match days {
-            7 | 30 | 90 => days,
+            1 | 7 | 30 | 90 => days,
             _ => 30,
         };
         let end = now.date() + Duration::days(1);

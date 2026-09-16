@@ -42,6 +42,7 @@
                         {{ m.name|e }}
                     </a><br>
                     <small title="{{ m.description|e }}">{{ m.description|e }}</small><br>
+                    <a href="/analytics/{{ m.domain|e }}"><small>公开流量分析</small></a><br>
                     <a target="_blank" rel="noopener" href="https://github.com/{{ m.github_username }}"
                         title="{{ m.github_username|e }}"><small>GitHub · {{ m.github_username|e }}</small></a>
                     {% if v2_enabled %}<button class="favorite-toggle js-passport" type="button" data-favorite="{{ m.id }}" aria-label="收藏 {{ m.name|e }}" hidden>☆</button>{% endif %}
@@ -101,6 +102,7 @@
                             title="{{ r.membership.name|e }}">
                             {{ r.membership.name|e }}
                         </a>
+                        <br><a href="/analytics/{{ r.membership.domain|e }}"><small>流量分析</small></a>
                     </td>
                     <td>{{ r.entry.uv }}</td>
                     <td>{{ r.entry.rv }}</td>

@@ -8,6 +8,7 @@ use diesel::prelude::*;
 use diesel::sql_types::{BigInt, Text, Timestamp};
 use http_body_util::BodyExt as _;
 use tower::ServiceExt;
+use naive::analytics::{AnalyticsEvent, AnalyticsEventKind, AnalyticsService};
 
 async fn body_text(body: Body) -> String {
     let bytes = body.collect().await.unwrap().to_bytes();
@@ -236,4 +237,97 @@ async fn old_badge_stays_available_and_v2_endpoints_follow_feature_flag() {
             .unwrap();
         assert_eq!(response.status(), StatusCode::NOT_FOUND, "{uri}");
     }
+}
+
+#[tokio::test]
+async fn public_analytics_pages_render_filtered_aggregate_data() {
+    let (_tmp, app) = common::temporary_app_with_setup(true, |pool| {
+        let service = AnalyticsService::new(pool.clone());
+        for _ in 0..3 {
+            service
+                .record(AnalyticsEvent {
+                    at: naive::now_shanghai(),
+                    member_id: 1,
+                    kind: AnalyticsEventKind::BadgeView,
+                    country: Some("ES".to_string()),
+                    referrer_domain: None,
+                    channel: None,
+                })
+                .unwrap();
+        }
+    })
+    .await;
+
+    for uri in [
+        "/analytics",
+        "/analytics?range=7",
+        "/analytics?range=nonsense",
+        "/analytics/lifelonglearn.ing?range=90",
+    ] {
+        let response = app
+            .clone()
+            .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK, "{uri}");
+        let html = body_text(response.into_body()).await;
+        assert!(html.contains("公开流量分析") || html.contains("MEMBER ANALYTICS"));
+        assert!(html.contains("ES"));
+        assert!(html.contains("不足 3 次"));
+    }
+
+    let missing = app
+        .oneshot(
+            Request::builder()
+                .uri("/analytics/not-a-member.example")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn analytics_routes_follow_v2_feature_flag() {
+    let (_tmp, app) = common::temporary_app_with_v2(false).await;
+    for uri in ["/analytics", "/analytics/lifelonglearn.ing"] {
+        let response = app
+            .clone()
+            .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::NOT_FOUND, "{uri}");
+    }
+}
+
+#[tokio::test]
+async fn badge_dedupe_writes_one_traffic_total() {
+    let (tmp, app) = common::temporary_app().await;
+    for _ in 0..2 {
+        let response = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .uri("/api/badge/lifelonglearn.ing")
+                    .header("referer", "https://lifelonglearn.ing/post")
+                    .header("CF-Connecting-IP", "203.0.113.9")
+                    .header("CF-IPCountry", "ES")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+    }
+
+    let pool = naive::establish_connection(tmp.path().join("test.db").to_str().unwrap());
+    let count = naive::schema::traffic_daily::table
+        .filter(naive::schema::traffic_daily::member_id.eq(1_i64))
+        .filter(naive::schema::traffic_daily::event_kind.eq("badge_view"))
+        .filter(naive::schema::traffic_daily::dimension_kind.eq("total"))
+        .select(naive::schema::traffic_daily::count)
+        .first::<i64>(&mut pool.get().unwrap())
+        .unwrap();
+    assert_eq!(count, 1);
 }

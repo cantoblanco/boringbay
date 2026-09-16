@@ -16,7 +16,10 @@ use serde::Deserialize;
 use tokio::select;
 
 use crate::{
-    analytics::{AnalyticsChannel, AnalyticsEvent, AnalyticsEventKind, AnalyticsService},
+    analytics::{
+        AnalyticsChannel, AnalyticsEvent, AnalyticsEventKind, AnalyticsReport, AnalyticsService,
+        DimensionCount, MetricSet,
+    },
     app_model::{Context, DynContext},
     boring_face::BoringFace,
     config::AppConfig,
@@ -586,6 +589,262 @@ pub async fn rank_page(
     };
     let html = tpl.render().map_err(|err| err.to_string())?;
     Ok(Html(html))
+}
+
+#[derive(Default, Deserialize)]
+pub struct AnalyticsQuery {
+    range: Option<String>,
+}
+
+#[derive(Clone)]
+struct SummaryView {
+    label: String,
+    metrics: MetricSet,
+    badge_change: String,
+    inbound_change: String,
+    outbound_change: String,
+}
+
+#[derive(Clone)]
+struct DailyView {
+    label: String,
+    badge_views: i64,
+    inbound_referrals: i64,
+    outbound_clicks: i64,
+    total: i64,
+    percent: i64,
+}
+
+#[derive(Clone)]
+struct HourView {
+    label: String,
+    count: i64,
+    percent: i64,
+}
+
+#[derive(Clone)]
+struct AnalyticsMemberView {
+    membership: Membership,
+    metrics: MetricSet,
+    growth: String,
+}
+
+#[derive(Clone)]
+struct AnalyticsView {
+    days: i64,
+    summaries: Vec<SummaryView>,
+    daily: Vec<DailyView>,
+    hourly: Vec<HourView>,
+    countries: Vec<DimensionCount>,
+    referrers: Vec<DimensionCount>,
+    channels: Vec<DimensionCount>,
+    members: Vec<AnalyticsMemberView>,
+}
+
+#[derive(Template)]
+#[template(path = "analytics.html")]
+struct AnalyticsTemplate {
+    version: String,
+    analytics: AnalyticsView,
+}
+
+#[derive(Template)]
+#[template(path = "member_analytics.html")]
+struct MemberAnalyticsTemplate {
+    version: String,
+    membership: Membership,
+    analytics: AnalyticsView,
+}
+
+pub async fn analytics_overview_page(
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+    Query(query): Query<AnalyticsQuery>,
+) -> Result<Html<String>, StatusCode> {
+    if !config.v2_enabled {
+        return Err(StatusCode::NOT_FOUND);
+    }
+    let days = analytics_range(query.range.as_deref());
+    let analytics = analytics_view(&ctx, None, days).map_err(|error| {
+        tracing::error!(%error, "analytics overview query failed");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+    AnalyticsTemplate {
+        version: GIT_HASH[0..8].to_string(),
+        analytics,
+    }
+    .render()
+    .map(Html)
+    .map_err(|error| {
+        tracing::error!(%error, "analytics overview render failed");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })
+}
+
+pub async fn member_analytics_page(
+    Path(domain): Path<String>,
+    Extension(ctx): Extension<DynContext>,
+    Extension(config): Extension<Arc<AppConfig>>,
+    Query(query): Query<AnalyticsQuery>,
+) -> Result<Html<String>, StatusCode> {
+    if !config.v2_enabled {
+        return Err(StatusCode::NOT_FOUND);
+    }
+    let member_id = ctx
+        .domain2id
+        .get(&domain.to_ascii_lowercase())
+        .copied()
+        .ok_or(StatusCode::NOT_FOUND)?;
+    let membership = ctx
+        .id2member
+        .get(&member_id)
+        .cloned()
+        .ok_or(StatusCode::NOT_FOUND)?;
+    let days = analytics_range(query.range.as_deref());
+    let analytics = analytics_view(&ctx, Some(member_id), days).map_err(|error| {
+        tracing::error!(member_id, %error, "member analytics query failed");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+    MemberAnalyticsTemplate {
+        version: GIT_HASH[0..8].to_string(),
+        membership,
+        analytics,
+    }
+    .render()
+    .map(Html)
+    .map_err(|error| {
+        tracing::error!(member_id, %error, "member analytics render failed");
+        StatusCode::INTERNAL_SERVER_ERROR
+    })
+}
+
+fn analytics_range(value: Option<&str>) -> i64 {
+    match value {
+        Some("7") => 7,
+        Some("90") => 90,
+        _ => 30,
+    }
+}
+
+fn analytics_view(ctx: &Context, member_id: Option<i64>, days: i64) -> anyhow::Result<AnalyticsView> {
+    let now = now_shanghai();
+    let service = AnalyticsService::new(ctx.db_pool.clone());
+    let report = match member_id {
+        Some(member_id) => service.member(member_id, days, now)?,
+        None => service.overview(days, now)?,
+    };
+    let summaries = [("今日", 1), ("近 7 天", 7), ("近 30 天", 30)]
+        .into_iter()
+        .map(|(label, summary_days)| {
+            let summary = match member_id {
+                Some(member_id) => service.member(member_id, summary_days, now),
+                None => service.overview(summary_days, now),
+            }?;
+            Ok(summary_view(label, &summary))
+        })
+        .collect::<anyhow::Result<Vec<_>>>()?;
+    Ok(report_view(report, summaries, ctx))
+}
+
+fn summary_view(label: &str, report: &AnalyticsReport) -> SummaryView {
+    SummaryView {
+        label: label.to_string(),
+        metrics: report.current,
+        badge_change: format_change(report.current.badge_views, report.previous.badge_views),
+        inbound_change: format_change(
+            report.current.inbound_referrals,
+            report.previous.inbound_referrals,
+        ),
+        outbound_change: format_change(
+            report.current.outbound_clicks,
+            report.previous.outbound_clicks,
+        ),
+    }
+}
+
+fn report_view(
+    report: AnalyticsReport,
+    summaries: Vec<SummaryView>,
+    ctx: &Context,
+) -> AnalyticsView {
+    let max_daily = report
+        .daily
+        .iter()
+        .map(|point| point.metrics.total())
+        .max()
+        .unwrap_or(0)
+        .max(1);
+    let daily = report
+        .daily
+        .into_iter()
+        .map(|point| {
+            let total = point.metrics.total();
+            DailyView {
+                label: point.date.format("%m-%d").to_string(),
+                badge_views: point.metrics.badge_views,
+                inbound_referrals: point.metrics.inbound_referrals,
+                outbound_clicks: point.metrics.outbound_clicks,
+                total,
+                percent: percent(total, max_daily),
+            }
+        })
+        .collect();
+    let max_hourly = report
+        .hourly
+        .iter()
+        .map(|point| point.count)
+        .max()
+        .unwrap_or(0)
+        .max(1);
+    let hourly = report
+        .hourly
+        .into_iter()
+        .map(|point| HourView {
+            label: format!("{:02}", point.hour),
+            count: point.count,
+            percent: percent(point.count, max_hourly),
+        })
+        .collect();
+    let members = report
+        .members
+        .into_iter()
+        .filter_map(|row| {
+            Some(AnalyticsMemberView {
+                membership: ctx.id2member.get(&row.member_id)?.clone(),
+                metrics: row.metrics,
+                growth: format!("{:+}%", row.growth_percent()),
+            })
+        })
+        .collect();
+    AnalyticsView {
+        days: report.days,
+        summaries,
+        daily,
+        hourly,
+        countries: report.countries,
+        referrers: report.referrers,
+        channels: report.channels,
+        members,
+    }
+}
+
+fn percent(value: i64, maximum: i64) -> i64 {
+    if value <= 0 {
+        0
+    } else {
+        ((value * 100) / maximum).max(4)
+    }
+}
+
+fn format_change(current: i64, previous: i64) -> String {
+    if previous == 0 {
+        return if current == 0 {
+            "—".to_string()
+        } else {
+            "+100%".to_string()
+        };
+    }
+    format!("{:+}%", ((current - previous) * 100) / previous)
 }
 
 fn ranked_members(entries: Vec<RankingEntry>, ctx: &Context) -> Vec<RankedMember> {

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ membership.name|e }} · 流量分析{% endblock %}
+
+{% block content %}
+<div class="content analytics-page">
+    <section class="analytics-hero">
+        <p class="eyebrow">MEMBER ANALYTICS</p>
+        <h1>{{ membership.name|e }}</h1>
+        <p>{{ membership.domain|e }} 的无聊湾可观测流量，不代表博客自身全部访问。</p>
+        <div class="harbor-actions"><a class="btn member-outbound" data-channel="share" data-member-id="{{ membership.id }}" target="_blank" rel="noopener" href="https://{{ membership.domain }}">访问博客</a><a class="quiet-button" href="/analytics">返回总览</a></div>
+    </section>
+
+    <div class="analytics-summary-grid">
+        {% for summary in analytics.summaries %}
+        <section class="analytics-summary card"><h2>{{ summary.label }}</h2><dl>
+            <div><dt>UV</dt><dd>{{ summary.metrics.badge_views }} <small>{{ summary.badge_change }}</small></dd></div>
+            <div><dt>RV</dt><dd>{{ summary.metrics.inbound_referrals }} <small>{{ summary.inbound_change }}</small></dd></div>
+            <div><dt>导出</dt><dd>{{ summary.metrics.outbound_clicks }} <small>{{ summary.outbound_change }}</small></dd></div>
+        </dl></section>
+        {% endfor %}
+    </div>
+
+    <nav class="analytics-range" aria-label="分析时间范围"><a class="btn" href="?range=7">7 天</a><a class="btn" href="?range=30">30 天</a><a class="btn" href="?range=90">90 天</a><span>当前：{{ analytics.days }} 天</span></nav>
+
+    <section class="analytics-panel card"><h2>{{ analytics.days }} 天趋势</h2><div class="trend-bars" aria-label="每日流量趋势">
+        {% for point in analytics.daily %}<div class="trend-column" title="{{ point.label }} · UV {{ point.badge_views }} · RV {{ point.inbound_referrals }} · 导出 {{ point.outbound_clicks }}"><span class="trend-value">{{ point.total }}</span><span class="trend-bar" style="height: {{ point.percent }}%"></span><small>{{ point.label }}</small></div>{% endfor %}
+    </div></section>
+
+    <section class="analytics-panel card"><h2>最近 {{ analytics.days }} 天的活跃时段</h2><div class="hour-bars">{% for point in analytics.hourly %}<div title="{{ point.label }}:00 · {{ point.count }} 次"><span style="height: {{ point.percent }}%"></span><small>{{ point.label }}</small></div>{% endfor %}</div></section>
+
+    <div class="analytics-dimensions">
+        <section class="analytics-panel card"><h2>国家/地区</h2>{% if analytics.countries.is_empty() %}<p class="empty-state">暂无详细数据</p>{% else %}<ol>{% for row in analytics.countries %}<li><span>{{ row.label|e }}</span><strong>{{ row.count }}</strong></li>{% endfor %}</ol>{% endif %}</section>
+        <section class="analytics-panel card"><h2>链入来源</h2>{% if analytics.referrers.is_empty() %}<p class="empty-state">暂无详细数据</p>{% else %}<ol>{% for row in analytics.referrers %}<li><span>{{ row.label|e }}</span><strong>{{ row.count }}</strong></li>{% endfor %}</ol>{% endif %}</section>
+        <section class="analytics-panel card"><h2>导出入口</h2>{% if analytics.channels.is_empty() %}<p class="empty-state">暂无详细数据</p>{% else %}<ol>{% for row in analytics.channels %}<li><span>{{ row.label|e }}</span><strong>{{ row.count }}</strong></li>{% endfor %}</ol>{% endif %}</section>
+    </div>
+    <p class="analytics-note">国家、来源和入口单项不足 3 次时合并为“其他”；完整或脱敏 IP 均不会保存到历史分析。</p>
+</div>
+{% endblock %}
+
+{% block scripts %}<script type="module" src="/static/discovery.js"></script>{% endblock %}

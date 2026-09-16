@@ -271,7 +271,7 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 <a href="https://github.com/xiowo" title="MortalCat"><img src="https://avatars.githubusercontent.com/u/87068069?v=4" width="66;" alt="MortalCat"/></a>
 <a href="https://github.com/Elegy17" title="星然♚"><img src="https://avatars.githubusercontent.com/u/24751111?v=4" width="66;" alt="星然♚"/></a>
 <a href="https://github.com/wumingblog" title="wumingblog"><img src="https://avatars.githubusercontent.com/u/176279568?v=4" width="66;" alt="wumingblog"/></a>
-<a href="https://github.com/kobaridev" title="江晚正愁余ฅ"><img src="https://avatars.githubusercontent.com/u/192551955?v=4" width="66;" alt="江晚正愁余ฅ"/></a>
+<a href="https://github.com/kobaridev" title="KoBariDevฅ"><img src="https://avatars.githubusercontent.com/u/192551955?v=4" width="66;" alt="KoBariDevฅ"/></a>
 <a href="https://github.com/mcxiaochenn" title="辰渊尘 ChenDusk"><img src="https://avatars.githubusercontent.com/u/130777336?v=4" width="66;" alt="辰渊尘 ChenDusk"/></a>
 <a href="https://github.com/xiaolaji404" title="小垃圾"><img src="https://avatars.githubusercontent.com/u/107843497?v=4" width="66;" alt="小垃圾"/></a>
 <a href="https://github.com/Furry-yebai" title="夜白"><img src="https://avatars.githubusercontent.com/u/127961310?v=4" width="66;" alt="夜白"/></a>

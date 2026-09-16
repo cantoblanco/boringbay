@@ -34,7 +34,7 @@
                 <tr>
                     <th scope="row">{{ loop.index }}</th>
                     <td>
-                        <a target="_blank" class="text-reset font-weight-bolder" data-toggle="tooltip"
+                        <a target="_blank" class="text-reset font-weight-bolder member-outbound" data-channel="rank" data-member-id="{{ r.membership.id }}" data-toggle="tooltip"
                             data-title="{{ r.membership.description }}" href="https://{{ r.membership.domain }}" rel="noopener"
                             title="{{ r.membership.name|e }}">
                             {{ r.membership.name|e }}
@@ -85,3 +85,5 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}<script type="module" src="/static/discovery.js"></script>{% endblock %}

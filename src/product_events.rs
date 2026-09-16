@@ -61,6 +61,8 @@ impl TryFrom<&str> for ProductEventKind {
 pub struct EventInput {
     pub kind: String,
     pub member_id: Option<i64>,
+    #[serde(default)]
+    pub channel: Option<String>,
 }
 
 #[derive(Clone)]
@@ -110,6 +112,7 @@ mod tests {
         let json = serde_json::to_value(EventInput {
             kind: "route_start".to_string(),
             member_id: None,
+            channel: None,
         })
         .unwrap();
         let keys = json
@@ -118,6 +121,6 @@ mod tests {
             .keys()
             .cloned()
             .collect::<Vec<_>>();
-        assert_eq!(keys, vec!["kind", "member_id"]);
+        assert_eq!(keys, vec!["channel", "kind", "member_id"]);
     }
 }

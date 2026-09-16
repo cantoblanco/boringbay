@@ -16,6 +16,7 @@ use serde::Deserialize;
 use tokio::select;
 
 use crate::{
+    analytics::{AnalyticsChannel, AnalyticsEvent, AnalyticsEventKind, AnalyticsService},
     app_model::{Context, DynContext},
     boring_face::BoringFace,
     config::AppConfig,
@@ -35,6 +36,7 @@ use crate::{
 pub async fn record_event(
     Extension(ctx): Extension<DynContext>,
     Extension(config): Extension<Arc<AppConfig>>,
+    headers: HeaderMap,
     Json(input): Json<EventInput>,
 ) -> StatusCode {
     if !config.v2_enabled {
@@ -51,12 +53,42 @@ pub async fn record_event(
     {
         return StatusCode::BAD_REQUEST;
     }
+    let channel = match input.channel.as_deref() {
+        Some(value) => match AnalyticsChannel::try_from(value) {
+            Ok(channel) => channel,
+            Err(_) => return StatusCode::BAD_REQUEST,
+        },
+        None if kind == ProductEventKind::FeedOutbound => AnalyticsChannel::Feed,
+        None => AnalyticsChannel::Unknown,
+    };
     match ProductEventService::new(ctx.db_pool.clone()).increment(
         now_shanghai().date(),
         kind,
         input.member_id,
     ) {
-        Ok(()) => StatusCode::NO_CONTENT,
+        Ok(()) => {
+            if matches!(kind, ProductEventKind::MemberOutbound | ProductEventKind::FeedOutbound) {
+                if let Some(member_id) = input.member_id {
+                    let identity = crate::visitor::VisitorIdentity::from_headers(
+                        &headers,
+                        ctx.trusted_proxy_mode,
+                        &ctx.visitor_hasher,
+                    );
+                    let event = AnalyticsEvent {
+                        at: now_shanghai(),
+                        member_id,
+                        kind: AnalyticsEventKind::OutboundClick,
+                        country: identity.map(|value| value.country),
+                        referrer_domain: None,
+                        channel: Some(channel),
+                    };
+                    if let Err(error) = AnalyticsService::new(ctx.db_pool.clone()).record(event) {
+                        tracing::warn!(member_id, event_kind = "outbound_click", %error, "traffic aggregate write failed");
+                    }
+                }
+            }
+            StatusCode::NO_CONTENT
+        }
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }

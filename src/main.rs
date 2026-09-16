@@ -132,7 +132,7 @@ async fn shutdown_signal(ctx: Arc<Context>) {
                 unique_visitor: uv.0,
                 updated_at: uv.1,
                 referrer: referrer.0,
-                latest_referrer_at: referrer.1,
+                latest_referrer_at: Some(referrer.1),
                 id: 0,
             },
         )

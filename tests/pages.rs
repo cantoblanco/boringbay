@@ -33,8 +33,37 @@ async fn home_preserves_brand_member_metrics_and_join_paths() {
     assert!(html.contains("/static/app.css"));
     assert!(html.contains("/static/app.js"));
     assert!(html.contains("/static/discovery.js"));
-    assert!(html.matches("data-member-card").count() > 50);
+    assert!(html.contains("data-activity-toasts"));
+    assert_eq!(html.matches("data-member-card").count(), 0);
     assert!(html.contains("当前没有需要处理的成员站点"));
+}
+
+#[tokio::test]
+async fn home_only_lists_members_with_activity_today() {
+    let (_tmp, app) = common::temporary_app_with_setup(true, |pool| {
+        let today = naive::now_shanghai().date().and_hms_opt(0, 0, 0).unwrap();
+        diesel::sql_query(
+            "INSERT INTO statistics \
+             (created_at, updated_at, membership_id, unique_visitor, referrer, latest_referrer_at) \
+             VALUES (?1, ?2, 1, 3, 0, NULL)",
+        )
+        .bind::<Timestamp, _>(today)
+        .bind::<Timestamp, _>(naive::now_shanghai())
+        .execute(&mut pool.get().unwrap())
+        .unwrap();
+    })
+    .await;
+
+    let response = app
+        .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    let html = body_text(response.into_body()).await;
+    assert_eq!(html.matches("data-member-card").count(), 1);
+    assert!(html.contains("data-member-id=\"1\""));
+    assert!(html.contains("UV3"));
+    assert!(html.contains("RV0"));
 }
 
 #[tokio::test]
@@ -78,6 +107,34 @@ async fn rankings_offer_classic_activity_and_rising_views() {
         let html = page(uri).await;
         assert!(html.contains(expected), "{uri} missing {expected}");
         assert!(html.contains("统计窗口"));
+    }
+}
+
+#[tokio::test]
+async fn rankings_accept_legacy_rows_with_null_referrer_timestamp() {
+    let (_tmp, app) = common::temporary_app_with_setup(true, |pool| {
+        let created = naive::now_shanghai() - chrono::Duration::days(1);
+        diesel::sql_query(
+            "INSERT INTO statistics \
+             (created_at, updated_at, membership_id, unique_visitor, referrer, latest_referrer_at) \
+             VALUES (?1, ?2, 1, 7, 0, NULL)",
+        )
+        .bind::<Timestamp, _>(created)
+        .bind::<Timestamp, _>(created)
+        .execute(&mut pool.get().unwrap())
+        .unwrap();
+    })
+    .await;
+
+    for uri in ["/rank", "/rank?view=activity", "/rank?view=rising"] {
+        let response = app
+            .clone()
+            .oneshot(Request::builder().uri(uri).body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK, "{uri}");
+        let html = body_text(response.into_body()).await;
+        assert!(!html.contains("UnexpectedNullError"), "{uri}");
     }
 }
 

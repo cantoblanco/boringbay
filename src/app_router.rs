@@ -1,8 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    sync::Arc,
-    time::Duration,
-};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 
 use anyhow::anyhow;
 use askama::Template;
@@ -273,21 +269,11 @@ pub async fn home_page(
     });
 
     let mut membership = Vec::new();
-    let mut seen = HashSet::new();
     for v in rank_vec {
         if let Some(member) = ctx.id2member.get(&v.0) {
             membership.push(member.to_owned());
-            seen.insert(v.0);
         }
     }
-    let mut not_yet_ranked = ctx
-        .id2member
-        .iter()
-        .filter(|(id, _)| !seen.contains(id))
-        .map(|(_, member)| member.to_owned())
-        .collect::<Vec<_>>();
-    not_yet_ranked.sort_by_key(|member| member.id);
-    membership.extend(not_yet_ranked);
 
     let ranking_service = RankingService::new(ctx.db_pool.clone());
     let rank_and_membership = ranked_members(

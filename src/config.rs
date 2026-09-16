@@ -34,9 +34,8 @@ impl AppConfig {
         let system_domain = env::var("SYSTEM_DOMAIN").context("SYSTEM_DOMAIN is required")?;
         let database_url = env::var("DATABASE_URL").context("DATABASE_URL is required")?;
         let v2_enabled = parse_v2_enabled(env::var("BORINGBAY_V2_ENABLED").ok())?;
-        let trusted_proxy_mode = TrustedProxyMode::parse(
-            &env::var("TRUSTED_PROXY_MODE").unwrap_or_else(|_| "disabled".to_string()),
-        )?;
+        let trusted_proxy_mode =
+            parse_trusted_proxy_mode(env::var("TRUSTED_PROXY_MODE").ok(), &system_domain)?;
         Ok(Self {
             system_domain,
             database_url,
@@ -67,6 +66,19 @@ fn parse_v2_enabled(value: Option<String>) -> anyhow::Result<bool> {
     value.as_deref().map(parse_bool).unwrap_or(Ok(true))
 }
 
+fn parse_trusted_proxy_mode(
+    value: Option<String>,
+    system_domain: &str,
+) -> anyhow::Result<TrustedProxyMode> {
+    match value {
+        Some(value) => TrustedProxyMode::parse(&value),
+        None if system_domain.eq_ignore_ascii_case("boringbay.com") => {
+            Ok(TrustedProxyMode::Cloudflare)
+        }
+        None => Ok(TrustedProxyMode::Disabled),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -74,6 +86,22 @@ mod tests {
     #[test]
     fn proxy_mode_rejects_unknown_values() {
         assert!(TrustedProxyMode::parse("direct").is_err());
+    }
+
+    #[test]
+    fn canonical_site_keeps_cloudflare_tracking_without_new_environment_variable() {
+        assert_eq!(
+            parse_trusted_proxy_mode(None, "boringbay.com").unwrap(),
+            TrustedProxyMode::Cloudflare
+        );
+        assert_eq!(
+            parse_trusted_proxy_mode(None, "localhost:3000").unwrap(),
+            TrustedProxyMode::Disabled
+        );
+        assert_eq!(
+            parse_trusted_proxy_mode(Some("disabled".to_string()), "boringbay.com").unwrap(),
+            TrustedProxyMode::Disabled
+        );
     }
 
     #[test]

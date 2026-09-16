@@ -1,3 +1,5 @@
+import { renderActivity } from './activity.js';
+
 (() => {
   'use strict';
   const root = document.documentElement;
@@ -19,8 +21,9 @@
   });
 
   const list = document.querySelector('[data-activity-list]');
+  const toasts = document.querySelector('[data-activity-toasts]');
   const pause = document.querySelector('[data-activity-pause]');
-  if (!list || !pause || !('WebSocket' in window)) return;
+  if (!list || !toasts || !pause || !('WebSocket' in window)) return;
   let paused = false;
   let retries = 0;
   let socket = null;
@@ -32,19 +35,13 @@
   });
   function addActivity(data) {
     if (paused || !data || !data.member) return;
-    list.querySelector('.activity-empty')?.remove();
-    const item = document.createElement('li');
-    item.append(document.createTextNode(`来自「${data.country || '未知地区'}」的访客`));
-    const link = document.createElement('a');
-    link.href = `https://${data.member.domain}`;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.textContent = data.member.name;
-    item.append(document.createTextNode(data.vt === 2 ? '访问了 ' : '从 '), link,
-      document.createTextNode(data.vt === 2 ? '。' : ' 来到了无聊湾。'));
-    list.prepend(item);
-    const limit = window.innerWidth < 620 ? 3 : 10;
-    while (list.children.length > limit) list.lastElementChild.remove();
+    renderActivity({
+      document,
+      list,
+      toasts,
+      viewportWidth: window.innerWidth,
+      schedule: window.setTimeout.bind(window)
+    }, data);
   }
   function connect() {
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';

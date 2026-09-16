@@ -184,7 +184,17 @@ impl Context {
 
         statistics.iter().for_each(|s| {
             page_view.insert(s.membership_id, (s.unique_visitor, s.updated_at));
-            referrer.insert(s.membership_id, (s.referrer, s.latest_referrer_at));
+            referrer.insert(
+                s.membership_id,
+                (
+                    s.referrer,
+                    s.latest_referrer_at.unwrap_or_else(|| {
+                        chrono::DateTime::from_timestamp(0, 0)
+                            .expect("unix epoch")
+                            .naive_utc()
+                    }),
+                ),
+            );
         });
 
         let mut membership: HashMap<i64, Membership> =
@@ -317,7 +327,7 @@ impl Context {
                         unique_visitor: id_uv.0,
                         updated_at: id_uv.1,
                         referrer: id_referrer.0,
-                        latest_referrer_at: id_referrer.1,
+                        latest_referrer_at: Some(id_referrer.1),
                         id: 0,
                     },
                 )

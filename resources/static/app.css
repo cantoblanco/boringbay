@@ -63,6 +63,11 @@ img { max-width: 100%; }
 .table th, .table td { padding: .8rem; border-bottom: 1px solid var(--bay-border); text-align: left; vertical-align: top; }
 .table thead { color: var(--bay-muted); font-size: .82rem; }
 .activity-rail { margin-top: 2rem; padding: 1rem; border: 1px solid var(--bay-border); border-radius: 18px; background: var(--bay-surface); }
+.activity-toasts { position: fixed; z-index: 60; top: 5.4rem; right: 1rem; display: grid; gap: .65rem; width: min(24rem, calc(100vw - 2rem)); pointer-events: none; }
+.activity-toast { padding: .85rem 1rem; border: 1px solid var(--bay-pink); border-left: .4rem solid var(--bay-red); border-radius: 14px; background: var(--bay-surface); box-shadow: var(--bay-shadow); animation: activity-toast-in .2s ease-out; pointer-events: auto; }
+.activity-toast strong { color: var(--bay-red); }
+.activity-toast p { margin: .25rem 0 0; }
+@keyframes activity-toast-in { from { opacity: 0; transform: translateY(-.5rem); } }
 .activity-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; margin: .8rem 0 0; padding: 0; list-style: none; }
 .activity-list li { padding: .65rem .75rem; border-radius: 12px; background: var(--bay-pink-soft); color: var(--bay-ink); }
 .activity-empty { color: var(--bay-muted) !important; }

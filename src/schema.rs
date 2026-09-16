@@ -8,7 +8,7 @@ diesel::table! {
         membership_id -> BigInt,
         unique_visitor -> BigInt,
         referrer -> BigInt,
-        latest_referrer_at -> Timestamp,
+        latest_referrer_at -> Nullable<Timestamp>,
     }
 }
 

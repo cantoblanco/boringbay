@@ -64,9 +64,9 @@ cargo run --release
 | `SYSTEM_DOMAIN` | 是 | 无 | 对外域名；本地可用 `localhost:3000` |
 | `DATABASE_URL` | 是 | 无 | SQLite 文件路径 |
 | `BORINGBAY_V2_ENABLED` | 否 | `true` | V2 默认开启；`false/no/off/0` 可临时回退到旧界面 |
-| `TRUSTED_PROXY_MODE` | 否 | `disabled` | 可选 `disabled` 或 `cloudflare` |
+| `TRUSTED_PROXY_MODE` | 否 | 正式域名为 `boringbay.com` 时是 `cloudflare`，其他域名为 `disabled` | 可选 `disabled` 或 `cloudflare` |
 
-只有服务确实位于 Cloudflare 后方时才应设置 `TRUSTED_PROXY_MODE=cloudflare`。直连部署必须保持 `disabled`，避免信任客户端伪造的 Cloudflare 请求头。
+正式站为兼容原有 UV/RV 统计与实时访问事件，在没有显式配置时继续信任 Cloudflare 请求头。其他域名默认保持 `disabled`；只有服务确实位于 Cloudflare 后方时才应设置 `TRUSTED_PROXY_MODE=cloudflare`，直连部署必须显式保持 `disabled`，避免信任客户端伪造的请求头。
 
 ## 加入无聊湾
 

@@ -7,11 +7,12 @@
     <title>{% block title %}{% endblock %} | 无聊湾 🥱 The Boring Bay</title>
     <link rel="shortcut icon" href="/api/favicon/boringbay.com" type="image/svg+xml">
     <link rel="stylesheet" href="/static/app.css">
-    <script defer src="/static/app.js"></script>
+    <script type="module" src="/static/app.js"></script>
     {% block head %}{% endblock %}
 </head>
 <body>
     <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <div class="activity-toasts" data-activity-toasts aria-live="polite" aria-atomic="false"></div>
     <div class="page-wrapper with-navbar">
         <nav class="navbar" aria-label="主要导航">
             <div class="container navbar-inner">

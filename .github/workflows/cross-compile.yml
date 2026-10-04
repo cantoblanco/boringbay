@@ -38,6 +38,9 @@ jobs:
         with:
           node-version: 24
 
+      - name: Validate membership IDs and domains
+        run: python3 tests/check_membership.py
+
       - name: Check formatting
         run: cargo fmt --all -- --check
 

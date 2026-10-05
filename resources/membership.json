@@ -829,5 +829,12 @@
 		"name": "UPXUU's Blog",
 		"description": "逐光而上！",
 		"github_username": "imupxuu"
+	},
+		"130": {
+		"domain": "blog.oopss.top",
+		"icon": "https://cdn.oopss.top/icon.jpg",
+		"name": "Brandon's Blog",
+		"description": "分享个人生活与技术日常",
+		"github_username": "Brandon-LIs"
 	}
 }

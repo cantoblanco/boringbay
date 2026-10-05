@@ -238,8 +238,8 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 <a href="https://github.com/ruying-suixing" title="如形"><img src="https://avatars.githubusercontent.com/u/248474335?v=4" width="66;" alt="如形"/></a>
 <a href="https://github.com/kokona-shiki" title="Kokona_Shiki"><img src="https://avatars.githubusercontent.com/u/119119641?v=4" width="66;" alt="Kokona_Shiki"/></a>
 <a href="https://github.com/chocoboqjj" title="AdeleNaumann"><img src="https://avatars.githubusercontent.com/u/31750441?v=4" width="66;" alt="AdeleNaumann"/></a>
-<a href="https://github.com/qmxs" title="gitmba"><img src="https://avatars.githubusercontent.com/u/49803761?v=4" width="66;" alt="gitmba"/></a>
 <a href="https://github.com/jipa233" title="jipa233"><img src="https://avatars.githubusercontent.com/u/36941617?v=4" width="66;" alt="jipa233"/></a>
+<a href="https://github.com/qmxs" title="gitmba"><img src="https://avatars.githubusercontent.com/u/49803761?v=4" width="66;" alt="gitmba"/></a>
 <a href="https://github.com/mcenahle" title="mcenahle"><img src="https://avatars.githubusercontent.com/u/85427807?v=4" width="66;" alt="mcenahle"/></a>
 <a href="https://github.com/KyomuDesu" title="Kyomu"><img src="https://avatars.githubusercontent.com/u/86147570?v=4" width="66;" alt="Kyomu"/></a>
 <a href="https://github.com/hjh-cn" title="ShSuperyun"><img src="https://avatars.githubusercontent.com/u/71384238?v=4" width="66;" alt="ShSuperyun"/></a>
@@ -281,7 +281,7 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 <a href="https://github.com/gankudadiz" title="gankudadiz"><img src="https://avatars.githubusercontent.com/u/102597939?v=4" width="66;" alt="gankudadiz"/></a>
 <a href="https://github.com/dreamerhe114514" title="dreamerhe114514"><img src="https://avatars.githubusercontent.com/u/156502065?v=4" width="66;" alt="dreamerhe114514"/></a>
 <a href="https://github.com/citihu" title="citihu"><img src="https://avatars.githubusercontent.com/u/225527544?v=4" width="66;" alt="citihu"/></a>
-<a href="https://github.com/LixdHappy" title="LixdHappy"><img src="https://avatars.githubusercontent.com/u/54619525?v=4" width="66;" alt="LixdHappy"/></a>
+<a href="https://github.com/bbb-lsy07" title="bbb-lsy07"><img src="https://avatars.githubusercontent.com/u/183173376?v=4" width="66;" alt="bbb-lsy07"/></a>
 <a href="https://github.com/xiaoranawa" title="霄染"><img src="https://avatars.githubusercontent.com/u/112391218?v=4" width="66;" alt="霄染"/></a>
 <a href="https://github.com/zaxigia" title="langpa"><img src="https://avatars.githubusercontent.com/u/63903027?v=4" width="66;" alt="langpa"/></a>
 <a href="https://github.com/xiangyugongzuoliu" title="翔宇工作流"><img src="https://avatars.githubusercontent.com/u/175918432?v=4" width="66;" alt="翔宇工作流"/></a>
@@ -316,12 +316,12 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 <a href="https://github.com/Echo846" title="Echo846"><img src="https://avatars.githubusercontent.com/u/238907462?v=4" width="66;" alt="Echo846"/></a>
 <a href="https://github.com/Yikoutian1" title="Calyee"><img src="https://avatars.githubusercontent.com/u/90994826?v=4" width="66;" alt="Calyee"/></a>
 <a href="https://github.com/Calvert97" title="Calvert Lee"><img src="https://avatars.githubusercontent.com/u/53511886?v=4" width="66;" alt="Calvert Lee"/></a>
+<a href="https://github.com/Brandon-LIs" title="Brandon-LIs"><img src="https://avatars.githubusercontent.com/u/297426134?v=4" width="66;" alt="Brandon-LIs"/></a>
 <a href="https://github.com/BlueLanM" title="BlueLanM"><img src="https://avatars.githubusercontent.com/u/100191779?v=4" width="66;" alt="BlueLanM"/></a>
 <a href="https://github.com/PlayWithAndyJin" title="AndyJin"><img src="https://avatars.githubusercontent.com/u/219800600?v=4" width="66;" alt="AndyJin"/></a>
 <a href="https://github.com/linhaii" title="Amitabha"><img src="https://avatars.githubusercontent.com/u/32946306?v=4" width="66;" alt="Amitabha"/></a>
 <a href="https://github.com/9527DHX" title="9527DHX"><img src="https://avatars.githubusercontent.com/u/31348749?v=4" width="66;" alt="9527DHX"/></a>
 <a href="https://github.com/2022471674" title="2022471674/28.7"><img src="https://avatars.githubusercontent.com/u/177599986?v=4" width="66;" alt="2022471674/28.7"/></a>
-<a href="https://github.com/bbb-lsy07" title="bbb-lsy07"><img src="https://avatars.githubusercontent.com/u/183173376?v=4" width="66;" alt="bbb-lsy07"/></a>
 <a href="https://github.com/awaae001" title="awaae"><img src="https://avatars.githubusercontent.com/u/108462724?v=4" width="66;" alt="awaae"/></a>
 <a href="https://github.com/zlemoni" title="Zlemoni"><img src="https://avatars.githubusercontent.com/u/36426590?v=4" width="66;" alt="Zlemoni"/></a>
 <a href="https://github.com/ZhouyiStudio" title="𝖅𝖍𝖔𝖚𝖞𝖎"><img src="https://avatars.githubusercontent.com/u/160443385?v=4" width="66;" alt="𝖅𝖍𝖔𝖚𝖞𝖎"/></a>
@@ -340,7 +340,8 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 <a href="https://github.com/Pstarchen" title="StarChen"><img src="https://avatars.githubusercontent.com/u/102441220?v=4" width="66;" alt="StarChen"/></a>
 <a href="https://github.com/Peter267" title="Peter267"><img src="https://avatars.githubusercontent.com/u/175904095?v=4" width="66;" alt="Peter267"/></a>
 <a href="https://github.com/xiangleovo" title="OvO"><img src="https://avatars.githubusercontent.com/u/95113433?v=4" width="66;" alt="OvO"/></a>
-<a href="https://github.com/lucki-cn" title="L"><img src="https://avatars.githubusercontent.com/u/23611464?v=4" width="66;" alt="L"/></a><!--GAMFC_DELIMITER_END-->
+<a href="https://github.com/lucki-cn" title="L"><img src="https://avatars.githubusercontent.com/u/23611464?v=4" width="66;" alt="L"/></a>
+<a href="https://github.com/LixdHappy" title="LixdHappy"><img src="https://avatars.githubusercontent.com/u/54619525?v=4" width="66;" alt="LixdHappy"/></a><!--GAMFC_DELIMITER_END-->
 
 ## 致谢
 

@@ -228,9 +228,9 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 
 <!--GAMFC_DELIMITER--><a href="https://github.com/naiba" title="naiba"><img src="https://avatars.githubusercontent.com/u/29243953?v=4" width="66;" alt="naiba"/></a>
 <a href="https://github.com/cantoblanco" title="Kris"><img src="https://avatars.githubusercontent.com/u/116849421?v=4" width="66;" alt="Kris"/></a>
+<a href="https://github.com/fenychn0206" title="Frederick Chen"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="Frederick Chen"/></a>
 <a href="https://github.com/SinzMise" title="王九弦SZ·Ninty"><img src="https://avatars.githubusercontent.com/u/120767492?v=4" width="66;" alt="王九弦SZ·Ninty"/></a>
 <a href="https://github.com/wulintang" title="懋和道人"><img src="https://avatars.githubusercontent.com/u/17123583?v=4" width="66;" alt="懋和道人"/></a>
-<a href="https://github.com/fenychn0206" title="Frederick Chen"><img src="https://avatars.githubusercontent.com/u/120368045?v=4" width="66;" alt="Frederick Chen"/></a>
 <a href="https://github.com/diaozhenda" title="JB20CM"><img src="https://avatars.githubusercontent.com/u/99374145?v=4" width="66;" alt="JB20CM"/></a>
 <a href="https://github.com/ImMello223" title="Mello"><img src="https://avatars.githubusercontent.com/u/72654383?v=4" width="66;" alt="Mello"/></a>
 <a href="https://github.com/MCTGyt" title="MCTGyt"><img src="https://avatars.githubusercontent.com/u/75358424?v=4" width="66;" alt="MCTGyt"/></a>
@@ -322,8 +322,8 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 <a href="https://github.com/PlayWithAndyJin" title="AndyJin"><img src="https://avatars.githubusercontent.com/u/219800600?v=4" width="66;" alt="AndyJin"/></a>
 <a href="https://github.com/linhaii" title="Amitabha"><img src="https://avatars.githubusercontent.com/u/32946306?v=4" width="66;" alt="Amitabha"/></a>
 <a href="https://github.com/9527DHX" title="9527"><img src="https://avatars.githubusercontent.com/u/31348749?v=4" width="66;" alt="9527"/></a>
-<a href="https://github.com/2022471674" title="2022471674/28.7"><img src="https://avatars.githubusercontent.com/u/177599986?v=4" width="66;" alt="2022471674/28.7"/></a>
-<a href="https://github.com/ZhouyiStudio" title="𝖅𝖍𝖔𝖚𝖞𝖎"><img src="https://avatars.githubusercontent.com/u/160443385?v=4" width="66;" alt="𝖅𝖍𝖔𝖚𝖞𝖎"/></a>
+<a href="https://github.com/2022471674" title="28.7"><img src="https://avatars.githubusercontent.com/u/177599986?v=4" width="66;" alt="28.7"/></a>
+<a href="https://github.com/Zhouyi2013" title="𝖅𝖍𝖔𝖚𝖞𝖎"><img src="https://avatars.githubusercontent.com/u/160443385?v=4" width="66;" alt="𝖅𝖍𝖔𝖚𝖞𝖎"/></a>
 <a href="https://github.com/ZebinGao" title="Zebin"><img src="https://avatars.githubusercontent.com/u/46494321?v=4" width="66;" alt="Zebin"/></a>
 <a href="https://github.com/akaTiger" title="Yicheng Ding"><img src="https://avatars.githubusercontent.com/u/74623731?v=4" width="66;" alt="Yicheng Ding"/></a>
 <a href="https://github.com/Veitzn1" title="Veitzn"><img src="https://avatars.githubusercontent.com/u/158764398?v=4" width="66;" alt="Veitzn"/></a>
@@ -333,7 +333,7 @@ docs/superpowers/     V2 设计、风险登记与实施计划
 <a href="https://github.com/Styunlen" title="Styunlen"><img src="https://avatars.githubusercontent.com/u/30810222?v=4" width="66;" alt="Styunlen"/></a>
 <a href="https://github.com/Senc-QWA" title="Senc-QWA"><img src="https://avatars.githubusercontent.com/u/134200418?v=4" width="66;" alt="Senc-QWA"/></a>
 <a href="https://github.com/suuseer" title="SeerSu"><img src="https://avatars.githubusercontent.com/u/129711970?v=4" width="66;" alt="SeerSu"/></a>
-<a href="https://github.com/zheep1209" title="zheep"><img src="https://avatars.githubusercontent.com/u/148862646?v=4" width="66;" alt="zheep"/></a>
+<a href="https://github.com/zheep1209" title="Zheep_"><img src="https://avatars.githubusercontent.com/u/148862646?v=4" width="66;" alt="Zheep_"/></a>
 <a href="https://github.com/kuang2714" title="Redcha"><img src="https://avatars.githubusercontent.com/u/149299632?v=4" width="66;" alt="Redcha"/></a>
 <a href="https://github.com/rabbitxuanxuan" title="Rabbit_xuan"><img src="https://avatars.githubusercontent.com/u/112363084?v=4" width="66;" alt="Rabbit_xuan"/></a>
 <a href="https://github.com/Pstarchen" title="StarChen"><img src="https://avatars.githubusercontent.com/u/102441220?v=4" width="66;" alt="StarChen"/></a>
